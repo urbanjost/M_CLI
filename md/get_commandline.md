@@ -41,7 +41,8 @@ NAMELIST syntax can vary between different programming environments.
 Currently, this routine has only been tested using gfortran 7.0.4; and
 requires at least Fortran 2003.
 
-    typical usage:
+typical usage:
+
 ```fortran
    program show
       use M_args,  only : unnamed, get_namelist, print_dictionary
@@ -92,69 +93,69 @@ requires at least Fortran 2003.
 
 ## OPTIONS
 
-   **DESCRIPTION**
+**DESCRIPTION**
 
-   null or composed of all command arguments concatenated into a string
-   that defines a Unix-line command prototype.
+composed of all command arguments concatenated into a string
+that defines a Unix-line command prototype.
 
-     o  all values except logicals get a value.
+ *  all values except logicals get a value.
 
-     o  long names (--keyword) should be all lowercase
+ *  long names (--keyword) should be all lowercase
 
-     o  short names (-letter) that are uppercase map to a NAMELIST variable
-        called "letter_", but lowercase short names map to NAMELIST name
-        "letter".
+ *  short names (-letter) that are uppercase map to a NAMELIST variable
+    called "letter_", but lowercase short names map to NAMELIST name
+    "letter".
 
-     o  strings MUST be delimited with double-quotes and must be at least
-        one space and internal double-quotes are represented with two
-        double-quotes
+ *  strings MUST be delimited with double-quotes and must be at least
+    one space and internal double-quotes are represented with two
+    double-quotes
 
-     o  lists of numbers should be comma-delimited. No spaces are allowed
-        in lists of numbers.
+ *  lists of numbers should be comma-delimited. No spaces are allowed
+    in lists of numbers.
 
-     o  the values follow the rules for NAMELIST values, so "-p 2*0" for
-        example would define two values.
+ *  the values follow the rules for NAMELIST values, so "-p 2*0" for
+    example would define two values.
 
 ## RETURNS
 
-    **STRING** 
+**STRING** 
 
-    The output is a NAMELIST string than can be read to update the
-    NAMELIST "ARGS" with the keywords that were supplied on the command
-    line.
+The output is a NAMELIST string than can be read to update the
+NAMELIST "ARGS" with the keywords that were supplied on the command
+line.
 
 Note that (subject to change) the following variations from other
 common command-line parsers:
 
- o  duplicate keywords are replaced by the rightmost entry
+ *  duplicate keywords are replaced by the rightmost entry
 
- o  numeric keywords are not allowed; but this allows negative
+ *  numeric keywords are not allowed; but this allows negative
     numbers to be used as values.
 
- o  specifying both names of an equivalenced keyword will have
+ *  specifying both names of an equivalenced keyword will have
     undefined results (currently, their alphabetical order will
     define what the Fortran variable values become).
 
- o  there is currently no mapping of short names to long names except
+ *  there is currently no mapping of short names to long names except
     via an EQUIVALENCE.
 
- o  short keywords cannot be combined. -a -b -c is required, not -abc
+ *  short keywords cannot be combined. -a -b -c is required, not -abc
     even for Boolean keys.
 
- o  shuffling is not supported. Values must follow their keywords.
+ *  shuffling is not supported. Values must follow their keywords.
 
- o  if a parameter value of just "-" is supplied it is converted to
+ *  if a parameter value of just "-" is supplied it is converted to
     the string "stdin".
 
- o  if the keyword "--" is encountered the rest of the command
+ *  if the keyword "--" is encountered the rest of the command
     arguments go into the character array "UNUSED".
 
- o  values not matching a keyword go into the character array
+ *  values not matching a keyword go into the character array
     "UNUSED".
 
- o  long names do not take the --KEY=VALUE form, just --KEY VALUE;
+ *  long names do not take the --KEY=VALUE form, just --KEY VALUE;
     and long names should be all lowercase and always more than one
     character.
 
- o  short-name parameters of the form -LETTER VALUE map to a NAMELIST
+ *  short-name parameters of the form -LETTER VALUE map to a NAMELIST
     name of LETTER_ if uppercase
