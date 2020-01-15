@@ -7,7 +7,7 @@
 !!    (LICENSE:PD)
 !!##SYNOPSIS
 !!
-!!    use M_CLI, only : set_commandline, get_commandline, print_dictionary, unnamed
+!!    use M_CLI, only : get_commandline, print_dictionary, unnamed
 !!    use M_CLI, only : debug
 !!
 !!##DESCRIPTION
@@ -27,7 +27,6 @@ use, intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT,stdin=>INPUT_UNIT  
 implicit none
 private
 !===================================================================================================================================
-public  :: set_commandline
 public  :: get_commandline
 public  :: print_dictionary
 public debug
@@ -59,7 +58,7 @@ character(len=:),allocatable   :: namelist_name
 
 character(len=:),allocatable   :: unnamed(:)
 logical                        :: debug=.false.
-logical                        :: return_all_local
+logical                        :: return_all
 !===================================================================================================================================
 private dictionary
 
@@ -128,7 +127,6 @@ contains
 !!
 !!    character(len=*),intent(in),optional  :: definition
 !!    character(len=:),allocatable :: string
-!!    logical,optional,intent(in)  :: default
 !!##DESCRIPTION
 !!
 !!    To use the routine first define a NAMELIST group called ARGS.
@@ -160,7 +158,7 @@ contains
 !!          implicit none
 !!          integer                      :: i
 !!          character(len=255)           :: message ! for I/O error messages
-!!          character(len=:),allocatable :: readme ! stores updated namelist
+!!          character(len=:),allocatable :: readme  ! stores updated namelist
 !!          integer                      :: ios
 !!
 !!       ! declare a namelist
@@ -171,9 +169,10 @@ contains
 !!          namelist /args/ x,y,z,point,title,help,h,version,v,l,l_
 !!
 !!       ! Define the prototype
-!!       !  o All parameters must be listed with a default value
-!!       !  o string values  must be double-quoted
-!!       !  o numeric lists must be comma-delimited. No spaces are allowed
+!!       !  o All parameters must be listed with a default value.
+!!       !  o logicals should be specified with a value of F or T.
+!!       !  o string values  must be double-quoted.
+!!       !  o lists must be comma-delimited. No spaces are allowed in lists.
 !!       !  o all long names must be lowercase. An uppercase short name
 !!       !    -A maps to variable A_
 !!       !  o if variables are equivalenced only one should be used on
@@ -182,16 +181,11 @@ contains
 !!          & -x 1 -y 2 -z 3     &
 !!          & --point -1,-2,-3   &
 !!          & --title "my title" &
-!!          & -h --help          &
-!!          & -v --version       &
-!!          & -l -L'
+!!          & -h F --help F      &
+!!          & -v F --version F   &
+!!          & -l F -L F'
 !!          ! reading in a NAMELIST definition defining the entire NAMELIST
-!!          ! do it once to set all the default values or skip this but
-!!          ! then maek sure all the NAMELIST group variables are initialized
-!!          ! to the same values as defined in the prototype
-!!          readme=get_commandline(cmd,default=.true.)
-!!          read(readme,nml=args,iostat=ios,iomsg=message)
-!!          ! now get the values from the command line
+!!          ! now get the values from the command prototype and command line as NAMELIST input
 !!          readme=get_commandline(cmd)
 !!          read(readme,nml=args,iostat=ios,iomsg=message)
 !!          if(ios.ne.0)then
@@ -216,26 +210,19 @@ contains
 !!    DESCRIPTION   composed of all command arguments concatenated
 !!                  into a Unix-like command prototype string.
 !!
-!!                  o all values except logicals get a value.
+!!                  o all keywords get a value.
+!!                  o logicals must be set to F or T.
+!!                  o strings MUST be delimited with double-quotes and
+!!                    must be at least one space. Internal
+!!                    double-quotes are represented with two double-quotes
+!!                  o lists of values should be comma-delimited.
+!!                     No spaces are allowed in lists of numbers.
 !!                  o long names (--keyword) should be all lowercase
 !!                  o short names (-letter) that are uppercase map to a
 !!                    NAMELIST variable called "letter_", but lowercase
 !!                    short names map to NAMELIST name "letter".
-!!                  o strings MUST be delimited with double-quotes and
-!!                    must be at least one space and internal
-!!                    double-quotes are represented with two double-quotes
-!!                  o lists of numbers should be comma-delimited.
-!!                     No spaces are allowed in lists of numbers.
 !!                  o the values follow the rules for NAMELIST values, so
 !!                    "-p 2*0" for example would define two values.
-!!   DEFAULT        Either initialize all the values in the NAMELIST group
-!!                  or call the routine once with DEFAULT=.TRUE. and read
-!!                  the namelist output to set all the defaults and then
-!!                  call and read it again with DEFAULT=.FALSE. or with
-!!                  no DEFAULT argument to get the changed values from the
-!!                  command line. Reading it twice means you do not have to
-!!                  keep the values synchronized in the command prototype
-!!                  and the NAMELIST group definition
 !!
 !!##RETURNS
 !!
@@ -284,34 +271,15 @@ contains
 !!##LICENSE
 !!    Public Domain
 !===================================================================================================================================
-function set_commandline(definition) result (readme)
-character(len=*),intent(in)  :: definition
-character(len=:),allocatable :: readme             ! stores command line argument
-readme=get_commandline(definition,default=.true.,return_all=.true.)
-end function set_commandline
-!===================================================================================================================================
-function get_commandline(definition,default,return_all) result (readme)
+function get_commandline(definition) result (readme)
 
 character(len=*),parameter::ident_2="@(#)M_CLI::get_commandline(3f): return all command arguments as a NAMELIST(3f) string to read"
 
 character(len=*),intent(in)          :: definition
-logical,optional                     :: default
-logical,optional                     :: return_all
-logical                              :: default_local
 character(len=:),allocatable         :: hold               ! stores command line argument
 character(len=:),allocatable         :: readme             ! stores command line argument
 integer                              :: ibig
-   if(present(default))then        ! being called just to make output to set all defaults, ignore command line options
-      default_local=default
-   else
-      default_local=.false.
-   endif
-   if(present(return_all))then     ! return everything or only values that were on command line
-      return_all_local=return_all
-   else
-      return_all_local=.true.
-   endif
-
+                           
    if(allocated(unnamed))then
        deallocate(unnamed)
    endif
@@ -323,7 +291,7 @@ integer                              :: ibig
    else
       call wipe_dictionary()
       hold=adjustl(definition)
-      call prototype_and_cmd_args_to_nlist(hold,readme,default_local)
+      call prototype_and_cmd_args_to_nlist(hold,readme)
    endif
 
    if(.not.allocated(unnamed))then
@@ -724,15 +692,16 @@ end function get
 !!##LICENSE
 !!    Public Domain
 !===================================================================================================================================
-subroutine prototype_and_cmd_args_to_nlist(prototype,nml,default)
+subroutine prototype_and_cmd_args_to_nlist(prototype,nml)
 implicit none
 
 character(len=*),parameter::ident_5="&
 &@(#)M_CLI::prototype_and_cmd_args_to_nlist: create dictionary from prototype (if not null) and update from command line arguments"
 
-character(len=*),intent(in)  :: prototype
-logical,intent(in)           :: default
-character(len=:),allocatable :: nml
+character(len=*),intent(in)              :: prototype
+character(len=:),intent(out),allocatable :: nml
+character(len=:),allocatable :: nml1
+character(len=:),allocatable :: nml2
 integer                      :: i
 integer                      :: ibig
    if(debug)then
@@ -743,27 +712,31 @@ integer                      :: ibig
 
    if(allocated(unnamed))deallocate(unnamed)
    ibig=longest_command_argument() ! bug in gfortran. len=0 should be fine
+   ibig=max(ibig,1)
    allocate(character(len=ibig) ::unnamed(0))
 
    if(prototype.ne.'')then
       call prototype_to_dictionary(prototype)  ! build dictionary from prototype
       namelist_name='&ARGS'
+      present_in=.false.  ! reset all values to false so everything gets written
+      return_all=.true.   ! return everything in dictionary
+      call dictionary_to_namelist(nml1)
       present_in=.false.  ! reset all values to false
+   else
+      nml1=''
    endif
+
 
    if(debug)then                            ! look at some of the values as strings or numbers
       call print_dictionary('DICTIONARY FROM PROTOTYPE')
    endif
 
-   if(.not.default)then
-      call cmd_args_to_dictionary(check=.true.)
-   else
-      !!present_in=.true.  ! reset all values to .true. so everything gets returned
-      return_all_local=.true.
-   endif
+   return_all=.true.   ! return values that were on command line
+   call cmd_args_to_dictionary(check=.true.)
 
-   call dictionary_to_namelist(nml)
+   call dictionary_to_namelist(nml2)
 
+   nml=namelist_name//' '//nml1//','//nml2//' /' ! add defaults and values on command line
    ! show array
    if(debug)then
       call print_dictionary('DICTIONARY FROM COMMAND LINE:')
@@ -898,8 +871,8 @@ character(len=:),allocatable,intent(out) :: nml
 integer :: i
 character(len=:),allocatable :: newkeyword
    ! build namelist string
-   nml=namelist_name//' '
-   if(return_all_local)then  ! if returning all first do keywords not present on command line so equivalences work
+   nml=' '
+   if(return_all)then  ! if returning all first do keywords not present on command line so equivalences work
       do i=1,size(keywords)
          if(isupper(keywords(i)(1:1)))then
             newkeyword=trim(lower(keywords(i)))//'_'
@@ -923,7 +896,6 @@ character(len=:),allocatable :: newkeyword
       endif
    enddo
 
-   nml=nml//' /'
    if(debug)then
       write(stderr,'(a)')'NAMELIST:'
       write(stderr,'(a)')nml

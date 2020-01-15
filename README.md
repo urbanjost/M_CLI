@@ -27,16 +27,12 @@ Basically you define a NAMELIST group called ARGS that has the names of
 all your command line arguments.
 
 Next, call a routine passing it a string that looks like the command
-you would use to execute the program once to set the defaults and
-again to read the command line arguments.
+you would use to execute the program with all values specified.
 
-Each time the routines pass back a string you read as the NAMELIST group
-ARGS.
+you read the output as the NAMELIST group ARGS.
 
 Now all the values in the namelist should be updated using values from the
 command line and ready to use.
-
-- [set_commandline](md/set_commandline.md) sets defaults
 
 - [get_commandline](md/get_commandline.md) parses the command line options
 
@@ -65,19 +61,7 @@ This short program defines a command that can be called like
    character(len=*),parameter   :: cmd= &
    &' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" --help --version -l')
 
-   !! DEFINE COMMAND, READ COMMAND LINE OPTIONS
-
-   !! MAKE SURE ALL THE DEFAULT VALUES GET SET 
-   !! (COULD JUST SET VALUES IN NAMELIST DEFINITION)
-   readme=set_commandline(cmd)
-   read(readme,nml=args,iostat=ios,iomsg=message) !! SET NAMELIST VARIABLE DEFAULTS
-   if(ios.ne.0)then                               !! HANDLE ERRORS
-      write(*,'("ERROR IN COMMAND DEFINITION:",i0,1x,a)')ios, trim(message)
-      write(*,'(*(g0,/))')'IN: ',trim(cmd), 'OUT: ',trim(readme)
-      stop 1
-   endif
-
-   !! SECOND TIME TO GET VALUES FROM THE COMMAND LINE
+   !! SET ALL DEFAULT VALUES AND THEN APPLY VALUES FROM COMMAND LINE
    readme=get_commandline(cmd)
    read(readme,nml=args,iostat=ios,iomsg=message) !! UPDATE NAMELIST VARIABLES
    if(ios.ne.0)then                               !! HANDLE ERRORS
@@ -86,7 +70,8 @@ This short program defines a command that can be called like
       stop 1
    endif
 
-   write(*,nml=args)                        !! USE THE VALUES IN YOUR PROGRAM.
+   !! USE THE VALUES IN YOUR PROGRAM.
+   write(*,nml=args)  
    if(size(unnamed).gt.0)then
       write(*,'(a)')'files:'
       write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
@@ -95,13 +80,11 @@ This short program defines a command that can be called like
    end program show
 ```
 
-There are possible several styles on how to define the NAMELIST group as well as
-whether to do the parsing in the main program or in a contained procedure..
+There are several styles possible for defining the NAMELIST group as well as
+options on whether to do the parsing in the main program or in a contained procedure..
 
 - [demo1](src/PROGRAMS/demo1.f90) basic usage with checking defining the NAMELIST group 
                                   on the same line as the declarations of the variables
-- [demo2](src/PROGRAMS/demo2.f90) if values are initialized already, calling SET_COMMANDLINE(3f)
-                                  is not required.
-- [demo3](src/PROGRAMS/demo3.f90) shows putting everything including help and version
+- [demo3](src/PROGRAMS/demo2.f90) shows putting everything including help and version
                                   information into a contained procedure
-- [demo4](src/PROGRAMS/demo4.f90) is an example of use for a quick prototype.
+- [demo4](src/PROGRAMS/demo3.f90) is an example of use for a quick prototype.

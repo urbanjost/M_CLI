@@ -18,15 +18,14 @@ and the prototype and it automatically is available as a command line
 argument.
 
 Even arrays and user-defined types can be used, complex values can be
-input ... just define the variable and add it to the NAMELIST definition
-and the command prototype.
+input ... .
 
 To use the routine :
 
    1) define a NAMELIST group called ARGS.
 
    2) Then call GET_COMMANDLINE(3f) with a string that looks like a call to the
-      program.
+      program with all keywords and default values specified
 
    3) Read the returned value as a NAMELIST group called ARGS.
 
@@ -93,18 +92,15 @@ typical usage:
 
 ## OPTIONS
 
-**DESCRIPTION**
+**DESCRIPTION:** is composed of all command arguments concatenated into a
+string that defines a Unix-line command prototype. Note that values on the
+prototype definition and on the command line follow NAMELIST syntax rules,
+so using the example program "-point 3*0" would define three values, for
+example. "-point ,1000" would change the _second_ element of the POINT
+array and so on. See NAMELIST(3f) for more information on NAMELIST syntax.
 
-composed of all command arguments concatenated into a string
-that defines a Unix-line command prototype.
+ *  all keywords get a value. Logicals should get F or T.
 
- *  all values except logicals get a value.
-
- *  long names (--keyword) should be all lowercase
-
- *  short names (-letter) that are uppercase map to a NAMELIST variable
-    called "letter_", but lowercase short names map to NAMELIST name
-    "letter".
 
  *  strings MUST be delimited with double-quotes and must be at least
     one space and internal double-quotes are represented with two
@@ -113,14 +109,15 @@ that defines a Unix-line command prototype.
  *  lists of numbers should be comma-delimited. No spaces are allowed
     in lists of numbers.
 
- *  the values follow the rules for NAMELIST values, so "-p 2*0" for
-    example would define two values.
+ *  long names (--keyword) should be all lowercase
+
+ *  short names (-letter) that are uppercase map to a NAMELIST variable
+    called "letter_", but lowercase short names map to NAMELIST name
+    "letter".
 
 ## RETURNS
 
-**STRING** 
-
-The output is a NAMELIST string than can be read to update the
+**STRING:** The output is a NAMELIST string than can be read to update the
 NAMELIST "ARGS" with the keywords that were supplied on the command
 line.
 
