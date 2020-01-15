@@ -1,17 +1,11 @@
-program show_get_commandline_unix_prototype
-!! QUICK PROTOTYPE 
-use M_CLI,  only : get_commandline, print_dictionary
+program quick_and_dirty
+!! QUICK PROTOTYPE: JUST THE BARE ESSENTIALS
+use M_CLI,  only : get_commandline
+implicit none
 character(len=:),allocatable :: readme ! stores updated namelist
-character(len=256)           :: message
-integer                      :: x, y, z, ios
+integer                      :: x, y, z
 namelist /args/ x,y,z
-   readme=get_commandline('-x 1 -y 2 -z 3')
-   read(readme,nml=args,iostat=ios,iomsg=message)
-   if(ios.ne.0)then
-      write(*,'("ERROR IN COMMAND ARGUMENTS:",i0,1x,a)')ios,message
-      call print_dictionary()
-      stop 2
-   endif
-   !! ALL DONE CRACKING THE COMMAND LINE.  USE THE VALUES IN YOUR PROGRAM.
-   write(*,nml=args)
-end program show_get_commandline_unix_prototype
+   readme=get_commandline('-x 1 -y 10 -z 100')
+   read(readme,nml=args)
+   write(*,*)x,y,z, x+y+z
+end program quick_and_dirty
