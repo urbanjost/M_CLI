@@ -1,10 +1,10 @@
 ## NAME
 
-   get_namelist(3f) - NAMELIST-based command line argument parsing using a command prototype
+   get_commandline(3f) - NAMELIST-based command line argument parsing using a command prototype
 
 ## SYNOPSIS
 
-    function get_namelist(definition) result(string)
+    function get_commandline(definition) result(string)
      character(len=*),intent(in),optional  :: definition
      character(len=:),allocatable :: string
 
@@ -45,7 +45,7 @@ typical usage:
 
 ```fortran
    program show
-      use M_args,  only : unnamed, get_namelist, print_dictionary
+      use M_args,  only : unnamed, get_commandline, print_dictionary
       implicit none
       integer                      :: i
       character(len=255) :: message ! use for I/O error messages

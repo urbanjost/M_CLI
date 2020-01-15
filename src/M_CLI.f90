@@ -7,11 +7,11 @@
 !!    (LICENSE:PD)
 !!##SYNOPSIS
 !!
-!!    use M_CLI, only : get_commandline, print_dictionary, unnamed
+!!    use M_CLI, only : set_commandline, get_commandline, print_dictionary, unnamed
 !!    use M_CLI, only : debug
 !!
 !!##DESCRIPTION
-!!    Allow for command line parsing much like standard Unix command line parsing using a simple prototype. 
+!!    Allow for command line parsing much like standard Unix command line parsing using a simple prototype.
 !!
 !!##EXAMPLE
 !!
@@ -24,8 +24,10 @@
 !===================================================================================================================================
 module M_CLI
 use, intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT,stdin=>INPUT_UNIT    ! access computing environment
+implicit none
 private
 !===================================================================================================================================
+public  :: set_commandline
 public  :: get_commandline
 public  :: print_dictionary
 public debug
@@ -57,7 +59,7 @@ character(len=:),allocatable   :: namelist_name
 
 character(len=:),allocatable   :: unnamed(:)
 logical                        :: debug=.false.
-logical                        :: return_all
+logical                        :: return_all_local
 !===================================================================================================================================
 private dictionary
 
@@ -126,6 +128,7 @@ contains
 !!
 !!    character(len=*),intent(in),optional  :: definition
 !!    character(len=:),allocatable :: string
+!!    logical,optional,intent(in)  :: default
 !!##DESCRIPTION
 !!
 !!    To use the routine first define a NAMELIST group called ARGS.
@@ -135,7 +138,7 @@ contains
 !!
 !!    The example program shows how simple it is to use. Add a
 !!    variable to the NAMELIST and the prototype and it automatically is available as
-!!    a value in the program. 
+!!    a value in the program.
 !!
 !!    There is no need to convert from strings to numeric
 !!    values in the source code. Even arrays and user-defined types can be
@@ -173,7 +176,7 @@ contains
 !!       !  o numeric lists must be comma-delimited. No spaces are allowed
 !!       !  o all long names must be lowercase. An uppercase short name
 !!       !    -A maps to variable A_
-!!       !  o if variables are equivalenced only one should be used on 
+!!       !  o if variables are equivalenced only one should be used on
 !!       !    the command line
 !!          character(len=*),parameter  :: cmd='&
 !!          & -x 1 -y 2 -z 3     &
@@ -183,6 +186,12 @@ contains
 !!          & -v --version       &
 !!          & -l -L'
 !!          ! reading in a NAMELIST definition defining the entire NAMELIST
+!!          ! do it once to set all the default values or skip this but
+!!          ! then maek sure all the NAMELIST group variables are initialized
+!!          ! to the same values as defined in the prototype
+!!          readme=get_commandline(cmd,default=.true.)
+!!          read(readme,nml=args,iostat=ios,iomsg=message)
+!!          ! now get the values from the command line
 !!          readme=get_commandline(cmd)
 !!          read(readme,nml=args,iostat=ios,iomsg=message)
 !!          if(ios.ne.0)then
@@ -219,6 +228,14 @@ contains
 !!                     No spaces are allowed in lists of numbers.
 !!                  o the values follow the rules for NAMELIST values, so
 !!                    "-p 2*0" for example would define two values.
+!!   DEFAULT        Either initialize all the values in the NAMELIST group
+!!                  or call the routine once with DEFAULT=.TRUE. and read
+!!                  the namelist output to set all the defaults and then
+!!                  call and read it again with DEFAULT=.FALSE. or with
+!!                  no DEFAULT argument to get the changed values from the
+!!                  command line. Reading it twice means you do not have to
+!!                  keep the values synchronized in the command prototype
+!!                  and the NAMELIST group definition
 !!
 !!##RETURNS
 !!
@@ -267,30 +284,46 @@ contains
 !!##LICENSE
 !!    Public Domain
 !===================================================================================================================================
-function get_commandline(definition) result (readme)
+function set_commandline(definition) result (readme)
+character(len=*),intent(in)  :: definition
+character(len=:),allocatable :: readme             ! stores command line argument
+readme=get_commandline(definition,default=.true.,return_all=.true.)
+end function set_commandline
+!===================================================================================================================================
+function get_commandline(definition,default,return_all) result (readme)
 
 character(len=*),parameter::ident_2="@(#)M_CLI::get_commandline(3f): return all command arguments as a NAMELIST(3f) string to read"
 
-character(len=*),intent(in),optional :: definition
+character(len=*),intent(in)          :: definition
+logical,optional                     :: default
+logical,optional                     :: return_all
+logical                              :: default_local
 character(len=:),allocatable         :: hold               ! stores command line argument
 character(len=:),allocatable         :: readme             ! stores command line argument
 integer                              :: ibig
+   if(present(default))then        ! being called just to make output to set all defaults, ignore command line options
+      default_local=default
+   else
+      default_local=.false.
+   endif
+   if(present(return_all))then     ! return everything or only values that were on command line
+      return_all_local=return_all
+   else
+      return_all_local=.true.
+   endif
+
    if(allocated(unnamed))then
        deallocate(unnamed)
    endif
    ibig=longest_command_argument() ! bug in gfortran. len=0 should be fine
    allocate(character(len=ibig) :: unnamed(0))
-   return_all=.true.
-   if(present(definition))then
-      if(definition.eq.'')then
-         write(*,*)'*get_commandline* blank definition'
-      else
-         call wipe_dictionary()
-         hold=adjustl(definition)
-         call prototype_and_cmd_args_to_nlist(hold,readme)
-      endif
-   else                                                    ! assume should read command line as a raw string in NAMELIST format
-      write(*,*)'*get_commandline* missing definition'
+
+   if(definition.eq.'')then
+      write(*,*)'*get_commandline* blank definition'
+   else
+      call wipe_dictionary()
+      hold=adjustl(definition)
+      call prototype_and_cmd_args_to_nlist(hold,readme,default_local)
    endif
 
    if(.not.allocated(unnamed))then
@@ -691,13 +724,14 @@ end function get
 !!##LICENSE
 !!    Public Domain
 !===================================================================================================================================
-subroutine prototype_and_cmd_args_to_nlist(prototype,nml)
+subroutine prototype_and_cmd_args_to_nlist(prototype,nml,default)
 implicit none
 
 character(len=*),parameter::ident_5="&
 &@(#)M_CLI::prototype_and_cmd_args_to_nlist: create dictionary from prototype (if not null) and update from command line arguments"
 
-character(len=*)             :: prototype
+character(len=*),intent(in)  :: prototype
+logical,intent(in)           :: default
 character(len=:),allocatable :: nml
 integer                      :: i
 integer                      :: ibig
@@ -721,7 +755,12 @@ integer                      :: ibig
       call print_dictionary('DICTIONARY FROM PROTOTYPE')
    endif
 
-   call cmd_args_to_dictionary(check=.true.)
+   if(.not.default)then
+      call cmd_args_to_dictionary(check=.true.)
+   else
+      !!present_in=.true.  ! reset all values to .true. so everything gets returned
+      return_all_local=.true.
+   endif
 
    call dictionary_to_namelist(nml)
 
@@ -860,7 +899,7 @@ integer :: i
 character(len=:),allocatable :: newkeyword
    ! build namelist string
    nml=namelist_name//' '
-   if(return_all)then  ! if returning all first do keywords not present on command line so equivalences work
+   if(return_all_local)then  ! if returning all first do keywords not present on command line so equivalences work
       do i=1,size(keywords)
          if(isupper(keywords(i)(1:1)))then
             newkeyword=trim(lower(keywords(i)))//'_'
