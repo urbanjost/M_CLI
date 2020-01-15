@@ -36,7 +36,7 @@ ARGS.
 Now all the values in the namelist should be updated using values from the
 command line and ready to use.
 
-- [set_commandline](md/get_commandline.md) sets defaults
+- [set_commandline](md/set_commandline.md) sets defaults
 
 - [get_commandline](md/get_commandline.md) parses the command line options
 
