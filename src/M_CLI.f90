@@ -1920,37 +1920,20 @@ end function lower
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-function merge_str(str1,str2,expr) result(strout)
-! for some reason the MERGE(3f) intrinsic requires the strings it compares to be of equal length
-! make an alias for MERGE(3f) that makes the lengths the same before doing the comparison by padding the shorter one with spaces
-
-character(len=*),parameter::ident_37="@(#)M_strings::merge_str(3f): pads first and second arguments to MERGE(3f) to same length"
-
-character(len=*),intent(in)     :: str1
-character(len=*),intent(in)     :: str2
-logical,intent(in)              :: expr
-character(len=:),allocatable    :: strout
-integer                         :: big
-   big=max(len(str1),len(str2))
-   strout=trim(merge(lenset(str1,big),lenset(str2,big),expr))
-end function merge_str
-!===================================================================================================================================
-function quote(str,mode,clip) result (quoted_str)
+function quote(str,mode) result (quoted_str)
 character(len=*),intent(in)          :: str                ! the string to be quoted
 character(len=*),optional,intent(in) :: mode
-logical,optional,intent(in)          :: clip
 character(len=:),allocatable         :: quoted_str
 
 character(len=1),parameter           :: double_quote = '"'
 character(len=20)                    :: local_mode
-logical                              :: local_clip
 !-----------------------------------------------------------------------------------------------------------------------------------
-   local_mode=merge_str(mode,'DOUBLE',present(mode))
-   if(merge(clip,.false.,present(clip)))then
-      quoted_str=adjustl(str)
+   if(present(mode))then
+      local_mode=mode
    else
-      quoted_str=str
+      local_mode='DOUBLE'
    endif
+   quoted_str=str
    select case(lower(local_mode))
    case('double')
       quoted_str=double_quote//trim(replace_str(quoted_str,'"','""'))//double_quote
@@ -2177,18 +2160,6 @@ integer,save                 :: isource_len
    endif
 !----------------------------------------------------------------------------------------------------------------------------
 end function strtok
-!===================================================================================================================================
-!()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
-!===================================================================================================================================
-function lenset(line,length) result(strout)
-
-character(len=*),parameter::ident_36="@(#)M_strings::lenset(3f): return string trimmed or padded to specified length"
-
-character(len=*),intent(in)  ::  line
-integer,intent(in)           ::  length
-character(len=length)        ::  strout
-   strout=line
-end function lenset
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
