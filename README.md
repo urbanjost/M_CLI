@@ -41,7 +41,7 @@ command line and ready to use.
 
 This short program defines a command that can be called like
 
-   ./show -x 10 -y -20 -point 10,20,30 -title 'plot of stuff' *.in
+   ./show -x 10 -y -20 --point 10,20,30 --title 'plot of stuff' *.in
 
 ```fortran
    program show

@@ -1,79 +1,52 @@
-<?
-  <div id="Container">
-    <div id="Content">
-      <div class="c1">
-      </div><a name="0"></a>
+## NAME
 
-      <h3><a name="0">NAME</a></h3>
+print_dictionary(3f) - print internal dictionary created by calls to get_commandline(3f)
 
-      <blockquote>
-        <b>print_dictionary(3f)</b> - print internal dictionary created by calls to <b>get_namelist</b>(3f)
-      </blockquote><a name="contents" id="contents"></a>
+## SYNOPSIS
 
-      <h3>CONTENTS</h3>
+    subroutine print_dictionary(header)
 
-      <h3><a name="7">SYNOPSIS</a></h3>
+       character(len=*),intent(in),optional :: header
 
-      <blockquote>
-        <pre>
-subroutine <b>print_dictionary</b>(<i>header</i>)
-<br />   character(len=*),intent(in),optional :: header
-</pre>
-      </blockquote><a name="2"></a>
+## DESCRIPTION
 
-      <h3><a name="2">DESCRIPTION</a></h3>
+Print the internal dictionary created by calls to get_commandline(3f). This
+routine is intended to print the state of the argument list if an error
+occurs in using the get_commandline(3f) procedure..
 
-      <blockquote>
-        Print the internal dictionary created by calls to <b>get_namelist</b>(3f). This routine is intended to print the state of the argument list if an
-        error occurs in using the <b>get_namelist</b>(3f) procedure..
-      </blockquote><a name="3"></a>
+## OPTIONS
 
-      <h3><a name="3">OPTIONS</a></h3>
+**HEADER:** label to print before printing the state of the command argument list.
 
-      <blockquote>
-        <table cellpadding="3">
-          <tr valign="top">
-            <td class="c2" width="6%" nowrap="nowrap">HEADER</td>
+## EXAMPLE
 
-            <td valign="bottom">label to print before printing the state of the command argument list.</td>
-          </tr>
+    Typical usage:
 
-          <tr>
-            <td></td>
-          </tr>
-        </table>
-      </blockquote><a name="4"></a>
-
-      <h3><a name="4">EXAMPLE</a></h3>
-
-      <blockquote>
-        Typical usage:
-        <pre>
-    program demo_get_namelist
-    use M_args,  only : unnamed, get_namelist, print_dictionary
+```fortran
+    program demo_get_commandline
+    use M_CLI,  only : unnamed, get_commandline, print_dictionary
     implicit none
     integer                      :: i
     character(len=255)           :: message ! use for I/O error messages
     character(len=:),allocatable :: readme  ! stores updated namelist
     integer                      :: ios
+
     real               :: x, y, z
     logical            :: help, h
     equivalence       (help,h)
     namelist /args/ x,y,z,help,h
-    character(len=*),parameter :: cmd='&amp;ARGS X=1 Y=2 Z=3 HELP=F H=F /'
+    character(len=*),parameter :: cmd='-x 1 -y 2 -z 3 --help F -h F'
+
     ! initialize namelist from string and then update from command line
-    readme=cmd
+    readme=get_commandline(cmd)
+    !!write(*,*)'README=',readme
     read(readme,nml=args,iostat=ios,iomsg=message)
-    if(ios.eq.0)then
-       ! update cmd with options from command line
-       readme=get_namelist(cmd)
-       read(readme,nml=args,iostat=ios,iomsg=message)
-    endif
     if(ios.ne.0)then
        write(*,'("ERROR:",i0,1x,a)')ios, trim(message)
        call print_dictionary('OPTIONS:')
        stop 1
     endif
+
     ! all done cracking the command line
     ! use the values in your program.
     write(*,nml=args)
@@ -83,52 +56,43 @@ subroutine <b>print_dictionary</b>(<i>header</i>)
        write(*,'(a)')'files:'
        write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
     endif
-    end program demo_get_namelist
-<br />
-</pre>Sample output
+    end program demo_get_commandline
+```
+## SAMPLE OUTPUTS
 
-        <p>Calling the sample program with an unknown parameter produces the following:</p>
-        <pre>
-      $ ./print_dictionary -A
-      UNKNOWN SHORT KEYWORD: -A
-</pre>
-      </blockquote><a name=""></a>
+Calling the sample program with an unknown parameter produces the
+following:
 
-      <h4><a name="">KEYWORD PRESENT VALUE</a></h4>
+    $ ./demo_print_dictionary -A
+    UNKNOWN SHORT KEYWORD: -A
 
-      <blockquote>
-        <table cellpadding="3">
-          <tr valign="top">
-            <td class="c2" width="6%" nowrap="nowrap">z</td>
+     KEYWORD  PRESENT  VALUE
+     z        F        [3]
+     y        F        [2]
+     x        F        [1]
+     help     F        [F]
+     h        F        [F]
+     STOP 2
 
-            <td valign="bottom">F [3]</td>
-          </tr>
+notice that both HELP and H changed because they are equivalenced
 
-          <tr valign="top">
-            <td class="c2" width="6%" nowrap="nowrap">y</td>
+    $ ./demo_print_dictionary -x 100.234 --help
 
-            <td valign="bottom">F [2]</td>
-          </tr>
+      &ARGS
+       X=  100.234001    ,
+       Y=  2.00000000    ,
+       Z=  3.00000000    ,
+       HELP=T,
+       H=T,
+       /
 
-          <tr valign="top">
-            <td class="c2" width="6%" nowrap="nowrap">x</td>
 
-            <td valign="bottom">F [1]</td>
-          </tr>
-
-          <tr valign="top">
-            <td class="c2" width="6%" nowrap="nowrap">help</td>
-
-            <td valign="bottom">F [F]</td>
-          </tr>
-
-          <tr valign="top">
-            <td class="c2" width="6%" nowrap="nowrap">h</td>
-
-            <td valign="bottom">F [F]</td>
-          </tr>
-
-        </table>STOP 2
-      </blockquote><a name="5"></a>
-    </div>
-  </div>
+      ERROR:5010 Cannot match namelist object name not_a_number
+      OPTIONS:
+      KEYWORD             PRESENT  VALUE
+      z                   F        [3]
+      y                   F        [2]
+      x                   T        [NOT_A_NUMBER]
+      help                F        [F]
+      h                   F        [F]
+      STOP 1
