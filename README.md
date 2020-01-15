@@ -52,14 +52,14 @@ This short program defines a command that can be called like
    character(len=:),allocatable :: readme
 
    !! DEFINE NAMELIST
-   real               :: x, y, z,      ; namelist /args/ x,y,z
+   real               :: x, y, z       ; namelist /args/ x,y,z
    real               :: point(3)      ; namelist /args/ point
    character(len=80)  :: title         ; namelist /args/ title
    logical            :: help, version ; namelist /args/ help, version
    logical            :: l             ; namelist /args/ l
    !! DEFINE COMMAND PROTOTYPE
    character(len=*),parameter   :: cmd= &
-   &' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" --help --version -l')
+   &' -x 1 -y 2.0 -z 3.5e0 --point -1,-2,-3 --title "my title" --help F --version F -l F'
 
    !! SET ALL DEFAULT VALUES AND THEN APPLY VALUES FROM COMMAND LINE
    readme=get_commandline(cmd)
