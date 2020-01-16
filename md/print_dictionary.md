@@ -74,7 +74,8 @@ following:
      h        F        [F]
      STOP 2
 
-notice that both HELP and H changed because they are equivalenced
+notice that both HELP and H change because they are equivalenced
+and no dictionary is printed because no error occurred:
 
     $ ./demo_print_dictionary -x 100.234 --help
 
@@ -86,6 +87,9 @@ notice that both HELP and H changed because they are equivalenced
        H=T,
        /
 
+The NAMELIST READ(7f) error messages may vary between platforms:
+
+    $ ./demo_print_dictionary -x NOT_A_NUMBER
 
       ERROR:5010 Cannot match namelist object name not_a_number
       OPTIONS:
