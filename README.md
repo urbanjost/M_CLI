@@ -88,3 +88,4 @@ options on whether to do the parsing in the main program or in a contained proce
 - [demo2](src/PROGRAMS/demo2.f90) shows putting everything including help and version
                                   information into a contained procedure
 - [demo3](src/PROGRAMS/demo3.f90) is an example of use for a quick prototype.
+- [demo4](src/PROGRAMS/demo4.f90) is an example of use for a quick prototype with a complex value
