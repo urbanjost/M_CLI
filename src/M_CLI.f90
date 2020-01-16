@@ -29,6 +29,7 @@ implicit none
 private
 !===================================================================================================================================
 public  :: get_commandline
+public  :: check_commandline_status
 public  :: print_dictionary
 public debug
 public unnamed
@@ -114,6 +115,18 @@ interface remove
 end interface
 !===================================================================================================================================
 contains
+!===================================================================================================================================
+!()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
+!===================================================================================================================================
+subroutine check_commandline_status(ios,message)
+character(len=255)           :: message ! use for I/O error messages
+integer                      :: ios
+   if(ios.ne.0)then
+      write(*,'("ERROR IN COMMAND LINE VALUES:",i0,1x,a)')ios, trim(message)
+      call print_dictionary('OPTIONS:')
+      stop 1
+   endif
+end subroutine check_commandline_status
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
@@ -918,6 +931,7 @@ end subroutine dictionary_to_namelist
 !!   subroutine print_dictionary(header)
 !!
 !!    character(len=*),intent(in),optional :: header
+!!    logical,intent(in),optional          :: stop
 !!##DESCRIPTION
 !!   Print the internal dictionary created by calls to get_commandline(3f).
 !!   This routine is intended to print the state of the argument list
@@ -925,6 +939,8 @@ end subroutine dictionary_to_namelist
 !!##OPTIONS
 !!   HEADER  label to print before printing the state of the command
 !!           argument list.
+!!   STOP    logical value that if true stops the program after displaying
+!!           the dictionary.
 !!##EXAMPLE
 !!
 !!    Typical usage:
@@ -986,8 +1002,9 @@ end subroutine dictionary_to_namelist
 !!##LICENSE
 !!    Public Domain
 !===================================================================================================================================
-subroutine print_dictionary(header)
+subroutine print_dictionary(header,stop)
 character(len=*),intent(in),optional :: header
+logical,intent(in),optional          :: stop
 integer          :: i
    if(present(header))then
       if(header.ne.'')then
@@ -1005,6 +1022,9 @@ integer          :: i
          write(stderr,'(a)')'UNNAMED'
          write(stderr,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
       endif
+   endif
+   if(present(stop))then
+      if(stop) stop
    endif
 end subroutine print_dictionary
 !===================================================================================================================================

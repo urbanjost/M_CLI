@@ -4,9 +4,10 @@ print_dictionary(3f) - print internal dictionary created by calls to get_command
 
 ## SYNOPSIS
 
-    subroutine print_dictionary(header)
+    subroutine print_dictionary(header,stop)
 
        character(len=*),intent(in),optional :: header
+       logical,intent(in),optional          :: stop
 
 ## DESCRIPTION
 
@@ -17,6 +18,8 @@ occurs in using the get_commandline(3f) procedure..
 ## OPTIONS
 
 **HEADER:** label to print before printing the state of the command argument list.
+
+**STOP:** set to .TRUE. if the program should stop after printing the dictionary
 
 ## EXAMPLE
 

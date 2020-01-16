@@ -36,48 +36,54 @@ command line and ready to use.
 
 - [get_commandline](md/get_commandline.md) parses the command line options
 
-- [print_dictionary](md/print_dictionary.md) is used to show the state
-  of the parameters as part of handling errors
+- [check_commandline_status](md/check_commandline_status.md) convenience
+  routine for checking status of READ of NAMELIST group
+
+- [print_dictionary](md/print_dictionary.md) optinal routine can be used 
+  to show the state of the parameters after GET_COMMANDLINE(3f) is called.
 
 This short program defines a command that can be called like
 
    ./show -x 10 -y -20 --point 10,20,30 --title 'plot of stuff' *.in
 
 ```fortran
-   program show
-   use M_CLI
-   implicit none
-   integer                      :: i, ios
-   character(len=255)           :: message
-   character(len=:),allocatable :: readme
+program show
+use M_CLI
+implicit none
+integer                      :: i
 
-   !! DEFINE NAMELIST
-   real               :: x, y, z       ; namelist /args/ x,y,z
-   real               :: point(3)      ; namelist /args/ point
-   character(len=80)  :: title         ; namelist /args/ title
-   logical            :: help, version ; namelist /args/ help, version
-   logical            :: l             ; namelist /args/ l
-   !! DEFINE COMMAND PROTOTYPE
-   character(len=*),parameter   :: cmd= &
-   &' -x 1 -y 2.0 -z 3.5e0 --point -1,-2,-3 --title "my title" --help F --version F -l F'
+!! DEFINE NAMELIST
+real               :: x, y, z       ; namelist /args/ x,y,z
+real               :: point(3)      ; namelist /args/ point
+character(len=80)  :: title         ; namelist /args/ title
+logical            :: help, version ; namelist /args/ help, version, usage
+logical            :: l             ; namelist /args/ l
 
-   !! SET ALL DEFAULT VALUES AND THEN APPLY VALUES FROM COMMAND LINE
-   readme=get_commandline(cmd)
-   read(readme,nml=args,iostat=ios,iomsg=message) !! UPDATE NAMELIST VARIABLES
-   if(ios.ne.0)then                               !! HANDLE ERRORS
-      write(*,'("ERROR:",i0,1x,a)')ios, trim(message)
-      call print_dictionary('OPTIONS:')
-      stop 1
-   endif
+   COMMANDLINE : block
+      !! DEFINE COMMAND PROTOTYPE
+      character(len=255)           :: message
+      character(len=:),allocatable :: readme
+      integer                      :: ios
+
+      !! SET ALL DEFAULT VALUES AND THEN APPLY VALUES FROM COMMAND LINE
+      readme=get_commandline('               &
+        -x 1 -y 2.0 -z 3.5e0                 &
+        --point -1,-2,-3 --title "my title"  &
+        --help F --version F --usage F -l F  &
+       ')
+      read(readme,nml=args,iostat=ios,iomsg=message) !! UPDATE NAMELIST VARIABLES
+      call check_commandline_status(ios,message      !! HANDLE ERRORS FROM NAMELIST READ
+      if(usage)call print_dictionary('USAGE:',stop=.true.)
+   endblock COMMANDLINE
 
    !! USE THE VALUES IN YOUR PROGRAM.
-   write(*,nml=args)  
+   write(*,nml=args)
    if(size(unnamed).gt.0)then
       write(*,'(a)')'files:'
       write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
    endif
 
-   end program show
+end program show
 ```
 
 There are several styles possible for defining the NAMELIST group as well as
