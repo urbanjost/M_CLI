@@ -1,4 +1,4 @@
-program quick_and_dirty
+program basic
 !! QUICK PROTOTYPE: JUST THE BARE ESSENTIALS
 use M_CLI,  only : get_commandline, check_commandline_status
 implicit none
@@ -11,4 +11,4 @@ namelist /args/ x,y,z
    read(readme,nml=args,iostat=ios,iomsg=message)
    call check_commandline_status(ios,message)
    write(*,*)x,y,z, x+y+z
-end program quick_and_dirty
+end program basic

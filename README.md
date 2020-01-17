@@ -92,9 +92,7 @@ end program show
 There are several styles possible for defining the NAMELIST group as well as
 options on whether to do the parsing in the main program or in a contained procedure..
 
-- [demo1](src/PROGRAMS/demo1.f90) basic usage with checking defining the NAMELIST group 
-                                  on the same line as the declarations of the variables
-- [demo2](src/PROGRAMS/demo2.f90) shows putting everything including help and version
-                                  information into a contained procedure
-- [demo3](src/PROGRAMS/demo3.f90) is an example of use for a quick prototype.
-- [demo4](src/PROGRAMS/demo4.f90) is an example of use for a quick prototype with a complex value
+- [demo1](src/PROGRAMS/demo1.f90) full usage 
+- [demo2](src/PROGRAMS/demo2.f90) shows putting everything including help and version information into a contained procedure.
+- [demo3](src/PROGRAMS/demo3.f90) example of basic use (__for beginners__).
+- [demo4](src/PROGRAMS/demo4.f90) minimalist example of use for a quick prototype command, and with a complex value!
