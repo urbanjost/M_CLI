@@ -1,4 +1,4 @@
-program show_get_commandline_unix_prototype
+program demo1
 use M_CLI,  only : unnamed, get_commandline, check_commandline_status, print_dictionary
 implicit none
 integer            :: i
@@ -56,4 +56,4 @@ equivalence       (help,h),(version,v)
       write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
    endif
 
-end program show_get_commandline_unix_prototype
+end program demo1

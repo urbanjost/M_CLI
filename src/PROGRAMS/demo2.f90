@@ -1,4 +1,4 @@
-program show_get_commandline_unix_prototype
+program demo2
 !! ADDING HELP AND VERSION DISPLAY
    use M_CLI,  only : unnamed
    implicit none
@@ -90,7 +90,7 @@ contains
 
       if(version)then
          write(*,'(a)')[character(len=80) :: &
-            'PROGRAM:     demo3            ', &
+            'PROGRAM:     demo2            ', &
             'DESCRIPTION: My demo program  ', &
             'VERSION:     1.0 20200115     ', &
             'AUTHOR:      me, myself, and I', &
@@ -101,4 +101,4 @@ contains
 
    end subroutine parse
 
-end program show_get_commandline_unix_prototype
+end program demo2
