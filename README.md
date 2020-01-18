@@ -39,16 +39,14 @@ command line and ready to use.
 - [check_commandline_status](md/check_commandline_status.md) convenience
   routine for checking status of READ of NAMELIST group
 
-- [print_dictionary](md/print_dictionary.md) optional routine can be used 
-  to show the state of the parameters after GET_COMMANDLINE(3f) is called.
-
 This short program defines a command that can be called like
 
    ./show -x 10 -y -20 --point 10,20,30 --title 'plot of stuff' *.in
 
 ```fortran
 program show
-use M_CLI, only : get_commandline, check_commandline_status, print_dictionary, files=>unnamed
+use M_CLI, only : get_commandline, check_commandline_status 
+use M_CLI, only : args, usage, files=>unnamed
 implicit none
 integer :: i
 
@@ -56,7 +54,7 @@ integer :: i
 real               :: x, y, z             ; namelist /args/ x,y,z
 real               :: point(3)            ; namelist /args/ point
 character(len=80)  :: title               ; namelist /args/ title
-logical            :: help, version,usage ; namelist /args/ help, version, usage
+logical            :: help, version       ; namelist /args/ help, version
 logical            :: l                   ; namelist /args/ l
 
 !! DEFINE COMMAND
@@ -73,8 +71,7 @@ character(len=*),parameter :: cmd= &
       !! SET ALL DEFAULT VALUES AND THEN APPLY VALUES FROM COMMAND LINE
       readme=get_commandline(cmd)
       read(readme,nml=args,iostat=ios,iomsg=message) !! UPDATE NAMELIST VARIABLES
-      call check_commandline_status(ios,message)     !! HANDLE ERRORS FROM NAMELIST READ
-      if(usage)call print_dictionary('USAGE:',stop=.true.)
+      call check_commandline_status(ios,message)     !! HANDLE ERRORS FROM NAMELIST READ AND --usage
    endblock COMMANDLINE
 
    !! USE THE VALUES IN YOUR PROGRAM.
@@ -96,3 +93,6 @@ options on whether to do the parsing in the main program or in a contained proce
 - [demo2](src/PROGRAMS/demo2.f90) shows putting everything including help and version information into a contained procedure.
 - [demo3](src/PROGRAMS/demo3.f90) example of basic use (__for beginners__).
 - [demo4](src/PROGRAMS/demo4.f90) minimalist example of use for a quick prototype command, and with a complex value!
+
+Please provide feedback on the [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__ section or star the
+repository if you use the module (or let me know why not and let others know what you did use!).

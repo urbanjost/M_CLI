@@ -29,6 +29,10 @@ To use the routine :
 
    3) Read the returned value as a NAMELIST group called ARGS.
 
+You must import ARGS and USAGE. This will automatically give all commands
+a working --usage switch invoked when CHECK_COMMANDLINE_STATUS(3f)
+is called.
+
 All the values in the NAMELIST should be defined and updated by arguments
 from the command line.
 
@@ -37,26 +41,27 @@ config files can easily be used for the same options. Just create a
 NAMELIST input file and read it.
 
 NAMELIST syntax can vary between different programming environments.
-Currently, this routine has only been tested using gfortran 7.0.4; and
-requires at least Fortran 2003.
+Currently, this routine has only been tested using gfortran 7.0.4;
+and requires at least Fortran 2003.
 
 typical usage:
 
 ```fortran
    program show
-      use M_args,  only : unnamed, get_commandline, print_dictionary
+      use M_args,  only : unnamed, get_commandline, check_commandline_status, args, usage
       implicit none
       integer                      :: i
       character(len=255) :: message ! use for I/O error messages
       character(len=:),allocatable :: readme ! stores updated namelist
       integer                      :: ios
    
-      ! declare a namelist
-      real               :: x, y, z, point(3)
-      character(len=80)  :: title
-      logical            :: help, version, l, l_, v, h
-      namelist /args/ x,y,z,point,title,help,h,version,v,l,l_
-      equivalence       (help,h),(version,v)
+      ! add to the namelist
+      real               :: x, y, z, point(3) ; namelist /args/ x, y, z, point
+      character(len=80)  :: title             ; namelist /args/ title
+      logical            :: l, l_             ; namelist /args/ l, l_
+      logical            :: help, version, v, h
+      namelist /args/ help,h,version,v
+      equivalence     (help,h),(version,v)
    
       ! Define the prototype
       !  o All parameters must be listed with a default value
@@ -72,10 +77,7 @@ typical usage:
       ! reading in a NAMELIST definition defining the entire NAMELIST
       readme=get_commandline(cmd)
       read(readme,nml=args,iostat=ios,iomsg=message)
-      if(ios.ne.0)then
-         write(*,'("ERROR:",i0,1x,a)')ios, trim(message)
-         call print_dictionary('OPTIONS:')
-         stop 1
+      call check_commandline_status(ios,message)
       endif
       ! all done cracking the command line
    

@@ -8,8 +8,8 @@
 !!    (LICENSE:PD)
 !!##SYNOPSIS
 !!
-!!    use M_CLI, only : get_commandline, print_dictionary, unnamed
-!!    use M_CLI, only : debug
+!!    use M_CLI, only : get_commandline, check_commandline_status
+!!    use M_CLI, only : unnamed, debug
 !!
 !!##DESCRIPTION
 !!    Allow for command line parsing much like standard Unix command line parsing using a simple prototype.
@@ -32,7 +32,7 @@ public  :: get_commandline
 public  :: check_commandline_status
 public  :: print_dictionary
 public debug
-public unnamed
+character(len=:),allocatable,public :: unnamed(:)
 
 private :: longest_command_argument
 private :: prototype_and_cmd_args_to_nlist
@@ -58,7 +58,6 @@ logical                        :: keyword_single=.true.
 character(len=:),allocatable   :: passed_in
 character(len=:),allocatable   :: namelist_name
 
-character(len=:),allocatable   :: unnamed(:)
 logical                        :: debug=.false.
 logical                        :: return_all
 !===================================================================================================================================
@@ -118,13 +117,46 @@ contains
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-subroutine check_commandline_status(ios,message)
-character(len=255)           :: message ! use for I/O error messages
-integer                      :: ios
+subroutine check_commandline_status(ios,message,help_text,version_text)
+integer                                          :: ios
+character(len=255)                               :: message ! use for I/O error messages
+character(len=:),allocatable,intent(in),optional :: help_text(:)
+character(len=:),allocatable,intent(in),optional :: version_text(:)
+integer                                          :: i
+integer                                          :: istart
+integer                                          :: iback
    if(ios.ne.0)then
       write(*,'("ERROR IN COMMAND LINE VALUES:",i0,1x,a)')ios, trim(message)
       call print_dictionary('OPTIONS:')
       stop 1
+   elseif(get('usage').eq.'T')then
+      call print_dictionary('USAGE:',stop=.true.)
+   endif
+   if(present(help_text))then
+      if(get('help').eq.'T')then
+         WRITE(*,'(a)')(trim(help_text(i)),i=1,size(help_text))
+         stop
+      endif
+   elseif(get('help').eq.'T')then
+         WRITE(*,'(a)')'*check_commandline_status* no help text'
+         stop
+   endif
+   if(present(version_text))then
+      if(get('version').eq.'T')then
+         istart=1
+         iback=0
+         if(size(version_text).gt.0)then
+            if(index(version_text(1),'@'//'(#)').eq.1)then ! allow for what(1) syntax
+               istart=5
+               iback=1
+            endif
+         endif
+         WRITE(*,'(a)')(trim(version_text(i)(istart:len_trim(version_text(i))-iback)),i=1,size(version_text))
+         stop
+      endif
+   elseif(get('version').eq.'T')then
+         WRITE(*,'(a)')'*check_commandline_status* no version text'
+         stop
    endif
 end subroutine check_commandline_status
 !===================================================================================================================================
@@ -168,7 +200,7 @@ end subroutine check_commandline_status
 !!    For example:
 !!
 !!       program show_get_commandline_unix_prototype
-!!          use M_CLI,  only : unnamed, get_commandline, print_dictionary
+!!          use M_CLI,  only : unnamed, get_commandline, check_commandline_status
 !!          implicit none
 !!          integer                      :: i
 !!          character(len=255)           :: message ! for I/O error messages
@@ -176,11 +208,11 @@ end subroutine check_commandline_status
 !!          integer                      :: ios
 !!
 !!       ! declare a namelist
-!!          real               :: x, y, z, point(3)
+!!          real               :: x, y, z, point(3), p(3)
 !!          character(len=80)  :: title
-!!          logical            :: help, version, l, l_, v, h
-!!          equivalence       (help,h),(version,v)
-!!          namelist /args/ x,y,z,point,title,help,h,version,v,l,l_
+!!          logical            :: l, l_ 
+!!          equivalence       (point,p)
+!!          namelist /args/ x,y,z,point,p,title,l,l_
 !!
 !!       ! Define the prototype
 !!       !  o All parameters must be listed with a default value.
@@ -195,18 +227,12 @@ end subroutine check_commandline_status
 !!          & -x 1 -y 2 -z 3     &
 !!          & --point -1,-2,-3   &
 !!          & --title "my title" &
-!!          & -h F --help F      &
-!!          & -v F --version F   &
 !!          & -l F -L F'
 !!          ! reading in a NAMELIST definition defining the entire NAMELIST
 !!          ! now get the values from the command prototype and command line as NAMELIST input
 !!          readme=get_commandline(cmd)
 !!          read(readme,nml=args,iostat=ios,iomsg=message)
-!!          if(ios.ne.0)then
-!!             write(*,'("ERROR:",i0,1x,a)')ios, trim(message)
-!!             call print_dictionary('OPTIONS:')
-!!             stop 1
-!!          endif
+!!          call check_commandline_status(ios,message)
 !!          ! all done cracking the command line
 !!
 !!          ! use the values in your program.
@@ -237,7 +263,13 @@ end subroutine check_commandline_status
 !!                    short names map to NAMELIST name "letter".
 !!                  o the values follow the rules for NAMELIST values, so
 !!                    "-p 2*0" for example would define two values.
-!!
+!! 
+!!                  DESCRIPTION is pre-defined to act as if started with the reserved
+!!                  options '--usage F --help F --version F'. The --usage
+!!                  option is processed when the check_commandline_status(3f)
+!!                  routine is called. The same is true for --help and --version
+!!                  if the optional help_text and version_text options are
+!!                  provided.
 !!##RETURNS
 !!
 !!    STRING   The output is a NAMELIST string than can be read to update
@@ -300,13 +332,9 @@ integer                              :: ibig
    ibig=longest_command_argument() ! bug in gfortran. len=0 should be fine
    allocate(character(len=ibig) :: unnamed(0))
 
-   if(definition.eq.'')then
-      write(*,*)'*get_commandline* blank definition'
-   else
-      call wipe_dictionary()
-      hold=adjustl(definition)
-      call prototype_and_cmd_args_to_nlist(hold,readme)
-   endif
+   call wipe_dictionary()
+   hold='--usage F --help F --version F '//adjustl(definition)
+   call prototype_and_cmd_args_to_nlist(hold,readme)
 
    if(.not.allocated(unnamed))then
        allocate(character(len=0) :: unnamed(0))
@@ -745,7 +773,7 @@ integer                      :: ibig
       call print_dictionary('DICTIONARY FROM PROTOTYPE')
    endif
 
-   return_all=.true.   ! return values that were on command line
+   return_all=.false.   ! return values that were on command line
    call cmd_args_to_dictionary(check=.true.)
 
    call dictionary_to_namelist(nml2)
@@ -894,7 +922,11 @@ character(len=:),allocatable :: newkeyword
             newkeyword=trim(keywords(i))
          endif
          if(.not.present_in(i))then
-            nml=nml//newkeyword//'='//trim(values(i))//' '
+	    select case(newkeyword)
+	    case('usage','version','help')
+	    case default
+             nml=nml//newkeyword//'='//trim(values(i))//' '
+	    endselect
          endif
       enddo
    endif
@@ -906,7 +938,11 @@ character(len=:),allocatable :: newkeyword
          newkeyword=trim(keywords(i))
       endif
       if(present_in(i))then
-         nml=nml//newkeyword//'='//trim(values(i))//' '
+	 select case(newkeyword)
+	 case('usage','version','help')
+	 case default
+          nml=nml//newkeyword//'='//trim(values(i))//' '
+	 endselect
       endif
    enddo
 
