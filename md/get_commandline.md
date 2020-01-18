@@ -27,11 +27,12 @@ To use the routine :
    2) Then call GET_COMMANDLINE(3f) with a string that looks like a call to the
       program with all keywords and default values specified
 
-   3) Read the returned value as a NAMELIST group called ARGS.
+   3) Read the returned value as a NAMELIST group called ARGS (skip this if
+      there are no keywords and therefore no ARGS NAMELIST).
 
-You must import ARGS and USAGE. This will automatically give all commands
-a working --usage switch invoked when CHECK_COMMANDLINE_STATUS(3f)
-is called.
+   4) call CHECK_COMMANDLINE_STATUS(3f) to display errors, usage, version and
+      help text. This will automatically give all commands working
+      --usage, --help, and --version  switches
 
 All the values in the NAMELIST should be defined and updated by arguments
 from the command line.
@@ -48,10 +49,10 @@ typical usage:
 
 ```fortran
    program show
-      use M_args,  only : unnamed, get_commandline, check_commandline_status, args, usage
+      use M_args,  only : unnamed, get_commandline, check_commandline_status
       implicit none
       integer                      :: i
-      character(len=255) :: message ! use for I/O error messages
+      character(len=255)           :: message ! use for I/O error messages
       character(len=:),allocatable :: readme ! stores updated namelist
       integer                      :: ios
    
@@ -59,23 +60,17 @@ typical usage:
       real               :: x, y, z, point(3) ; namelist /args/ x, y, z, point
       character(len=80)  :: title             ; namelist /args/ title
       logical            :: l, l_             ; namelist /args/ l, l_
-      logical            :: help, version, v, h
-      namelist /args/ help,h,version,v
-      equivalence     (help,h),(version,v)
    
       ! Define the prototype
       !  o All parameters must be listed with a default value
       !  o string values  must be double-quoted
       !  o numeric lists must be comma-delimited. No spaces are allowed
       character(len=*),parameter  :: cmd='&
-      & -x 1 -y 2 -z 3     &
-      & --point -1,-2,-3   &
-      & --title "my title" &
-      & -h --help          &
-      & -v --version       &
-      & -l -L'
+      & -x 1 -y 2 -z 3 --point -1,-2,-3  --title "my title" -l -L'
+
       ! reading in a NAMELIST definition defining the entire NAMELIST
       readme=get_commandline(cmd)
+      !! if there are no arguments and thus no ARGS NAMELIST group skip the READ!
       read(readme,nml=args,iostat=ios,iomsg=message)
       call check_commandline_status(ios,message)
       endif
