@@ -45,8 +45,7 @@ This short program defines a command that can be called like
 
 ```fortran
 program show
-use M_CLI, only : get_commandline, check_commandline_status 
-use M_CLI, only : args, usage, files=>unnamed
+use M_CLI, only : get_commandline, check_commandline_status, files=>unnamed
 implicit none
 integer :: i
 
@@ -54,7 +53,6 @@ integer :: i
 real               :: x, y, z             ; namelist /args/ x,y,z
 real               :: point(3)            ; namelist /args/ point
 character(len=80)  :: title               ; namelist /args/ title
-logical            :: help, version       ; namelist /args/ help, version
 logical            :: l                   ; namelist /args/ l
 
 !! DEFINE COMMAND
