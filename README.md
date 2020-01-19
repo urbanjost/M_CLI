@@ -5,7 +5,7 @@
 
 ## NAME
 
-#### M_CLI - parse Unix-like command line arguments from Fortran
+### M_CLI - parse Unix-like command line arguments from Fortran
 
 ## DESCRIPTION
 
