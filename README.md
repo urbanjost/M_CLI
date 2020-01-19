@@ -21,9 +21,8 @@ large modules.
     make
 
 This will compile the M_CLI module and build all the example programs.
-__It has only been tested using GNU Fortran (GCC) 8.3.0 at this point.
-As there is some variability in how NAMELIST works I am very interested
-in results using other compilers.__
+
+**This is how the interface works --**
 
 Basically you define a NAMELIST group called ARGS that has the names of
 all your command line arguments.
@@ -32,6 +31,8 @@ Next, call a routine passing it a string that looks like the command
 you would use to execute the program with all values specified.
 
 you read the output as the NAMELIST group ARGS.
+
+Now call a routine to handle error and help-related text
 
 Now all the values in the namelist should be updated using values from the
 command line and ready to use.
