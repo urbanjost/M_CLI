@@ -1,6 +1,8 @@
 
 # M_CLI.f90 and associated files
 
+![parse](images/parse.png)
+
 ## NAME
 
    M_CLI - parse Unix-like command line arguments from Fortran
