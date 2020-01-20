@@ -27,13 +27,8 @@ equivalence(point,p)
    character(len=:),allocatable :: readme  ! stores updated namelist
    character(len=256)           :: message
    integer                      :: ios
-   readme=get_commandline(' &
-       & -x 1 -y 2 -z 3     &
-       & --point -1,-2,-3   &
-       & --p     -1,-2,-3   &
-       & --title "my title" &
-       & -l F -L F          &
-   ')
+   readme=get_commandline('&
+   & -x 1 -y 2 -z 3 --point -1,-2,-3 --p -1,-2,-3 --title "my title" -l F -L F')
    read(readme,nml=args,iostat=ios,iomsg=message)
    call check_commandline_status(ios,message)
    endblock COMMANDLINE

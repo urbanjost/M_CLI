@@ -2,26 +2,27 @@
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!    M_CLI(3fm) - [ARGUMENTS::M_CLI] - command line argument parsing using a prototype command
-!!    (LICENSE:PD)
-!!##SYNOPSIS
-!!
-!!    use M_CLI, only : get_commandline, check_commandline_status
-!!    use M_CLI, only : unnamed, debug
-!!
-!!##DESCRIPTION
-!!    Allow for command line parsing much like standard Unix command line parsing using a simple prototype.
-!!
-!!##EXAMPLE
-!!
-!!   Sample program
-!!
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!    M_CLI(3fm) - [ARGUMENTS::M_CLI] - command line argument parsing using a prototype command
+!    (LICENSE:PD)
+! SYNOPSIS
+! 
+!    use M_CLI, only : get_commandline, check_commandline_status
+!    use M_CLI, only : unnamed, debug
+! 
+! DESCRIPTION
+!    Allow for command line parsing much like standard Unix command line
+!    parsing using a simple prototype.  This is based on the prototype
+!    method of the M_ARGS(3fm) module specifically designed to concentrate
+!    on expanding just this syntax method.
+! 
+! EXAMPLE
+!   Sample program
+! 
+! AUTHOR
+!    John S. Urban, 2019
+! LICENSE
+!    Public Domain
 !===================================================================================================================================
 module M_CLI
 use, intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT,stdin=>INPUT_UNIT    ! access computing environment
@@ -34,12 +35,12 @@ public  :: print_dictionary
 public debug
 character(len=:),allocatable,public :: unnamed(:)
 
+private :: wipe_dictionary
 private :: longest_command_argument
-private :: prototype_and_cmd_args_to_nlist
 private :: prototype_to_dictionary
 private :: update
+private :: prototype_and_cmd_args_to_nlist
 private :: get
-private :: wipe_dictionary
 
 type option
    character(:),allocatable :: shortname
@@ -117,6 +118,105 @@ contains
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
+! NAME
+! 
+! check_commandline_status(3f) - check status from READ of NAMELIST group and process pre-defined options
+! 
+! SYNOPSIS
+! 
+!     subroutine check_commandline_status(ios,message)
+! 
+!      integer,intent(in)                   :: ios
+!      character(len=*),intent(in)          :: message
+!      character(len=*),intent(in),optional :: help_text
+!      character(len=*),intent(in),optional :: version_text
+! 
+! DESCRIPTION
+! 
+! Essentially a convenience routine for checking the status of a READ(7f)
+! of the NAMELIST after calling GET_COMMANDLINE(3f). Basically, it lets
+! you replace
+! 
+!     if(ios.ne.0)then
+!        write(*,'("ERROR:",i0,1x,a)')ios, trim(message)
+!        call print_dictionary('OPTIONS:')
+!        stop 1
+!     endif
+! 
+! with
+! 
+!    call check_commandline_status(ios,message)
+! 
+! or if the --usage switch is present does
+! 
+!     if(usage)
+!        call print_dictionary('OPTIONS:')
+!     endif
+! 
+! If the optional text values are supplied they will be displayed by --help
+! and --version command-line options, respectively.
+! 
+! OPTIONS
+! 
+! IOS           status from READ(7f) of NAMELIST after calling
+!               GET_COMMANDLINE(3f)
+! 
+! MESSAGE       message from READ(7f) of NAMELIST after calling
+!               GET_COMMANDLINE(3f)
+! 
+! HELP_TEXT     if present, will be displayed if program is called with
+!               --help switch, and then the program will terminate.
+! 
+! VERSION_TEXT  if present, will be displayed if program is called with
+!               --version switch, and then the program will terminate.
+! 
+!    If the first four characters of each line are "@(#)" this prefix will
+!    not be displayed. This if for support of the SCCS what(1) command. If
+!    you do not have the what(1) command on GNU/Linux and Unix platforms
+!    you can probably see how it can be used to place metadata in a binary
+!    by entering:
+! 
+!        strings demo2|grep '@(#)'|tr '>' '\n'|sed -e 's/  */ /g'
+! 
+! EXAMPLE
+!     Typical usage:
+! 
+! ```fortran
+!     program demo_get_commandline
+!     use M_CLI,  only : unnamed, get_commandline, check_commandline_status
+!     implicit none
+!     integer                      :: i
+!     character(len=255)           :: message ! use for I/O error messages
+!     character(len=:),allocatable :: readme  ! stores updated namelist
+!     character(len=:),allocatable :: version_text(:), help_text(:)
+!     integer                      :: ios
+! 
+!     real               :: x, y, z
+!     logical            :: help, h
+!     equivalence       (help,h)
+!     namelist /args/ x,y,z,help,h
+!     character(len=*),parameter :: cmd='-x 1 -y 2 -z 3 --help F -h F'
+! 
+!     ! initialize namelist from string and then update from command line
+!     readme=get_commandline(cmd)
+!     !!write(*,*)'README=',readme
+!     read(readme,nml=args,iostat=ios,iomsg=message)
+!     version_text=[character(len=80) :: "version 1.0","author: me"]
+!     help_text=[character(len=80) :: "wish I put instructions","here","I suppose?"]
+!     call check_commandline_status(ios,message,help_text,version_text)
+! 
+!     ! all done cracking the command line
+!     ! use the values in your program.
+!     write(*,nml=args)
+!     ! the optional unnamed values on the command line are
+!     ! accumulated in the character array "UNNAMED"
+!     if(size(unnamed).gt.0)then
+!        write(*,'(a)')'files:'
+!        write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
+!     endif
+!     end program demo_get_commandline
+! ```
+!===================================================================================================================================
 subroutine check_commandline_status(ios,message,help_text,version_text)
 integer                                          :: ios
 character(len=255)                               :: message ! use for I/O error messages
@@ -138,8 +238,16 @@ integer                                          :: iback
          stop
       endif
    elseif(get('help').eq.'T')then
-         WRITE(*,'(a)')'*check_commandline_status* no help text'
-         stop
+         DEFAULT_HELP: block
+            character(len=:),allocatable :: cmd_name
+            integer :: ilength
+            call get_command_argument(number=0,length=ilength)
+            allocate(character(len=ilength) :: cmd_name)
+            call get_command_argument(number=0,value=cmd_name)
+            WRITE(*,'(a)')cmd_name//' '//trim(passed_in) ! no help text, echo command and default options
+            deallocate(cmd_name)
+            stop
+         endblock DEFAULT_HELP
    endif
    if(present(version_text))then
       if(get('version').eq.'T')then
@@ -162,160 +270,159 @@ end subroutine check_commandline_status
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!    get_commandline(3f) - [ARGUMENTS:M_CLI] command line argument parsing
-!!    (LICENSE:PD)
-!!
-!!##SYNOPSIS
-!!
-!!   function get_commandline(definition) result(string)
-!!
-!!    character(len=*),intent(in),optional  :: definition
-!!    character(len=:),allocatable :: string
-!!##DESCRIPTION
-!!
-!!    To use the routine first define a NAMELIST group called ARGS.
-!!
-!!    This routine leverages NAMELIST groups to do the conversion from strings
-!!    to numeric values required by other command line parsers.
-!!
-!!    The example program shows how simple it is to use. Add a
-!!    variable to the NAMELIST and the prototype and it automatically is available as
-!!    a value in the program.
-!!
-!!    There is no need to convert from strings to numeric
-!!    values in the source code. Even arrays and user-defined types can be
-!!    used, complex values can be input ... just define the variable in the prototype and
-!!    add it to the NAMELIST definition.
-!!
-!!    Note that since all the arguments are defined in a NAMELIST group
-!!    that config files can easily be used for the same options.
-!!    Just create a NAMELIST input file and read it.
-!!
-!!    NAMELIST syntax can vary between different programming environments.
-!!    Currently, this routine has only been tested using gfortran 7.0.4;
-!!    and requires at least Fortran 2003.
-!!
-!!    For example:
-!!
-!!       program show_get_commandline_unix_prototype
-!!          use M_CLI,  only : unnamed, get_commandline, check_commandline_status
-!!          implicit none
-!!          integer                      :: i
-!!          character(len=255)           :: message ! for I/O error messages
-!!          character(len=:),allocatable :: readme  ! stores updated namelist
-!!          integer                      :: ios
-!!
-!!       ! declare a namelist
-!!          real               :: x, y, z, point(3), p(3)
-!!          character(len=80)  :: title
-!!          logical            :: l, l_ 
-!!          equivalence       (point,p)
-!!          namelist /args/ x,y,z,point,p,title,l,l_
-!!
-!!       ! Define the prototype
-!!       !  o All parameters must be listed with a default value.
-!!       !  o logicals should be specified with a value of F or T.
-!!       !  o string values  must be double-quoted.
-!!       !  o lists must be comma-delimited. No spaces are allowed in lists.
-!!       !  o all long names must be lowercase. An uppercase short name
-!!       !    -A maps to variable A_
-!!       !  o if variables are equivalenced only one should be used on
-!!       !    the command line
-!!          character(len=*),parameter  :: cmd='&
-!!          & -x 1 -y 2 -z 3     &
-!!          & --point -1,-2,-3   &
-!!          & --title "my title" &
-!!          & -l F -L F'
-!!          ! reading in a NAMELIST definition defining the entire NAMELIST
-!!          ! now get the values from the command prototype and command line as NAMELIST input
-!!          readme=get_commandline(cmd)
-!!          read(readme,nml=args,iostat=ios,iomsg=message)
-!!          call check_commandline_status(ios,message)
-!!          ! all done cracking the command line
-!!
-!!          ! use the values in your program.
-!!          write(*,nml=args)
-!!          ! the optional unnamed values on the command line are
-!!          ! accumulated in the character array "UNNAMED"
-!!          if(size(unnamed).gt.0)then
-!!             write(*,'(a)')'files:'
-!!             write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
-!!          endif
-!!       end program show_get_commandline_unix_prototype
-!!
-!!##OPTIONS
-!!
-!!    DESCRIPTION   composed of all command arguments concatenated
-!!                  into a Unix-like command prototype string.
-!!
-!!                  o all keywords get a value.
-!!                  o logicals must be set to F or T.
-!!                  o strings MUST be delimited with double-quotes and
-!!                    must be at least one space. Internal
-!!                    double-quotes are represented with two double-quotes
-!!                  o lists of values should be comma-delimited.
-!!                     No spaces are allowed in lists of numbers.
-!!                  o long names (--keyword) should be all lowercase
-!!                  o short names (-letter) that are uppercase map to a
-!!                    NAMELIST variable called "letter_", but lowercase
-!!                    short names map to NAMELIST name "letter".
-!!                  o the values follow the rules for NAMELIST values, so
-!!                    "-p 2*0" for example would define two values.
-!! 
-!!                  DESCRIPTION is pre-defined to act as if started with the reserved
-!!                  options '--usage F --help F --version F'. The --usage
-!!                  option is processed when the check_commandline_status(3f)
-!!                  routine is called. The same is true for --help and --version
-!!                  if the optional help_text and version_text options are
-!!                  provided.
-!!##RETURNS
-!!
-!!    STRING   The output is a NAMELIST string than can be read to update
-!!             the NAMELIST "ARGS" with the keywords that were supplied on
-!!             the command line.
-!!
-!!    When using one of the Unix-like command line forms note that
-!!    (subject to change) the following variations from other common
-!!    command-line parsers:
-!!
-!!       o long names do not take the --KEY=VALUE form, just
-!!         --KEY VALUE; and long names should be all lowercase and
-!!         always more than one character.
-!!
-!!       o duplicate keywords are replaced by the rightmost entry
-!!
-!!       o numeric keywords are not allowed; but this allows
-!!         negative numbers to be used as values.
-!!
-!!       o mapping of short names to long names is via an EQUIVALENCE.
-!!         specifying both names of an equivalenced keyword will have
-!!         undefined results (currently, their alphabetical order
-!!         will define what the Fortran variable values become).
-!!
-!!       o short keywords cannot be combined. -a -b -c is required,
-!!         not -abc even for Boolean keys.
-!!
-!!       o shuffling is not supported. Values must follow their
-!!         keywords.
-!!
-!!       o if a parameter value of just "-" is supplied it is
-!!         converted to the string "stdin".
-!!
-!!       o if the keyword "--" is encountered the rest of the
-!!         command arguments go into the character array "UNUSED".
-!!
-!!       o values not matching a keyword go into the character
-!!         array "UNUSED".
-!!
-!!       o short-name parameters of the form -LETTER VALUE
-!!         map to a NAMELIST name of LETTER_ if uppercase
-!!
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!     get_commandline(3f) - [ARGUMENTS:M_CLI] command line argument parsing
+!     (LICENSE:PD)
+! 
+! SYNOPSIS
+! 
+!    function get_commandline(definition) result(string)
+! 
+!     character(len=*),intent(in),optional  :: definition
+!     character(len=:),allocatable :: string
+! DESCRIPTION
+! 
+!     To use the routine first define a NAMELIST group called ARGS.
+! 
+!     This routine leverages NAMELIST groups to do the conversion from strings
+!     to numeric values required by other command line parsers.
+! 
+!     The example program shows how simple it is to use. Add a
+!     variable to the NAMELIST and the prototype and it automatically is available as
+!     a value in the program.
+! 
+!     There is no need to convert from strings to numeric
+!     values in the source code. Even arrays and user-defined types can be
+!     used, complex values can be input ... just define the variable in the prototype and
+!     add it to the NAMELIST definition.
+! 
+!     Note that since all the arguments are defined in a NAMELIST group
+!     that config files can easily be used for the same options.
+!     Just create a NAMELIST input file and read it.
+! 
+!     NAMELIST syntax can vary between different programming environments.
+!     Currently, this routine has only been tested using gfortran 7.0.4;
+!     and requires at least Fortran 2003.
+! 
+!     For example:
+! 
+!        program show_get_commandline_unix_prototype
+!           use M_CLI,  only : unnamed, get_commandline, check_commandline_status
+!           implicit none
+!           integer                      :: i
+!           character(len=255)           :: message ! for I/O error messages
+!           character(len=:),allocatable :: readme  ! stores updated namelist
+!           integer                      :: ios
+! 
+!        ! declare a namelist
+!           real               :: x, y, z, point(3), p(3)
+!           character(len=80)  :: title
+!           logical            :: l, l_
+!           equivalence       (point,p)
+!           namelist /args/ x,y,z,point,p,title,l,l_
+! 
+!        ! Define the prototype
+!        !  o All parameters must be listed with a default value.
+!        !  o logicals should be specified with a value of F or T.
+!        !  o string values  must be double-quoted.
+!        !  o lists must be comma-delimited. No spaces are allowed in lists.
+!        !  o all long names must be lowercase. An uppercase short name
+!        !    -A maps to variable A_
+!        !  o if variables are equivalenced only one should be used on
+!        !    the command line
+!           character(len=*),parameter  :: cmd='&
+!           & -x 1 -y 2 -z 3     &
+!           & --point -1,-2,-3   &
+!           & --title "my title" &
+!           & -l F -L F'
+!           ! reading in a NAMELIST definition defining the entire NAMELIST
+!           ! now get the values from the command prototype and command line as NAMELIST input
+!           readme=get_commandline(cmd)
+!           read(readme,nml=args,iostat=ios,iomsg=message)
+!           call check_commandline_status(ios,message)
+!           ! all done cracking the command line
+! 
+!           ! use the values in your program.
+!           write(*,nml=args)
+!           ! the optional unnamed values on the command line are
+!           ! accumulated in the character array "UNNAMED"
+!           if(size(unnamed).gt.0)then
+!              write(*,'(a)')'files:'
+!              write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
+!           endif
+!        end program show_get_commandline_unix_prototype
+! 
+! OPTIONS
+! 
+!     DESCRIPTION   composed of all command arguments concatenated
+!                   into a Unix-like command prototype string.
+! 
+!                   o all keywords get a value.
+!                   o logicals must be set to F or T.
+!                   o strings MUST be delimited with double-quotes and
+!                     must be at least one space. Internal
+!                     double-quotes are represented with two double-quotes
+!                   o lists of values should be comma-delimited.
+!                      No spaces are allowed in lists of numbers.
+!                   o long names (--keyword) should be all lowercase
+!                   o short names (-letter) that are uppercase map to a
+!                     NAMELIST variable called "letter_", but lowercase
+!                     short names map to NAMELIST name "letter".
+!                   o the values follow the rules for NAMELIST values, so
+!                     "-p 2*0" for example would define two values.
+! 
+!                   DESCRIPTION is pre-defined to act as if started with the reserved
+!                   options '--usage F --help F --version F'. The --usage
+!                   option is processed when the check_commandline_status(3f)
+!                   routine is called. The same is true for --help and --version
+!                   if the optional help_text and version_text options are
+!                   provided.
+! RETURNS
+! 
+!     STRING   The output is a NAMELIST string than can be read to update
+!              the NAMELIST "ARGS" with the keywords that were supplied on
+!              the command line.
+! 
+!     When using one of the Unix-like command line forms note that
+!     (subject to change) the following variations from other common
+!     command-line parsers:
+! 
+!        o long names do not take the --KEY=VALUE form, just
+!          --KEY VALUE; and long names should be all lowercase and
+!          always more than one character.
+! 
+!        o duplicate keywords are replaced by the rightmost entry
+! 
+!        o numeric keywords are not allowed; but this allows
+!          negative numbers to be used as values.
+! 
+!        o mapping of short names to long names is via an EQUIVALENCE.
+!          specifying both names of an equivalenced keyword will have
+!          undefined results (currently, their alphabetical order
+!          will define what the Fortran variable values become).
+! 
+!        o short keywords cannot be combined. -a -b -c is required,
+!          not -abc even for Boolean keys.
+! 
+!        o shuffling is not supported. Values must follow their
+!          keywords.
+! 
+!        o if a parameter value of just "-" is supplied it is
+!          converted to the string "stdin".
+! 
+!        o if the keyword "--" is encountered the rest of the
+!          command arguments go into the character array "UNUSED".
+! 
+!        o values not matching a keyword go into the character
+!          array "UNUSED".
+! 
+!        o short-name parameters of the form -LETTER VALUE
+!          map to a NAMELIST name of LETTER_ if uppercase
+! 
+! AUTHOR
+!     John S. Urban, 2019
+! LICENSE
+!     Public Domain
 !===================================================================================================================================
 function get_commandline(definition) result (readme)
 
@@ -325,6 +432,8 @@ character(len=*),intent(in)          :: definition
 character(len=:),allocatable         :: hold               ! stores command line argument
 character(len=:),allocatable         :: readme             ! stores command line argument
 integer                              :: ibig
+
+   passed_in=''
 
    if(allocated(unnamed))then
        deallocate(unnamed)
@@ -344,55 +453,52 @@ end function get_commandline
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!    prototype_to_dictionary(3f) - [ARGUMENTS:M_CLI] parse user command and store tokens into dictionary
-!!    (LICENSE:PD)
-!!
-!!##SYNOPSIS
-!!
-!!   subroutine prototype_to_dictionary(string)
-!!
-!!    character(len=*),intent(in)     ::  string
-!!
-!!##DESCRIPTION
-!!    given a string of form
-!!
-!!      -var value -var value
-!!
-!!    define dictionary of form
-!!
-!!      keyword(i), value(i)
-!!
-!!    o  string values
-!!
-!!        o must be delimited with double quotes.
-!!        o adjacent double quotes put one double quote into value
-!!        o must not be null. A blank is specified as " ", not "".
-!!
-!!    o  logical values
-!!
-!!        o logical values must not have a value
-!!
-!!    o  leading and trailing blanks are removed from unquoted values
-!!
-!!
-!!##OPTIONS
-!!
-!!    STRING   string is character input string to define command
-!!
-!!##RETURNS
-!!
-!!##EXAMPLE
-!!
-!!   sample program:
-!!
-!!   Results:
-!!
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!     prototype_to_dictionary(3f) - [ARGUMENTS:M_CLI] parse user command and store tokens into dictionary
+!     (LICENSE:PD)
+! 
+! SYNOPSIS
+!    subroutine prototype_to_dictionary(string)
+! 
+!     character(len=*),intent(in)     ::  string
+! 
+! DESCRIPTION
+!     given a string of form
+! 
+!       -var value -var value
+! 
+!     define dictionary of form
+! 
+!       keyword(i), value(i)
+! 
+!     o  string values
+! 
+!         o must be delimited with double quotes.
+!         o adjacent double quotes put one double quote into value
+!         o must not be null. A blank is specified as " ", not "".
+! 
+!     o  logical values
+! 
+!         o logical values must not have a value
+! 
+!     o  leading and trailing blanks are removed from unquoted values
+! 
+! 
+! OPTIONS
+!     STRING   string is character input string to define command
+! 
+! RETURNS
+! 
+! EXAMPLE
+! 
+!    sample program:
+! 
+!    Results:
+! 
+! AUTHOR
+!     John S. Urban, 2019
+! LICENSE
+!     Public Domain
 !===================================================================================================================================
 subroutine prototype_to_dictionary(string)
 implicit none
@@ -532,29 +638,28 @@ end subroutine prototype_to_dictionary
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!    update(3f) - [ARGUMENTS:M_CLI] update internal dictionary given keyword and value
-!!    (LICENSE:PD)
-!!##SYNOPSIS
-!!
-!!   subroutine update(key,val)
-!!
-!!    character(len=*),intent(in)           :: key
-!!    character(len=*),intent(in),optional  :: val
-!!##DESCRIPTION
-!!    Update internal dictionary in M_CLI(3fm) module.
-!!##OPTIONS
-!!    key  name of keyword to add, replace, or delete from dictionary
-!!    val  if present add or replace value associated with keyword. If not
-!!         present remove keyword entry from dictionary.
-!!##RETURNS
-!!##EXAMPLE
-!!
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!     update(3f) - [ARGUMENTS:M_CLI] update internal dictionary given keyword and value
+!     (LICENSE:PD)
+! SYNOPSIS
+! 
+!    subroutine update(key,val)
+! 
+!     character(len=*),intent(in)           :: key
+!     character(len=*),intent(in),optional  :: val
+! DESCRIPTION
+!     Update internal dictionary in M_CLI(3fm) module.
+! OPTIONS
+!     key  name of keyword to add, replace, or delete from dictionary
+!     val  if present add or replace value associated with keyword. If not
+!          present remove keyword entry from dictionary.
+! RETURNS
+! EXAMPLE
+! 
+! AUTHOR
+!     John S. Urban, 2019
+! LICENSE
+!     Public Domain
 !===================================================================================================================================
 subroutine update(key,val)
 character(len=*),intent(in)           :: key
@@ -605,25 +710,23 @@ end subroutine update
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!    wipe_dictionary(3fp) - [ARGUMENTS:M_CLI] reset private M_CLI(3fm) dictionary to empty
-!!    (LICENSE:PD)
-!!##SYNOPSIS
-!!
-!!    subroutine wipe_dictionary()
-!!##DESCRIPTION
-!!    reset private M_CLI(3fm) dictionary to empty
-!!##EXAMPLE
-!!
-!!    program demo_wipe_dictionary
-!!    use M_CLI, only : dictionary
-!!       call wipe_dictionary()
-!!    end program demo_wipe_dictionary
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!     wipe_dictionary(3fp) - [ARGUMENTS:M_CLI] reset private M_CLI(3fm) dictionary to empty
+!     (LICENSE:PD)
+! SYNOPSIS
+!     subroutine wipe_dictionary()
+! DESCRIPTION
+!     reset private M_CLI(3fm) dictionary to empty
+! EXAMPLE
+! 
+!     program demo_wipe_dictionary
+!     use M_CLI, only : dictionary
+!        call wipe_dictionary()
+!     end program demo_wipe_dictionary
+! AUTHOR
+!     John S. Urban, 2019
+! LICENSE
+!     Public Domain
 !===================================================================================================================================
 subroutine wipe_dictionary()
    if(allocated(keywords))deallocate(keywords)
@@ -638,16 +741,14 @@ end subroutine wipe_dictionary
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##SYNOPSIS
-!!
-!!    get(3f) - [ARGUMENTS:M_CLI] get dictionary value associated with key name in private M_CLI(3fm) dictionary
-!!##DESCRIPTION
-!!    Get dictionary value associated with key name in private M_CLI(3fm) dictionary.
-!!##OPTIONS
-!!##RETURNS
-!!##EXAMPLE
-!!
+! NAME
+!     get(3f) - [ARGUMENTS:M_CLI] get dictionary value associated with key name in private M_CLI(3fm) dictionary
+! SYNOPSIS
+! DESCRIPTION
+!     Get dictionary value associated with key name in private M_CLI(3fm) dictionary.
+! OPTIONS
+! RETURNS
+! EXAMPLE
 !===================================================================================================================================
 function get(key) result(valout)
 character(len=*),intent(in)   :: key
@@ -664,75 +765,76 @@ end function get
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!    prototype_and_cmd_args_to_nlist(3f) - [ARGUMENTS:M_CLI] convert Unix-like command arguments to namelist
-!!    (LICENSE:PD)
-!!##SYNOPSIS
-!!
-!!   subroutine prototype_and_cmd_args_to_nlist(prototype,nml)
-!!
-!!    character(len=*)             :: prototype
-!!    character(len=:),allocatable :: nml
-!!##DESCRIPTION
-!!    create dictionary with character keywords, values, and value lengths using the routines for maintaining a list from
-!!    command line arguments.
-!!##OPTIONS
-!!    prototype
-!!##RETURNS
-!!    nml
-!!##EXAMPLE
-!!
-!!   Sample program
-!!    program demo_M_list
-!!    use M_CLI,  only : prototype_and_cmd_args_to_nlist, unnamed, debug
-!!    implicit none
-!!    character(len=:),allocatable :: readme
-!!    character(len=256)           :: message
-!!    integer                      :: ios
-!!    integer                      :: i
-!!    doubleprecision              :: something
-!!
-!!    ! define namelist
-!!    ! lowercase keywords
-!!    logical            :: l,h,v
-!!    real               :: p(2)
-!!    complex            :: c
-!!    doubleprecision    :: x,y,z
-!!
-!!    ! uppercase keywords get an underscore
-!!    logical            :: l_,h_,v_
-!!    character(len=256) :: a_,b_                  ! character variables must be long enough to hold returned value
-!!    integer            :: c_(3)
-!!    namelist /args/ l,h,v,p,c,x,y,z,a_,b_,c_,l_,h_,v_
-!!
-!!       debug=.true.
-!!       ! give command template with default values
-!!       ! all values except logicals get a value.
-!!       ! strings must be delimited with double quotes
-!!       ! A string has to have at least one character as for -A
-!!       ! lists of numbers should be comma-delimited. No spaces are allowed in lists of numbers
-!!       ! the values follow the rules for NAMELIST input, so  -p 2*0 would define two values.
-!!       call prototype_and_cmd_args_to_nlist('-l -v -h -LVH -x 0 -y 0.0 -z 0.0d0 -p 0,0 -A " " -B "Value B" -C 10,20,30 -c (-123,-456)',readme)
-!!       read(readme,nml=args,iostat=ios,iomsg=message)
-!!       if(ios.ne.0)then
-!!          write(*,*)'ERROR:',trim(message)
-!!          write(*,'("INPUT WAS ",a)')readme
-!!          write(*,args)
-!!          stop 3
-!!       else
-!!          something=sqrt(x**2+y**2+z**2)
-!!          write(*,*)something,x,y,z
-!!          if(size(unnamed).gt.0)then
-!!             write(*,'(a)')'files:'
-!!             write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
-!!          endif
-!!       endif
-!!    end program demo_M_list
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!     prototype_and_cmd_args_to_nlist(3f) - [ARGUMENTS:M_CLI] convert Unix-like command arguments to namelist
+!     (LICENSE:PD)
+! SYNOPSIS
+! 
+!    subroutine prototype_and_cmd_args_to_nlist(prototype,nml)
+! 
+!     character(len=*)             :: prototype
+!     character(len=:),allocatable :: nml
+! DESCRIPTION
+!     create dictionary with character keywords, values, and value lengths using the routines for maintaining a list from
+!     command line arguments.
+! OPTIONS
+!     prototype
+! RETURNS
+!     nml
+! EXAMPLE
+! 
+!    Sample program
+!     program demo_M_list
+!     use M_CLI,  only : prototype_and_cmd_args_to_nlist, unnamed, debug
+!     implicit none
+!     character(len=:),allocatable :: readme
+!     character(len=256)           :: message
+!     integer                      :: ios
+!     integer                      :: i
+!     doubleprecision              :: something
+! 
+!     ! define namelist
+!     ! lowercase keywords
+!     logical            :: l,h,v
+!     real               :: p(2)
+!     complex            :: c
+!     doubleprecision    :: x,y,z
+! 
+!     ! uppercase keywords get an underscore
+!     logical            :: l_,h_,v_
+!     character(len=256) :: a_,b_                  ! character variables must be long enough to hold returned value
+!     integer            :: c_(3)
+!     namelist /args/ l,h,v,p,c,x,y,z,a_,b_,c_,l_,h_,v_
+! 
+!        debug=.true.
+!        ! give command template with default values
+!        ! all values except logicals get a value.
+!        ! strings must be delimited with double quotes
+!        ! A string has to have at least one character as for -A
+!        ! lists of numbers should be comma-delimited. No spaces are allowed in lists of numbers
+!        ! the values follow the rules for NAMELIST input, so  -p 2*0 would define two values.
+!        call prototype_and_cmd_args_to_nlist('&
+!        & -l -v -h -LVH -x 0 -y 0.0 -z 0.0d0 -p 0,0 &
+!        & -A " " -B "Value B" -C 10,20,30 -c (-123,-456)',readme)
+!        read(readme,nml=args,iostat=ios,iomsg=message)
+!        if(ios.ne.0)then
+!           write(*,*)'ERROR:',trim(message)
+!           write(*,'("INPUT WAS ",a)')readme
+!           write(*,args)
+!           stop 3
+!        else
+!           something=sqrt(x**2+y**2+z**2)
+!           write(*,*)something,x,y,z
+!           if(size(unnamed).gt.0)then
+!              write(*,'(a)')'files:'
+!              write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
+!           endif
+!        endif
+!     end program demo_M_list
+! AUTHOR
+!     John S. Urban, 2019
+! LICENSE
+!     Public Domain
 !===================================================================================================================================
 subroutine prototype_and_cmd_args_to_nlist(prototype,nml)
 implicit none
@@ -922,11 +1024,11 @@ character(len=:),allocatable :: newkeyword
             newkeyword=trim(keywords(i))
          endif
          if(.not.present_in(i))then
-	    select case(newkeyword)
-	    case('usage','version','help')
-	    case default
+            select case(newkeyword)
+            case('usage','version','help')
+            case default
              nml=nml//newkeyword//'='//trim(values(i))//' '
-	    endselect
+            endselect
          endif
       enddo
    endif
@@ -938,11 +1040,11 @@ character(len=:),allocatable :: newkeyword
          newkeyword=trim(keywords(i))
       endif
       if(present_in(i))then
-	 select case(newkeyword)
-	 case('usage','version','help')
-	 case default
+         select case(newkeyword)
+         case('usage','version','help')
+         case default
           nml=nml//newkeyword//'='//trim(values(i))//' '
-	 endselect
+         endselect
       endif
    enddo
 
@@ -958,85 +1060,84 @@ end subroutine dictionary_to_namelist
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!   print_dictionary(3f) - [ARGUMENTS:M_CLI] print internal dictionary created by calls to get_commandline(3f)
-!!   (LICENSE:PD)
-!!##SYNOPSIS
-!!
-!!   subroutine print_dictionary(header)
-!!
-!!    character(len=*),intent(in),optional :: header
-!!    logical,intent(in),optional          :: stop
-!!##DESCRIPTION
-!!   Print the internal dictionary created by calls to get_commandline(3f).
-!!   This routine is intended to print the state of the argument list
-!!   if an error occurs in using the get_commandline(3f) procedure..
-!!##OPTIONS
-!!   HEADER  label to print before printing the state of the command
-!!           argument list.
-!!   STOP    logical value that if true stops the program after displaying
-!!           the dictionary.
-!!##EXAMPLE
-!!
-!!    Typical usage:
-!!
-!!     program demo_get_commandline
-!!     use M_CLI,  only : unnamed, get_commandline, print_dictionary
-!!     implicit none
-!!     integer                      :: i
-!!     character(len=255)           :: message ! use for I/O error messages
-!!     character(len=:),allocatable :: readme  ! stores updated namelist
-!!     integer                      :: ios
-!!     real               :: x, y, z
-!!     logical            :: help, h
-!!     equivalence       (help,h)
-!!     namelist /args/ x,y,z,help,h
-!!     character(len=*),parameter :: cmd='&ARGS X=1 Y=2 Z=3 HELP=F H=F /'
-!!     ! initialize namelist from string and then update from command line
-!!     readme=cmd
-!!     read(readme,nml=args,iostat=ios,iomsg=message)
-!!     if(ios.eq.0)then
-!!        ! update cmd with options from command line
-!!        readme=get_commandline(cmd)
-!!        read(readme,nml=args,iostat=ios,iomsg=message)
-!!     endif
-!!     if(ios.ne.0)then
-!!        write(*,'("ERROR:",i0,1x,a)')ios, trim(message)
-!!        call print_dictionary('OPTIONS:')
-!!        stop 1
-!!     endif
-!!     ! all done cracking the command line
-!!     ! use the values in your program.
-!!     write(*,nml=args)
-!!     ! the optional unnamed values on the command line are
-!!     ! accumulated in the character array "UNNAMED"
-!!     if(size(unnamed).gt.0)then
-!!        write(*,'(a)')'files:'
-!!        write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
-!!     endif
-!!     end program demo_get_commandline
-!!
-!!    Sample output
-!!
-!!    Calling the sample program with an unknown
-!!    parameter produces the following:
-!!
-!!       $ ./print_dictionary -A
-!!       UNKNOWN SHORT KEYWORD: -A
-!!       KEYWORD             PRESENT  VALUE
-!!       z                   F        [3]
-!!       y                   F        [2]
-!!       x                   F        [1]
-!!       help                F        [F]
-!!       h                   F        [F]
-!!
-!!       STOP 2
-!!
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!    print_dictionary(3f) - [ARGUMENTS:M_CLI] print internal dictionary created by calls to get_commandline(3f)
+!    (LICENSE:PD)
+! SYNOPSIS
+! 
+!    subroutine print_dictionary(header)
+! 
+!     character(len=*),intent(in),optional :: header
+!     logical,intent(in),optional          :: stop
+! DESCRIPTION
+!    Print the internal dictionary created by calls to get_commandline(3f).
+!    This routine is intended to print the state of the argument list
+!    if an error occurs in using the get_commandline(3f) procedure..
+! OPTIONS
+!    HEADER  label to print before printing the state of the command
+!            argument list.
+!    STOP    logical value that if true stops the program after displaying
+!            the dictionary.
+! EXAMPLE
+! 
+!     Typical usage:
+! 
+!      program demo_get_commandline
+!      use M_CLI,  only : unnamed, get_commandline, print_dictionary
+!      implicit none
+!      integer                      :: i
+!      character(len=255)           :: message ! use for I/O error messages
+!      character(len=:),allocatable :: readme  ! stores updated namelist
+!      integer                      :: ios
+!      real               :: x, y, z
+!      logical            :: help, h
+!      equivalence       (help,h)
+!      namelist /args/ x,y,z,help,h
+!      character(len=*),parameter :: cmd='&ARGS X=1 Y=2 Z=3 HELP=F H=F /'
+!      ! initialize namelist from string and then update from command line
+!      readme=cmd
+!      read(readme,nml=args,iostat=ios,iomsg=message)
+!      if(ios.eq.0)then
+!         ! update cmd with options from command line
+!         readme=get_commandline(cmd)
+!         read(readme,nml=args,iostat=ios,iomsg=message)
+!      endif
+!      if(ios.ne.0)then
+!         write(*,'("ERROR:",i0,1x,a)')ios, trim(message)
+!         call print_dictionary('OPTIONS:')
+!         stop 1
+!      endif
+!      ! all done cracking the command line
+!      ! use the values in your program.
+!      write(*,nml=args)
+!      ! the optional unnamed values on the command line are
+!      ! accumulated in the character array "UNNAMED"
+!      if(size(unnamed).gt.0)then
+!         write(*,'(a)')'files:'
+!         write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
+!      endif
+!      end program demo_get_commandline
+! 
+!     Sample output
+! 
+!     Calling the sample program with an unknown
+!     parameter produces the following:
+! 
+!        $ ./print_dictionary -A
+!        UNKNOWN SHORT KEYWORD: -A
+!        KEYWORD             PRESENT  VALUE
+!        z                   F        [3]
+!        y                   F        [2]
+!        x                   F        [1]
+!        help                F        [F]
+!        h                   F        [F]
+! 
+!        STOP 2
+! 
+! AUTHOR
+!     John S. Urban, 2019
+! LICENSE
+!     Public Domain
 !===================================================================================================================================
 subroutine print_dictionary(header,stop)
 character(len=*),intent(in),optional :: header
@@ -1066,32 +1167,31 @@ end subroutine print_dictionary
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-!>
-!!##NAME
-!!    longest_command_argument(3f) - [ARGUMENTS:M_CLI] length of longest argument on command line
-!!    (LICENSE:PD)
-!!##SYNOPSIS
-!!
-!!    function longest_command_argument() result(ilongest)
-!!
-!!     integer :: ilongest
-!!
-!!##DESCRIPTION
-!!    length of longest argument on command line. Useful when allocating storage for holding arguments.
-!!##RESULT
-!!    longest_command_argument  length of longest command argument
-!!##EXAMPLE
-!!
-!!   Sample program
-!!
-!!    program demo_longest_command_argument
-!!    use M_CLI, only : longest_command_argument
-!!       write(*,*)'longest argument is ',longest_command_argument()
-!!    end program demo_longest_command_argument
-!!##AUTHOR
-!!    John S. Urban, 2019
-!!##LICENSE
-!!    Public Domain
+! NAME
+!     longest_command_argument(3f) - [ARGUMENTS:M_CLI] length of longest argument on command line
+!     (LICENSE:PD)
+! SYNOPSIS
+! 
+!     function longest_command_argument() result(ilongest)
+! 
+!      integer :: ilongest
+! 
+! DESCRIPTION
+!     length of longest argument on command line. Useful when allocating storage for holding arguments.
+! RESULT
+!     longest_command_argument  length of longest command argument
+! EXAMPLE
+! 
+!    Sample program
+! 
+!     program demo_longest_command_argument
+!     use M_CLI, only : longest_command_argument
+!        write(*,*)'longest argument is ',longest_command_argument()
+!     end program demo_longest_command_argument
+! AUTHOR
+!     John S. Urban, 2019
+! LICENSE
+!     Public Domain
 !===================================================================================================================================
 function longest_command_argument() result(ilongest)
 integer :: i
@@ -2174,7 +2274,7 @@ integer,intent(inout)        :: itoken           ! token count since started
 logical                      :: strtok_status    ! returned value
 integer,intent(out)          :: token_start      ! beginning of token found if function result is .true.
 integer,intent(inout)        :: token_end        ! end of token found if function result is .true.
-integer,save                 :: isource_len
+integer                      :: isource_len
 !----------------------------------------------------------------------------------------------------------------------------
 !  calculate where token_start should start for this pass
    if(itoken.le.0)then                           ! this is assumed to be the first call

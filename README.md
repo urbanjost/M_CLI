@@ -90,6 +90,7 @@ options on whether to do the parsing in the main program or in a contained proce
 - [demo2](src/PROGRAMS/demo2.f90) shows putting everything including help and version information into a contained procedure.
 - [demo3](src/PROGRAMS/demo3.f90) example of basic use (__for beginners__).
 - [demo4](src/PROGRAMS/demo4.f90) minimalist example of use for a quick prototype command, and with a complex value!
+- [demo5](src/PROGRAMS/demo5.f90) demo2 with added example code for interactively editing the NAMELIST group
 
 Please provide feedback on the [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__ section or star the
 repository if you use the module (or let me know why not and let others know what you did use!).
