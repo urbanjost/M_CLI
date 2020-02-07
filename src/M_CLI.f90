@@ -7,7 +7,7 @@
 !    (LICENSE:PD)
 ! SYNOPSIS
 ! 
-!    use M_CLI, only : get_commandline, check_commandline_status
+!    use M_CLI, only : commandline, check_commandline
 !    use M_CLI, only : unnamed, debug
 ! 
 ! DESCRIPTION
@@ -29,8 +29,8 @@ use, intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT,stdin=>INPUT_UNIT  
 implicit none
 private
 !===================================================================================================================================
-public  :: get_commandline
-public  :: check_commandline_status
+public  :: commandline
+public  :: check_commandline
 public  :: print_dictionary
 public debug
 character(len=:),allocatable,public :: unnamed(:)
@@ -120,11 +120,11 @@ contains
 !===================================================================================================================================
 ! NAME
 ! 
-! check_commandline_status(3f) - check status from READ of NAMELIST group and process pre-defined options
+! check_commandline(3f) - check status from READ of NAMELIST group and process pre-defined options
 ! 
 ! SYNOPSIS
 ! 
-!     subroutine check_commandline_status(ios,message)
+!     subroutine check_commandline(ios,message)
 ! 
 !      integer,intent(in)                   :: ios
 !      character(len=*),intent(in)          :: message
@@ -134,7 +134,7 @@ contains
 ! DESCRIPTION
 ! 
 ! Essentially a convenience routine for checking the status of a READ(7f)
-! of the NAMELIST after calling GET_COMMANDLINE(3f). Basically, it lets
+! of the NAMELIST after calling commandline(3f). Basically, it lets
 ! you replace
 ! 
 !     if(ios.ne.0)then
@@ -145,7 +145,7 @@ contains
 ! 
 ! with
 ! 
-!    call check_commandline_status(ios,message)
+!    call check_commandline(ios,message)
 ! 
 ! or if the --usage switch is present does
 ! 
@@ -159,10 +159,10 @@ contains
 ! OPTIONS
 ! 
 ! IOS           status from READ(7f) of NAMELIST after calling
-!               GET_COMMANDLINE(3f)
+!               commandline(3f)
 ! 
 ! MESSAGE       message from READ(7f) of NAMELIST after calling
-!               GET_COMMANDLINE(3f)
+!               commandline(3f)
 ! 
 ! HELP_TEXT     if present, will be displayed if program is called with
 !               --help switch, and then the program will terminate.
@@ -182,8 +182,8 @@ contains
 !     Typical usage:
 ! 
 ! ```fortran
-!     program demo_get_commandline
-!     use M_CLI,  only : unnamed, get_commandline, check_commandline_status
+!     program demo_commandline
+!     use M_CLI,  only : unnamed, commandline, check_commandline
 !     implicit none
 !     integer                      :: i
 !     character(len=255)           :: message ! use for I/O error messages
@@ -198,12 +198,12 @@ contains
 !     character(len=*),parameter :: cmd='-x 1 -y 2 -z 3 --help F -h F'
 ! 
 !     ! initialize namelist from string and then update from command line
-!     readme=get_commandline(cmd)
+!     readme=commandline(cmd)
 !     !!write(*,*)'README=',readme
 !     read(readme,nml=args,iostat=ios,iomsg=message)
 !     version_text=[character(len=80) :: "version 1.0","author: me"]
 !     help_text=[character(len=80) :: "wish I put instructions","here","I suppose?"]
-!     call check_commandline_status(ios,message,help_text,version_text)
+!     call check_commandline(ios,message,help_text,version_text)
 ! 
 !     ! all done cracking the command line
 !     ! use the values in your program.
@@ -214,10 +214,10 @@ contains
 !        write(*,'(a)')'files:'
 !        write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
 !     endif
-!     end program demo_get_commandline
+!     end program demo_commandline
 ! ```
 !===================================================================================================================================
-subroutine check_commandline_status(ios,message,help_text,version_text)
+subroutine check_commandline(ios,message,help_text,version_text)
 integer                                          :: ios
 character(len=255)                               :: message ! use for I/O error messages
 character(len=:),allocatable,intent(in),optional :: help_text(:)
@@ -263,20 +263,20 @@ integer                                          :: iback
          stop
       endif
    elseif(get('version').eq.'T')then
-         WRITE(*,'(a)')'*check_commandline_status* no version text'
+         WRITE(*,'(a)')'*check_commandline* no version text'
          stop
    endif
-end subroutine check_commandline_status
+end subroutine check_commandline
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
 ! NAME
-!     get_commandline(3f) - [ARGUMENTS:M_CLI] command line argument parsing
+!     commandline(3f) - [ARGUMENTS:M_CLI] command line argument parsing
 !     (LICENSE:PD)
 ! 
 ! SYNOPSIS
 ! 
-!    function get_commandline(definition) result(string)
+!    function commandline(definition) result(string)
 ! 
 !     character(len=*),intent(in),optional  :: definition
 !     character(len=:),allocatable :: string
@@ -306,8 +306,8 @@ end subroutine check_commandline_status
 ! 
 !     For example:
 ! 
-!        program show_get_commandline_unix_prototype
-!           use M_CLI,  only : unnamed, get_commandline, check_commandline_status
+!        program show_commandline_unix_prototype
+!           use M_CLI,  only : unnamed, commandline, check_commandline
 !           implicit none
 !           integer                      :: i
 !           character(len=255)           :: message ! for I/O error messages
@@ -337,9 +337,9 @@ end subroutine check_commandline_status
 !           & -l F -L F'
 !           ! reading in a NAMELIST definition defining the entire NAMELIST
 !           ! now get the values from the command prototype and command line as NAMELIST input
-!           readme=get_commandline(cmd)
+!           readme=commandline(cmd)
 !           read(readme,nml=args,iostat=ios,iomsg=message)
-!           call check_commandline_status(ios,message)
+!           call check_commandline(ios,message)
 !           ! all done cracking the command line
 ! 
 !           ! use the values in your program.
@@ -350,7 +350,7 @@ end subroutine check_commandline_status
 !              write(*,'(a)')'files:'
 !              write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
 !           endif
-!        end program show_get_commandline_unix_prototype
+!        end program show_commandline_unix_prototype
 ! 
 ! OPTIONS
 ! 
@@ -373,7 +373,7 @@ end subroutine check_commandline_status
 ! 
 !                   DESCRIPTION is pre-defined to act as if started with the reserved
 !                   options '--usage F --help F --version F'. The --usage
-!                   option is processed when the check_commandline_status(3f)
+!                   option is processed when the check_commandline(3f)
 !                   routine is called. The same is true for --help and --version
 !                   if the optional help_text and version_text options are
 !                   provided.
@@ -424,9 +424,9 @@ end subroutine check_commandline_status
 ! LICENSE
 !     Public Domain
 !===================================================================================================================================
-function get_commandline(definition) result (readme)
+function commandline(definition) result (readme)
 
-character(len=*),parameter::ident_2="@(#)M_CLI::get_commandline(3f): return all command arguments as a NAMELIST(3f) string to read"
+character(len=*),parameter::ident_2="@(#)M_CLI::commandline(3f): return all command arguments as a NAMELIST(3f) string to read"
 
 character(len=*),intent(in)          :: definition
 character(len=:),allocatable         :: hold               ! stores command line argument
@@ -449,7 +449,7 @@ integer                              :: ibig
        allocate(character(len=0) :: unnamed(0))
    endif
 
-end function get_commandline
+end function commandline
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
@@ -1061,7 +1061,7 @@ end subroutine dictionary_to_namelist
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
 ! NAME
-!    print_dictionary(3f) - [ARGUMENTS:M_CLI] print internal dictionary created by calls to get_commandline(3f)
+!    print_dictionary(3f) - [ARGUMENTS:M_CLI] print internal dictionary created by calls to commandline(3f)
 !    (LICENSE:PD)
 ! SYNOPSIS
 ! 
@@ -1070,9 +1070,9 @@ end subroutine dictionary_to_namelist
 !     character(len=*),intent(in),optional :: header
 !     logical,intent(in),optional          :: stop
 ! DESCRIPTION
-!    Print the internal dictionary created by calls to get_commandline(3f).
+!    Print the internal dictionary created by calls to commandline(3f).
 !    This routine is intended to print the state of the argument list
-!    if an error occurs in using the get_commandline(3f) procedure..
+!    if an error occurs in using the commandline(3f) procedure..
 ! OPTIONS
 !    HEADER  label to print before printing the state of the command
 !            argument list.
@@ -1082,8 +1082,8 @@ end subroutine dictionary_to_namelist
 ! 
 !     Typical usage:
 ! 
-!      program demo_get_commandline
-!      use M_CLI,  only : unnamed, get_commandline, print_dictionary
+!      program demo_commandline
+!      use M_CLI,  only : unnamed, commandline, print_dictionary
 !      implicit none
 !      integer                      :: i
 !      character(len=255)           :: message ! use for I/O error messages
@@ -1099,7 +1099,7 @@ end subroutine dictionary_to_namelist
 !      read(readme,nml=args,iostat=ios,iomsg=message)
 !      if(ios.eq.0)then
 !         ! update cmd with options from command line
-!         readme=get_commandline(cmd)
+!         readme=commandline(cmd)
 !         read(readme,nml=args,iostat=ios,iomsg=message)
 !      endif
 !      if(ios.ne.0)then
@@ -1116,7 +1116,7 @@ end subroutine dictionary_to_namelist
 !         write(*,'(a)')'files:'
 !         write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
 !      endif
-!      end program demo_get_commandline
+!      end program demo_commandline
 ! 
 !     Sample output
 ! 
