@@ -26,7 +26,7 @@ LDFLAGS :=
 all: $(PROG) $(CPROG)
 	@echo "That's All Folks!"
 $(PROG): $(OBJS)
-	-$(F90) $(LDFLAGS) $@.f90 -o $@ $(OBJS) $(LIBS)||echo "ouch: $@.f90 "
+	-$(F90) $(LDFLAGS) $@.f90 -o $@ $(OBJS) $(LIBS)
 clean:
 	rm -f $(PROG) $(CPROG) $(OBJS) *.mod
 .SUFFIXES: $(SUFFIXES) .f90 .F90 

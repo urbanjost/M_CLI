@@ -1,6 +1,6 @@
 ## NAME
 
-print_dictionary(3f) - print internal dictionary created by calls to get_commandline(3f)
+print_dictionary(3f) - print internal dictionary created by calls to commandline(3f)
 
 ## SYNOPSIS
 
@@ -11,9 +11,9 @@ print_dictionary(3f) - print internal dictionary created by calls to get_command
 
 ## DESCRIPTION
 
-Print the internal dictionary created by calls to get_commandline(3f). This
+Print the internal dictionary created by calls to commandline(3f). This
 routine is intended to print the state of the argument list if an error
-occurs in using the get_commandline(3f) procedure..
+occurs in using the commandline(3f) procedure..
 
 ## OPTIONS
 
@@ -26,8 +26,8 @@ occurs in using the get_commandline(3f) procedure..
     Typical usage:
 
 ```fortran
-    program demo_get_commandline
-    use M_CLI,  only : unnamed, get_commandline, print_dictionary
+    program demo_commandline
+    use M_CLI,  only : unnamed, commandline, print_dictionary
     implicit none
     integer                      :: i
     character(len=255)           :: message ! use for I/O error messages
@@ -41,7 +41,7 @@ occurs in using the get_commandline(3f) procedure..
     character(len=*),parameter :: cmd='-x 1 -y 2 -z 3 --help F -h F'
 
     ! initialize namelist from string and then update from command line
-    readme=get_commandline(cmd)
+    readme=commandline(cmd)
     !!write(*,*)'README=',readme
     read(readme,nml=args,iostat=ios,iomsg=message)
     if(ios.ne.0)then
@@ -59,7 +59,7 @@ occurs in using the get_commandline(3f) procedure..
        write(*,'(a)')'files:'
        write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
     endif
-    end program demo_get_commandline
+    end program demo_commandline
 ```
 ## SAMPLE OUTPUTS
 

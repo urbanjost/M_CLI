@@ -1,6 +1,6 @@
 program demo5
 !! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
-use M_CLI,  only : get_commandline, check_commandline_status, unnamed
+use M_CLI,  only : commandline, check_commandline, unnamed
 implicit none
 integer                      :: i
 character(len=:),allocatable :: status
@@ -17,9 +17,9 @@ character(len=*),parameter :: cmd=&
    ' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" -l F -L F '
 
    call set() !! set text values for help
-   readme=get_commandline(cmd)
+   readme=commandline(cmd)
    read(readme,nml=args,iostat=ios,iomsg=message)
-   call check_commandline_status(ios,message,help_text,version_text)
+   call check_commandline(ios,message,help_text,version_text)
    do
       call readargs(status) ! interactively change NAMELIST group
       if(status.eq.'stop')exit

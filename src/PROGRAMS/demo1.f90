@@ -1,5 +1,5 @@
 program demo1
-use M_CLI,  only : get_commandline, check_commandline_status 
+use M_CLI,  only : commandline, check_commandline
 use M_CLI,  only : unnamed
 implicit none
 integer            :: i
@@ -15,7 +15,7 @@ logical            :: l_            ;namelist /args/ l_
 equivalence(point,p)
 
 !! -x-x-x-x CUT HERE  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-   COMMANDLINE: block 
+   COMMANDLIN: block 
 !! WHEN DEFINING THE PROTOTYPE MATCHING THE NAMELIST
    !  o All parameters must be listed with a default value
    !  o string values  must be double-quoted
@@ -27,11 +27,11 @@ equivalence(point,p)
    character(len=:),allocatable :: readme  ! stores updated namelist
    character(len=256)           :: message
    integer                      :: ios
-   readme=get_commandline('&
+   readme=commandline('&
    & -x 1 -y 2 -z 3 --point -1,-2,-3 --p -1,-2,-3 --title "my title" -l F -L F')
    read(readme,nml=args,iostat=ios,iomsg=message)
-   call check_commandline_status(ios,message)
-   endblock COMMANDLINE
+   call check_commandline(ios,message)
+   endblock COMMANDLIN
 !! -x-x-x-x END CUT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
    !! ALL DONE CRACKING THE COMMAND LINE

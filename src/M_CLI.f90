@@ -219,7 +219,7 @@ contains
 !===================================================================================================================================
 subroutine check_commandline(ios,message,help_text,version_text)
 integer                                          :: ios
-character(len=255)                               :: message ! use for I/O error messages
+character(len=*)                                 :: message ! use for I/O error messages
 character(len=:),allocatable,intent(in),optional :: help_text(:)
 character(len=:),allocatable,intent(in),optional :: version_text(:)
 integer                                          :: i
