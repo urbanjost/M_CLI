@@ -1,10 +1,10 @@
 ## NAME
 
-   get_commandline(3f) - NAMELIST-based command line argument parsing using a command prototype
+   commandline(3f) - NAMELIST-based command line argument parsing using a command prototype
 
 ## SYNOPSIS
 
-    function get_commandline(definition) result(string)
+    function commandline(definition) result(string)
      character(len=*),intent(in),optional  :: definition
      character(len=:),allocatable :: string
 
@@ -24,13 +24,13 @@ To use the routine :
 
    1) define a NAMELIST group called ARGS.
 
-   2) Then call GET_COMMANDLINE(3f) with a string that looks like a call to the
+   2) Then call COMMANDLINE(3f) with a string that looks like a call to the
       program with all keywords and default values specified
 
    3) Read the returned value as a NAMELIST group called ARGS (skip this if
       there are no keywords and therefore no ARGS NAMELIST).
 
-   4) call CHECK_COMMANDLINE_STATUS(3f) to display errors, usage, version and
+   4) call CHECK_COMMANDLINE(3f) to display errors, usage, version and
       help text. This will automatically give all commands working
       --usage, --help, and --version  switches
 
@@ -49,7 +49,7 @@ typical usage:
 
 ```fortran
    program show
-      use M_args,  only : unnamed, get_commandline, check_commandline_status
+      use M_args,  only : unnamed, commandline, check_commandline
       implicit none
       integer                      :: i
       character(len=255)           :: message ! use for I/O error messages
@@ -69,10 +69,10 @@ typical usage:
       & -x 1 -y 2 -z 3 --point -1,-2,-3  --title "my title" -l -L'
 
       ! reading in a NAMELIST definition defining the entire NAMELIST
-      readme=get_commandline(cmd)
+      readme=commandline(cmd)
       !! if there are no arguments and thus no ARGS NAMELIST group skip the READ!
       read(readme,nml=args,iostat=ios,iomsg=message)
-      call check_commandline_status(ios,message)
+      call check_commandline(ios,message)
       endif
       ! all done cracking the command line
    

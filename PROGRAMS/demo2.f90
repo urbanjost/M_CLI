@@ -31,7 +31,7 @@ program demo2
 contains
    subroutine parse()
    !! PUT EVERYTHING TO DO WITH COMMAND PARSING HERE FOR CLARITY
-   use M_CLI, only : get_commandline, check_commandline_status
+   use M_CLI, only : commandline, check_commandline
    character(len=255)            :: message ! use for I/O error messages
    character(len=:),allocatable  :: readme ! stores updated namelist
    character(len=:),allocatable  :: help_text(:), version_text(:)
@@ -75,9 +75,9 @@ contains
          '@(#)LICENSE:     Public Domain    >', &
          '' ]
 
-      readme=get_commandline(cmd)
+      readme=commandline(cmd)
       read(readme,nml=args,iostat=ios,iomsg=message)
-      call check_commandline_status(ios,message,help_text,version_text)
+      call check_commandline(ios,message,help_text,version_text)
 
    end subroutine parse
 

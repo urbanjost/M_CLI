@@ -1,10 +1,10 @@
 ## NAME
 
-check_commandline_status(3f) - check status from READ of NAMELIST group and process pre-defined options
+check_commandline(3f) - check status from READ of NAMELIST group and process pre-defined options
 
 ## SYNOPSIS
 
-    subroutine check_commandline_status(ios,message)
+    subroutine check_commandline(ios,message)
 
      integer,intent(in)                   :: ios
      character(len=*),intent(in)          :: message
@@ -14,7 +14,7 @@ check_commandline_status(3f) - check status from READ of NAMELIST group and proc
 ## DESCRIPTION
 
 Essentially a convenience routine for checking the status of a READ(7f)
-of the NAMELIST after calling GET_COMMANDLINE(3f). Basically, it lets
+of the NAMELIST after calling COMMANDLINE(3f). Basically, it lets
 you replace
 
     if(ios.ne.0)then
@@ -25,7 +25,7 @@ you replace
 
 with
 
-   call check_commandline_status(ios,message)
+   call check_commandline(ios,message)
 
 or if the --usage switch is present does
 
@@ -38,9 +38,9 @@ and --version command-line options, respectively.
 
 ## OPTIONS
 
-**IOS:** status from READ(7f) of NAMELIST after calling GET_COMMANDLINE(3f)
+**IOS:** status from READ(7f) of NAMELIST after calling COMMANDLINE(3f)
 
-**MESSAGE:** message from READ(7f) of NAMELIST after calling GET_COMMANDLINE(3f)
+**MESSAGE:** message from READ(7f) of NAMELIST after calling COMMANDLINE(3f)
 
 **HELP_TEXT**     if present, will be displayed if program is called with --help
 switch, and then the program will terminate.
@@ -59,8 +59,8 @@ be used to place metadata in a binary by entering:
     Typical usage:
 
 ```fortran
-    program demo_get_commandline
-    use M_CLI,  only : unnamed, get_commandline, check_commandline_status
+    program demo_commandline
+    use M_CLI,  only : unnamed, commandline, check_commandline
     implicit none
     integer                      :: i
     character(len=255)           :: message ! use for I/O error messages
@@ -75,12 +75,12 @@ be used to place metadata in a binary by entering:
     character(len=*),parameter :: cmd='-x 1 -y 2 -z 3 --help F -h F'
 
     ! initialize namelist from string and then update from command line
-    readme=get_commandline(cmd)
+    readme=commandline(cmd)
     !!write(*,*)'README=',readme
     read(readme,nml=args,iostat=ios,iomsg=message)
     version_text=[character(len=80) :: "version 1.0","author: me"]
     help_text=[character(len=80) :: "wish I put instructions","here","I suppose?"]
-    call check_commandline_status(ios,message,help_text,version_text)
+    call check_commandline(ios,message,help_text,version_text)
 
     ! all done cracking the command line
     ! use the values in your program.
@@ -91,5 +91,5 @@ be used to place metadata in a binary by entering:
        write(*,'(a)')'files:'
        write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
     endif
-    end program demo_get_commandline
+    end program demo_commandline
 ```

@@ -36,9 +36,9 @@ Now call a routine to handle error and help-related text
 Now all the values in the namelist should be updated using values from the
 command line and ready to use.
 
-- [get_commandline](md/get_commandline.md) parses the command line options
+- [commandline](md/commandline.md) parses the command line options
 
-- [check_commandline_status](md/check_commandline_status.md) convenience
+- [check_commandline](md/check_commandline.md) convenience
   routine for checking status of READ of NAMELIST group
 
 This short program defines a command that can be called like
@@ -47,7 +47,7 @@ This short program defines a command that can be called like
 
 ```fortran
 program show
-use M_CLI, only : get_commandline, check_commandline_status, files=>unnamed
+use M_CLI, only : commandline, check_commandline, files=>unnamed
 implicit none
 integer :: i
 
@@ -62,14 +62,14 @@ character(len=*),parameter :: cmd= &
    '-x 1 -y 2.0 -z 3.5e0 --point -1,-2,-3 --title "my title" -l F '
 
 !! THIS BLOCK DOES THE COMMAND LINE PARSING AND SHOULD NOT HAVE TO CHANGE
-   COMMANDLINE : block
+   COMMANDLIN : block
       character(len=255)           :: message
       character(len=:),allocatable :: readme
       integer                      :: ios
-      readme=get_commandline(cmd)
+      readme=commandline(cmd)
       read(readme,nml=args,iostat=ios,iomsg=message) !! UPDATE NAMELIST VARIABLES
-      call check_commandline_status(ios,message)     !! HANDLE ERRORS FROM NAMELIST READ AND --usage
-   endblock COMMANDLINE
+      call check_commandline(ios,message)     !! HANDLE ERRORS FROM NAMELIST READ AND --usage
+   endblock COMMANDLIN
 
 !! USE THE VALUES IN YOUR PROGRAM.
    write(*,nml=args)
