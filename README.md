@@ -13,27 +13,22 @@ module in the GPF (General Purpose Fortran) package that has been
 extracted for those just interested in a library to crack the command
 line. In the GPF package this library is intertwined with several other
 large modules.
-
+```bash
     git clone https://github.com/urbanjost/M_CLI.git
     cd M_CLI/src
     # change Makefile if not using gfortran(1)
     make
-
+```
 This will compile the M_CLI module and build all the example programs.
 
 **This is how the interface works --**
 
-Basically you define a NAMELIST group called ARGS that has the names of
-all your command line arguments.
+ * Basically you define a NAMELIST group called ARGS that has the names of all your command line arguments.
+ * Next, pass in a string that looks like the command you would use to execute the program with all values specified.
+ * you read the output as the NAMELIST group ARGS with a fixed block of code (that could be in an INCLUDE file)
+ * Now call a routine to handle errors and help-related text
 
-Next, call a routine passing it a string that looks like the command
-you would use to execute the program with all values specified.
-
-you read the output as the NAMELIST group ARGS.
-
-Now call a routine to handle error and help-related text
-
-Now all the values in the namelist should be updated using values from the
+Now all the values in the NAMELIST should be updated using values from the
 command line and ready to use.
 
 - [commandline](md/commandline.md) parses the command line options
@@ -43,7 +38,9 @@ command line and ready to use.
 
 This short program defines a command that can be called like
 
+```bash
    ./show -x 10 -y -20 --point 10,20,30 --title 'plot of stuff' *.in
+```
 
 ```fortran
 program show
@@ -86,11 +83,11 @@ end program show
 There are several styles possible for defining the NAMELIST group as well as
 options on whether to do the parsing in the main program or in a contained procedure..
 
-- [demo1](src/PROGRAMS/demo1.f90) full usage 
-- [demo2](src/PROGRAMS/demo2.f90) shows putting everything including help and version information into a contained procedure.
-- [demo3](src/PROGRAMS/demo3.f90) example of basic use (__for beginners__).
-- [demo4](src/PROGRAMS/demo4.f90) minimalist example of use for a quick prototype command, and with a complex value!
-- [demo5](src/PROGRAMS/demo5.f90) demo2 with added example code for interactively editing the NAMELIST group
+- [demo1](PROGRAMS/demo1.f90) full usage 
+- [demo2](PROGRAMS/demo2.f90) shows putting everything including help and version information into a contained procedure.
+- [demo3](PROGRAMS/demo3.f90) example of basic use (__for beginners__).
+- [demo4](PROGRAMS/demo4.f90) minimalist example of use for a quick prototype command, and with a complex value!
+- [demo5](PROGRAMS/demo5.f90) demo2 with added example code for interactively editing the NAMELIST group
 
 Please provide feedback on the [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__ section or star the
 repository if you use the module (or let me know why not and let others know what you did use!).
