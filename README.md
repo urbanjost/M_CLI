@@ -84,10 +84,10 @@ There are several styles possible for defining the NAMELIST group as well as
 options on whether to do the parsing in the main program or in a contained procedure..
 
 - [demo1](PROGRAMS/demo1.f90) full usage 
-- [demo2](PROGRAMS/demo2.f90) shows putting everything including help and version information into a contained procedure.
-- [demo3](PROGRAMS/demo3.f90) example of basic use (__for beginners__).
-- [demo4](PROGRAMS/demo4.f90) minimalist example of use for a quick prototype command, and with a complex value!
-- [demo5](PROGRAMS/demo5.f90) demo2 with added example code for interactively editing the NAMELIST group
+- [demo2](PROGRAMS/demo2.f90) shows putting everything including **help** and **version** information into a contained procedure.
+- [demo3](PROGRAMS/demo3.f90) example of **basic** use 
+- [demo4](PROGRAMS/demo4.f90) using  **COMPLEX** values!
+- [demo5](PROGRAMS/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
 
 Please provide feedback on the [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__ section or star the
 repository if you use the module (or let me know why not and let others know what you did use!).
