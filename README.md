@@ -39,7 +39,7 @@
         [dependencies]
         M_CLI        = { git = "https://github.com/urbanjost/M_CLI.git" }
 
-#EXAMPLE
+## EXAMPLE
 
    **This is how the interface works --**
    
