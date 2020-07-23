@@ -43,10 +43,10 @@
 
    **This is how the interface works --**
    
-    * Basically you define a NAMELIST group called ARGS that has the names of all your command line arguments.
-    * Next, pass in a string that looks like the command you would use to execute the program with all values specified.
-    * you read the output as the NAMELIST group ARGS with a fixed block of code (that could be in an INCLUDE file)
-    * Now call a routine to handle errors and help-related text
+   * Basically you define a NAMELIST group called ARGS that has the names of all your command line arguments.
+   * Next, pass in a string that looks like the command you would use to execute the program with all values specified.
+   * you read the output as the NAMELIST group ARGS with a fixed block of code (that could be in an INCLUDE file)
+   * Now call a routine to handle errors and help-related text
    
    Now all the values in the NAMELIST should be updated using values from the
    command line and ready to use.
