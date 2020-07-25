@@ -114,7 +114,7 @@ Please provide feedback on the
 section or star the repository if you use the module (or let me know
 why not and let others know what you did use!).
 
-## Other things to do with [NAMELIST](https://github.com/urbanjost/M_CLI/) )
+## Other things to do with [NAMELIST](https://urbanjost.github.io/M_CLI/index.html)
 
    click on the link for some unusual things to do with NAMELIST,
    Capture and Replay unit testing, exposing variables for interactive
