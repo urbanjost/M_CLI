@@ -1,0 +1,101 @@
+<html>
+<head>
+   <title>NAMELIST (Fortran 2003 required) and configuration files</title>
+   <meta name="generator" content="vi, HTML Tidy for Cygwin">
+   <meta name="description" content="Using NAMELIST for configuration files">
+   <meta name="keywords" content="Fortran,NAMELIST">
+   <base target="_top">
+   <!--
+      Pick your favorite style sheet from among the eight offerings:
+      Chocolate, Midnight, Modernist, Oldstyle, Steely, Swiss, Traditional, and Ultramarine.
+   -->
+   <link rel="stylesheet" href="StyleSheets/Midnight.css" type="text/css" />
+</head>
+<body>
+<!-- ======================================================================= -->
+<center>
+<h1> Using Fortran NAMELIST I/O for configuration files</h1>
+</center>
+<!-- ======================================================================= -->
+
+<p>
+   Since a read of a Fortran NAMELIST scans a file for a match you can
+   use this feature very easily to maintain a single configuration file
+   for several programs.  For example, if you have an input file that
+   looks like:
+</p>
+
+<pre>
+   This is file "config.nml" which contains setup information for 
+   programs that launch xclock(1) and the xterm(1) program. 
+   &amp;xclock
+    background='black'
+    foreground='yellow'
+    geometry='64x64-0+0'
+    /
+    ! setup for xterm program
+   &amp;xterm
+    background='green'
+    foreground='black'
+    number=3
+    /
+</pre>
+
+<p>
+   This contrived sample shows a single file ("config.nml") holding
+   multiple NAMELIST input sets ("xterm" and "xclock") and a small program
+   that reads the first "xterm" set (ignoring other content in the file)
+   and builds and executes system commands using the information.
+</p>
+
+<h2> program to read and use "NML=xterm" data</h2>
+<pre>
+   program config
+   
+   character(len=30) :: background='black'
+   character(len=30) :: foreground='white'
+   integer :: number=1
+   namelist /xterm/ background, foreground, number
+   
+      ! before reading config file
+      call mysystem('xterm -bg '//background//' -fg '//foreground//'&amp;')
+      
+      open(10,file='config.nml',delim='apostrophe')
+      read(10,nml=xterm,iostat=ios)
+      ! notice how the READ skipped down to the xterm NAMELIST group!!
+      
+      ! after reading config file
+      do i10=1,number
+         call mysystem('xterm -bg '//background//' -fg '//foreground//'&amp;')
+      enddo
+   
+   contains
+      subroutine mysystem(string)
+      character(len=*) :: string
+         write(*,*)'COMMAND:'//string
+         call execute_command(string)
+      end subroutine mysystem
+   
+   end program config
+</pre>
+
+<h2> program output </h2>
+
+<pre>
+   COMMAND:xterm -bg black          -fg white      &
+   COMMAND:xterm -bg green          -fg black      &
+</pre>
+
+<hr><!-- =================================================================== -->
+<ul>
+   <li>
+      <i>
+      <font size="-1">
+      Created: Sat Aug 29 18:54:15 EDT 2009, John S. Urban
+      </font>
+      </i>
+   </li>
+</ul>
+<hr><!-- =================================================================== -->
+</body>
+</html>

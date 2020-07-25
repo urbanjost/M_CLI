@@ -113,3 +113,10 @@ Please provide feedback on the
 [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__
 section or star the repository if you use the module (or let me know
 why not and let others know what you did use!).
+
+## Other things to do with [NAMELIST](https://github.com/urbanjost/M_CLI/) )
+
+   click on the link for some unusual things to do with NAMELIST,
+   Capture and Replay unit testing, exposing variables for interactive
+   editing ...
+

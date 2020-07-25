@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+   <title>command-line arguments using Fortran NAMELIST (Fortran 2008 required)</title>
+   <meta name="generator" content="vi, HTML Tidy for Cygwin">
+   <meta name="description" content="NAMELIST multi-case input files">
+   <meta name="keywords" content="Fortran,NAMELIST">
+   <base target="_top">
+   <!--
+      Pick your favorite style sheet from among the eight offerings:
+      Chocolate, Midnight, Modernist, Oldstyle, Steely, Swiss, Traditional, and Ultramarine.
+   -->
+   <link rel="stylesheet" href="StyleSheets/Midnight.css" type="text/css" />
+</head>
+<body>
+<a href="https://github.com/urbanjost?tab=repositories">
+ <img alt="Enter Home Page" src="../images/compass.png" style="position:absolute;left:0;top:0" width="64" height="64" /> 
+</a>
+<h1> Exploring NAMELIST </h1>
+<h2> multi-case input files</h2>
+<p>
+   NAMELIST permits a set of variables to be gathered together under
+   one name in order to simplify I/O statements.  Most importantly,
+   input values are labeled in the form VARIABLE_NAME=VALUE; allowing values
+   to easily be identified and entered in any order.  Indeed, NAMELIST
+   provides an excellent way to support annotated input, as the data is
+   not only labeled; but comments are allowed on input.
+</p>
+<p>
+   When reading a file, lines are skipped until the requested NAMELIST
+   block name is reached.  If no REWIND is performed, you can have multiple
+   NAMELIST blocks of the same name and differing data and read them in
+   as needed.
+</p>
+<p>
+   A basic example using an input file to do several problem cases:
+</p>
+<h3>file "cases.nml"</h3>
+<pre>
+   input file with multiple cases. Until a NAMELIST block name is
+   recognised input lines are ignored, so you could have the data
+   inbedded in a markdown file or HTML file as long as the data cases
+   follow the NAMELIST input file rules (easiest with the HTML directive
+    &lt;xmp&gt; but it is deprecated although &quot;universally&quot;
+   supported by browsers so far).
+
+&CASE 
+    uuid='90e29ff3-0124-454b-bcaa-cdb5b37ae6c3',
+    temperature=350, pressure=200
+    X=11,21,31,41,51
+    Y=11,21,31,41,51
+    /
+
+redo the same cases just changing temperature and pressure
+
+&CASE temperature=460, pressure=400 /
+&case temperature=650, pressure=500 /
+
+================================================================================
+ This is for customer X on Fri Jul 24 EDT 1998
+ to resolve the issues described in document blah-blah-0124
+
+&CASE TITLE = 'Thermal Analysis', 
+ TEMPERATURE = 650.0, PRESSURE = 500.0, X = 611.0, 621.0, 631.0, 
+ 641., 651., Y = 11., 21., 31., 41., 51., 
+ uuid='3709a591-aaad-40b5-ae02-9746ebdd74f1'
+ /
+================================================================================
+Note that the following NAMELIST group input will be skipped because it does
+not match the name "CASE"
+
+&SOMETHINGELSE
+  Monday=.true.
+ /
+================================================================================
+ This case is for what we talked about Thursday, George ...
+
+&CASE
+ TITLE='Thermal Analysis',
+ TEMPERATURE=  650.00000,
+ PRESSURE=  500.00000,
+ X=  811.00000    ,  821.00000    ,  831.00000    ,  841.00000    ,  851.00000    ,
+ 
+ Y=  11.000000    ,  21.000000    ,  31.000000    ,  41.000000    ,  51.000000    ,
+   /
+================================================================================
+</pre>
+<p>
+   This example just touches on the possibilities. You could read through cases
+   until you find a certain value, such as the UUID string in some of the cases
+   in the sample input, for example.
+</p>
+<h3>Sample program to read "cases.nml"</h3>
+<pre>
+PROGRAM simple
+!-----------
+! define some variables and group them in a NAMELIST
+real,dimension(5) :: x=[10,20,30,40,50], y=[10,20,30,40,50]
+real              :: temperature=0.0, pressure=0.0
+integer           :: i=0, j=0, k=0
+character(len=80) :: title='Thermal Analysis', uuid=''
+namelist /case/ title, temperature, pressure, x, y, uuid
+!-----------
+integer            :: icount=0
+character(len=255) :: message=' '
+   open(unit=10,file='cases.nml',delim='apostrophe') ! open a file to read NAMELIST data from
+   do                    ! loop, reading and processing one read at a time
+      uuid=''            ! if you do not set the values between calls the changes are cumulative
+      ! it is common to set all values between sets but it can be very useful that the values
+      ! are retained when doing a series of cases where only a few values are changing.
+      ! note NAMELIST input is very flexible, and allows changing just regions of an array with
+      ! array syntax, for example.
+      read(10,case,iostat=ios,iomsg=message)
+      if(ios .ne. 0)then
+         write(*,*)'IOSTAT:',ios,trim(message)
+         if( .not.is_iostat_end(ios) )then
+            write(*,*)'E-R-R-O-R:'
+            open(unit=6,delim='apostrophe') ! make sure strings get delimited
+            write(*,nml=case)
+            open(unit=6,delim='none')
+         endif
+         exit
+      endif
+      icount=icount+1
+      call do_a_problem()
+   enddo
+contains
+subroutine do_a_problem()
+   write(*,'(*(g0,1x))')'did a problem: count=',icount,' title=',trim(title),' uuid=',trim(uuid)
+   write(*,*)'TP=',cmplx(temperature,pressure)
+end subroutine do_a_problem
+end program simple
+</pre>
+<h3>Sample program output:</h3>
+<pre>
+did a problem: count= 1  title= Thermal Analysis  uuid= 90e29ff3-0124-454b-bcaa-cdb5b37ae6c3
+ TP=             (350.000000,200.000000)
+did a problem: count= 2  title= Thermal Analysis  uuid= 
+ TP=             (460.000000,400.000000)
+did a problem: count= 3  title= Thermal Analysis  uuid= 
+ TP=             (650.000000,500.000000)
+did a problem: count= 4  title= Thermal Analysis  uuid= 3709a591-aaad-40b5-ae02-9746ebdd74f1
+ TP=             (650.000000,500.000000)
+did a problem: count= 5  title= Thermal Analysis  uuid= 
+ TP=             (650.000000,500.000000)
+ IOSTAT:          -1 End of file
+</pre>
+</body>
+</html>
+

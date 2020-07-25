@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+   <title>command-line arguments using Fortran NAMELIST (Fortran 2008 required)</title>
+   <meta name="generator" content="vi, HTML Tidy for Cygwin">
+   <meta name="description" content="NAMELIST multi-case input files">
+   <meta name="keywords" content="Fortran,NAMELIST">
+   <base target="_top">
+   <!--
+      Pick your favorite style sheet from among the eight offerings:
+      Chocolate, Midnight, Modernist, Oldstyle, Steely, Swiss, Traditional, and Ultramarine.
+   -->
+   <link rel="stylesheet" href="StyleSheets/Midnight.css" type="text/css" />
+</head>
+<body>
+<a href="https://github.com/urbanjost?tab=repositories">
+ <img alt="Enter Home Page" src="../images/compass.png" style="position:absolute;left:0;top:0" width="64" height="64" /> 
+</a>
+<h1> Exploring NAMELIST </h1>
+<h2> Capture and Replay unit testing</h2>
+<p>
+Using NAMELIST to create a "Capture and Replay" unit test for a routine.
+<ol>
+<p>
+   This is extracted from the results of specially processed files that
+   largely automate the play and replay steps. Hopefully I will get some
+   time to make a simpler example that shows this powerful unit testing
+   concept using NAMELIST groups!
+</p>
+  
+  <li> create a NAMELIST group for all the input variables for the procedure
+  </li>
+  <li> create a NAMELIST group for all the output variables for the procedure
+  </li>
+  <p>
+  The NAMELIST names should probably be $PROCEDURENAME_in and $PROCEDURENAME_out
+  </p>
+  </li>
+  
+  <li> Add a WRITE of the input NAMELIST group at the beginning of the procedure,
+     possibly after handling optional parameters.
+     </li>
+  
+  <li> Add a WRITE of the output NAMELIST group at the exit point(s) of the routine.
+  </li>
+  
+  <li> Create a program or routine that reads a set of NAMELIST input values, calls
+     the routine, and compares the results to the captured NAMELIST output values.
+   </li>
+<p>
+   Cheating a bit and using a sample file that was run through a preprocessor, but
+   it is shown here expanded to standard Fortran. It is usually a good idea to have
+   the writing of the file done with statements that are conditionally compiled, as
+   the I/O can impact runtimes on heavily called routines.
+</p>
+</ol>
+<h3>Sample program to write and test a subroutine</h3>
+<pre>
+! Generated with preprocessor directives of the form (preprocessor not provided) ...
+! $CAPTURE START name [-echo]
+! $CAPTURE NAMELIST IN|OUT|INOUT variable-declaration  ! put back to seperate lines because of line length
+! $CAPTURE IN   ! can have significant timing impact, of course
+! $CAPTURE OUT  ! can have significant timing impact, of course
+! $CAPTURE FINISH [name]
+! $CAPTURE TEST name
+!
+! Recently being rewritten to handle contained routines, modules, user-defined types, optional arguments
+
+program testit_exe
+real :: x, y, z, value
+logical testit
+
+   testit=.false.
+   ! normal calls that do not generate a replay file with testit=.false.
+   call sub(10.0,20.0,z,value)
+
+   testit=.true.  ! actually environment variable called CAPTURE
+   ! generate a test file by calling routine with testit=.true.
+   ! this would normally be output saved from running multiple
+   ! cases of the actual application
+   call sub(10.0,20.0,z,value)
+   call sub(10.0,-20.0,z,value)
+   call sub(0.0,0.0,z,value)
+   call sub(-11.0,0.0,z,value)
+   
+   ! replay the calls and compare them to the numbers you just got
+   ! normally of course, you would be reading a template file
+   call capture_and_play_sub()
+
+contains
+
+subroutine sub(x,y,z,value)
+!$CAPTURE START SUB
+implicit none
+!$CAPTURE NAMELIST IN real,intent(in)  :: x
+real,intent(in)  :: x; namelist /sub_in/ x
+!$CAPTURE NAMELIST IN real,intent(in)  :: y
+real,intent(in)  :: y; namelist /sub_in/ y
+!$CAPTURE NAMELIST INOUT real          :: z
+real          :: z; namelist /sub_in/ z;namelist /sub_out/ z
+real             :: check
+!$NAMELIST OUT real,intent(out) :: value
+real,intent(out) :: value; namelist /sub_out/value
+
+   !=========================
+   !$CAPTURE IN 
+   if(testit)then
+      capture_in : block
+      ! namelist cannot be declared here
+      integer :: io
+      logical :: ifopened
+         inquire(file='capture_and_play_sub',opened=ifopened,number=io)
+         if(.not.ifopened)then
+             open(newunit=io,file='capture_and_play_sub',position='append')
+         endif
+         write(io,nml=sub_in)
+      end block capture_in
+   endif
+   !=========================
+   
+   ! actual routine
+   check=x**2+y**2
+   if(check.ge.0)then
+      value=sqrt(check)
+      z=z+1
+   else
+      z=-1
+   endif
+   !=========================
+   !$CAPTURE OUT
+   if(testit)then
+      capture_out : block
+      ! namelist cannot be declared here
+      integer :: io
+      logical :: ifopened
+         ! duplication not required if user uses correctly if io defined globally
+         inquire(file='capture_and_play_sub',opened=ifopened,number=io)
+         if(.not.ifopened)then
+            open(newunit=io,file='capture_and_play_sub',position='append')
+         endif
+         write(io,nml=sub_out)
+      end block capture_out
+   endif
+   !=========================
+!$CAPTURE FINISH SUB
+
+end subroutine sub
+
+!$CAPTURE TEST SUB
+!=========================
+subroutine capture_and_play_sub
+implicit none
+real :: x
+real :: y
+real :: z
+real :: value
+integer :: ios, igood, ibad, io
+logical :: answer, ifopened
+namelist /sub_in/ x,y,z,value
+real :: z__
+real :: value__
+namelist /sub_out/ z,value
+character(len=255) :: message
+!set environment variable testit to FALSE
+   igood=0
+   ibad=0
+   testit=.false.
+   inquire(file='capture_and_play_sub',opened=ifopened,number=io)
+   if(.not.ifopened)then
+      open(newunit=io,file='capture_and_play_sub')
+   else
+      rewind(unit=io)
+   endif
+   do
+      message=''
+      read(io,nml=sub_in,iostat=ios,iomsg=message)
+      if(ios.ne.0)write(*,*)'IOSTAT=',ios,trim(message)
+      if(ios.ne.0)exit
+      call sub(x=x,y=y,z=z,value=value) ! requires interface to use names but not order-dependent
+      z__=z
+      value__=value
+      read(io,nml=sub_out,iostat=ios,iomsg=message)
+      if(ios.ne.0)write(*,*)'IOSTAT=',ios,trim(message)
+      if(ios.ne.0)exit
+      ! call compare function instead of actual equality test as appropriate
+      answer=all([z.eq.z__,value.eq.value__])
+      if(answer)then
+        igood=igood+1
+      else
+        ibad=ibad+1
+        write(*,*)'failed test ',igood+ibad, z,z__,value,value__
+      endif
+   enddo
+   if(igood.gt.0.and.(igood.eq.ibad))then
+       write(*,*)'*sub* tested',igood,' failed ',ibad
+   elseif(igood.eq.0)then
+       write(*,*)'*sub* untested'
+   else
+       write(*,*)'*sub* tests passed',igood,' failed ',ibad
+   endif
+end subroutine capture_and_play_sub
+end program testit_exe
+</pre>
+<h2>Sample input/output file generated by multiple program executions</h2>
+<p>
+  The input file intentionally has two errors in it for demonstration
+  purposes. Hopefully the template
+  would have good answers!
+</p>
+<pre>
+&amp;SUB_IN X=  10.0000000    , Y=  20.0000000    , Z=  2.27811682E+26, /
+&amp;SUB_OUT Z=  2.27811682E+26, VALUE=  22.3606796    , /
+&amp;SUB_IN X=  10.0000000    , Y=  20.0000000    , Z= -2.95650935E-33, /
+&amp;SUB_OUT Z=  1.00000000    , VALUE=  22.3606796    , /
+&amp;SUB_IN X=  10.0000000    , Y= -20.0000000    , Z=  1.00000000    , /
+&amp;SUB_OUT Z=  2.00000000    , VALUE=  22.3606796    , /
+&amp;SUB_IN X=  0.00000000    , Y=  0.00000000    , Z=  2.00000000    , /
+&amp;SUB_OUT Z=  3.00000000    , VALUE=  0.00000000    , /
+&amp;SUB_IN X= -11.0000000    , Y=  0.00000000    , Z=  3.00000000    , /
+&amp;SUB_OUT Z=  4.00000000    , VALUE=  11.0000000    , /
+&amp;SUB_IN X=  10.0000000    , Y=  20.0000000    , Z= -1.72845205E-22, /
+&amp;SUB_OUT Z=  1.00000000    , VALUE=  22.3606796    , /
+&amp;SUB_IN X=  11.0000000    , Y= -20.0000000    , Z=  1.00000000    , /
+&amp;SUB_OUT Z=  2.00000000    , VALUE=  22.3606796    , /
+&amp;SUB_IN X=  0.00000000    , Y=  0.00000000    , Z=  2.00000000    , /
+&amp;SUB_OUT Z=  3.00000000    , VALUE=  0.00000000    , /
+&amp;SUB_IN X= -11.0000000    , Y=  0.00000000    , Z=  3.00000000    , /
+&amp;SUB_OUT Z=  4.00000000    , VALUE=  11.0000000    , /
+</pre>
+<h3> Output</h3>
+<p>
+ Intentionally editted the test input and put two errors in it so the test would look
+ more interesting ...
+</p>
+<pre>
+ failed test            7   2.00000000       2.00000000       22.3606796       22.8254242    
+ failed test            9   2.00000000       4.00000000       22.3606796       11.0000000    
+ IOSTAT=          -1 End of file
+ *sub* tests passed          7  failed            2
+</pre>
