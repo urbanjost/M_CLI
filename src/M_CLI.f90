@@ -3,7 +3,7 @@
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
 ! NAME
-!    M_CLI(3fm) - [ARGUMENTS::M_CLI] - command line argument parsing using a prototype command
+!    M_CLI(3fm) - [ARGUMENTS::M_CLI] - command line argument parsing using a prototype command and NAMELIST
 !    (LICENSE:PD)
 ! SYNOPSIS
 ! 
@@ -14,7 +14,7 @@
 !    Allow for command line parsing much like standard Unix command line
 !    parsing using a simple prototype.  This is based on the prototype
 !    method of the M_ARGS(3fm) module specifically designed to concentrate
-!    on expanding just this syntax method.
+!    on expanding just this syntax method using NAMELIST.
 ! 
 ! EXAMPLE
 !   Sample program
@@ -57,7 +57,7 @@ logical,allocatable            :: present_in(:)
 
 logical                        :: keyword_single=.true.
 character(len=:),allocatable   :: passed_in
-character(len=:),allocatable   :: namelist_name
+character(len=:),allocatable   :: G_namelist_name
 
 logical                        :: debug=.false.
 logical                        :: return_all
@@ -156,19 +156,19 @@ contains
 ! If the optional text values are supplied they will be displayed by --help
 ! and --version command-line options, respectively.
 ! 
-! OPTIONS
+!  OPTIONS
 ! 
-! IOS           status from READ(7f) of NAMELIST after calling
-!               commandline(3f)
+!  IOS           status from READ(7f) of NAMELIST after calling
+!                commandline(3f)
 ! 
-! MESSAGE       message from READ(7f) of NAMELIST after calling
-!               commandline(3f)
+!  MESSAGE       message from READ(7f) of NAMELIST after calling
+!                commandline(3f)
 ! 
-! HELP_TEXT     if present, will be displayed if program is called with
-!               --help switch, and then the program will terminate.
+!  HELP_TEXT     if present, will be displayed if program is called with
+!                --help switch, and then the program will terminate.
 ! 
-! VERSION_TEXT  if present, will be displayed if program is called with
-!               --version switch, and then the program will terminate.
+!  VERSION_TEXT  if present, will be displayed if program is called with
+!                --version switch, and then the program will terminate.
 ! 
 !    If the first four characters of each line are "@(#)" this prefix will
 !    not be displayed. This if for support of the SCCS what(1) command. If
@@ -176,12 +176,11 @@ contains
 !    you can probably see how it can be used to place metadata in a binary
 !    by entering:
 ! 
-!        strings demo2|grep '@(#)'|tr '>' '\n'|sed -e 's/  */ /g'
+!         strings demo2|grep '@(#)'|tr '>' '\n'|sed -e 's/  */ /g'
 ! 
 ! EXAMPLE
-!     Typical usage:
+!   Typical usage:
 ! 
-! ```fortran
 !     program demo_commandline
 !     use M_CLI,  only : unnamed, commandline, check_commandline
 !     implicit none
@@ -199,7 +198,7 @@ contains
 ! 
 !     ! initialize namelist from string and then update from command line
 !     readme=commandline(cmd)
-!     !!write(*,*)'README=',readme
+!     !write(*,*)'README=',readme
 !     read(readme,nml=args,iostat=ios,iomsg=message)
 !     version_text=[character(len=80) :: "version 1.0","author: me"]
 !     help_text=[character(len=80) :: "wish I put instructions","here","I suppose?"]
@@ -215,7 +214,6 @@ contains
 !        write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
 !     endif
 !     end program demo_commandline
-! ```
 !===================================================================================================================================
 subroutine check_commandline(ios,message,help_text,version_text)
 integer                                          :: ios
@@ -276,9 +274,10 @@ end subroutine check_commandline
 ! 
 ! SYNOPSIS
 ! 
-!    function commandline(definition) result(string)
+!    function commandline(definition,name) result(string)
 ! 
 !     character(len=*),intent(in),optional  :: definition
+!     character(len=*),optional :: name
 !     character(len=:),allocatable :: string
 ! DESCRIPTION
 ! 
@@ -424,16 +423,22 @@ end subroutine check_commandline
 ! LICENSE
 !     Public Domain
 !===================================================================================================================================
-function commandline(definition) result (readme)
+function commandline(definition,name) result (readme)
 
 character(len=*),parameter::ident_2="@(#)M_CLI::commandline(3f): return all command arguments as a NAMELIST(3f) string to read"
 
 character(len=*),intent(in)          :: definition
+character(len=*),intent(in),optional :: name
 character(len=:),allocatable         :: hold               ! stores command line argument
 character(len=:),allocatable         :: readme             ! stores command line argument
 integer                              :: ibig
 
    passed_in=''
+   if(present(name))then
+      G_namelist_name='&'//trim(adjustl(name))
+   else
+      G_namelist_name='&ARGS'
+   endif
 
    if(allocated(unnamed))then
        deallocate(unnamed)
@@ -861,7 +866,6 @@ integer                      :: ibig
 
    if(prototype.ne.'')then
       call prototype_to_dictionary(prototype)  ! build dictionary from prototype
-      namelist_name='&ARGS'
       present_in=.false.  ! reset all values to false so everything gets written
       return_all=.true.   ! return everything in dictionary
       call dictionary_to_namelist(nml1)
@@ -880,7 +884,7 @@ integer                      :: ibig
 
    call dictionary_to_namelist(nml2)
 
-   nml=namelist_name//' '//nml1//','//nml2//' /' ! add defaults and values on command line
+   nml=G_namelist_name//' '//nml1//','//nml2//' /' ! add defaults and values on command line
    ! show array
    if(debug)then
       call print_dictionary('DICTIONARY FROM COMMAND LINE:')
