@@ -108,6 +108,7 @@ options on whether to do the parsing in the main program or in a contained proce
 - [demo3](PROGRAMS/demo3.f90) example of **basic** use 
 - [demo4](PROGRAMS/demo4.f90) using  **COMPLEX** values!
 - [demo5](PROGRAMS/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
+- [demo6](PROGRAMS/demo6.f90) a more complex example showing how to create a command with subcommands
    
 Please provide feedback on the
 [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__
