@@ -51,17 +51,16 @@
 Now all the values in the NAMELIST should be updated using values from the
 command line and ready to use.
    
-- [M_CLI](https://urbanjost.github.io/M_CLI.3m_cli.html) An overview of the M_CLI module
-- [commandline](https://urbanjost.github.io/commandline.3m_cli.html) parses the command line options
+- [M_CLI](https://urbanjost.github.io/M_CLI/M_CLI.3m_cli.html) An overview of the M_CLI module
+
+- [commandline](https://urbanjost.github.io/M_CLI/commandline.3m_cli.html) parses the command line options
    
-- [check_commandline](https://urbanjost.github.io/check_commandline.3m_cli.html) convenience
+- [check_commandline](https://urbanjost.github.io/M_CLI/check_commandline.3m_cli.html) convenience
   routine for checking status of READ of NAMELIST group
-- [print_dictionary](https://urbanjost.github.io/print_dictionary.3m_cli.html) print the dictionary
+
+- [print_dictionary](https://urbanjost.github.io/M_CLI/print_dictionary.3m_cli.html) print the dictionary
   of command line keywords and values (typically not directly by a user, as automatically called when
   --usage option is supplied).
-
-- [print_](https://urbanjost.github.io/check_commandline.3m_cli.html) convenience
-  routine for checking status of READ of NAMELIST group
    
 This short program defines a command that can be called like
    
