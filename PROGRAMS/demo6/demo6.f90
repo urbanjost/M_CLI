@@ -1,4 +1,4 @@
-program demo2
+program demo6
 !! SUBCOMMANDS
 !! For a command with subcommands like git(1)
 !! you can make seperate namelists for each subcommand.
@@ -107,4 +107,4 @@ namelist /test/ title,l,l_,testname
 
 end subroutine parse
 
-end program demo2
+end program demo6

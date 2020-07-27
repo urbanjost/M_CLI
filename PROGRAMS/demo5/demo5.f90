@@ -73,51 +73,64 @@ integer            :: ios
       if(line(1:1).eq.'!')cycle
       select case(line)
        case('.')
-         exit
+        exit
        case('show')
-         write(*,*)'SO FAR'
-         write(*,nml=args)
-         !! something where you could restrict nml output to just listed names would be nice
-         !!write(*,nml=args)['A','H']
-         !!write(*,nml=*NML)args['A','H']
+        write(*,*)'SO FAR'
+        write(*,nml=args)
+        !! something where you could restrict nml output to just listed names would be nice
+        !!write(*,nml=args)['A','H']
+        !!write(*,nml=*NML)args['A','H']
+       case('help')
+        write(*,'(a)')[character(len=80) :: &
+        ' You are in interactive mode where you can display and change your values using', &
+        ' NAMELIST syntax:', &
+        '   KEYWORD=VALUE(S) -- change a variable value', &
+        '   show             -- show current values', &
+        '   stop             -- stop program', &
+        '   .                -- return to program and run', &
+        '   write FILENAME   -- write NAMELIST group to specified file',&
+        '   read  FILENAME   -- read NAMELIST input file', &
+        '   sh               -- start shell process', &
+        '', &
+        '' ]
        case('stop')
-         status='stop'
-         exit
+        status='stop'
+        exit
        case('sh')
-         call execute_command_line('bash')
+        call execute_command_line('bash')
        case('read')
-         write(*,'(a)',advance='no')'filename:'
-         read(*,'(a)',iostat=ios)answer
-         if(ios.ne.0)exit
-         open(file=answer,iostat=ios,newunit=lun)
-         if(ios.ne.0)exit
-         read(lun,args,iostat=ios)
-         close(unit=lun,iostat=ios)
+        write(*,'(a)',advance='no')'filename:'
+        read(*,'(a)',iostat=ios)answer
+        if(ios.ne.0)exit
+        open(file=answer,iostat=ios,newunit=lun)
+        if(ios.ne.0)exit
+        read(lun,args,iostat=ios)
+        close(unit=lun,iostat=ios)
        case('write')
-         write(*,'(a)',advance='no')'filename:'
-         read(*,'(a)',iostat=ios)answer
-         if(ios.ne.0)exit
-         open(file=answer,iostat=ios,newunit=lun)
-         if(ios.ne.0)exit
-         write(lun,args,iostat=ios)
-         close(unit=lun,iostat=ios)
+        write(*,'(a)',advance='no')'filename:'
+        read(*,'(a)',iostat=ios)answer
+        if(ios.ne.0)exit
+        open(file=answer,iostat=ios,newunit=lun)
+        if(ios.ne.0)exit
+        write(lun,args,iostat=ios)
+        close(unit=lun,iostat=ios)
        case default
-         UPDATE: block
-            character(len=:),allocatable :: intmp
-            character(len=256)  :: message
-            integer :: ios
-            intmp='&ARGS '//trim(line)//'/'
-            read(intmp,nml=args,iostat=ios,iomsg=message)
-            if(ios.ne.0)then
-               write(*,*)'ERROR:',trim(message)
-            endif
-         endblock UPDATE
-      end select
-   enddo
+        UPDATE: block
+           character(len=:),allocatable :: intmp
+           character(len=256)  :: message
+           integer :: ios
+           intmp='&ARGS '//trim(line)//'/'
+           read(intmp,nml=args,iostat=ios,iomsg=message)
+           if(ios.ne.0)then
+              write(*,*)'ERROR:',trim(message)
+           endif
+        endblock UPDATE
+     end select
+  enddo
 end subroutine readargs
-subroutine dosomething()
-   ! placeholder
-   write(*,*)'USE ALL THOSE VALUES'
-end subroutine dosomething
+   subroutine dosomething()
+      ! placeholder
+      write(*,*)'USE ALL THOSE VALUES'
+   end subroutine dosomething
 
-end program demo5
+   end program demo5

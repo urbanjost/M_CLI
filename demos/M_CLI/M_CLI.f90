@@ -80,6 +80,19 @@
                    !! something where you could restrict nml output to just listed names would be nice
                    !!write(*,nml=args)['A','H']
                    !!write(*,nml=*NML)args['A','H']
+                 case('help')
+                 write(*,'(a)')[character(len=80) :: &
+                 ' You are in interactive mode where you can display and change your values using', &
+                 ' NAMELIST syntax:', &
+                 '   KEYWORD=VALUE(S) -- change a variable value', &
+                 '   show             -- show current values', &
+                 '   stop             -- stop program', &
+                 '   .                -- return to program and run', &
+                 '   write FILENAME   -- write NAMELIST group to specified file',&
+                 '   read  FILENAME   -- read NAMELIST input file', &
+                 '   sh               -- start shell process', &
+                 '', &
+                '' ]
                  case('stop')
                    status='stop'
                    exit
