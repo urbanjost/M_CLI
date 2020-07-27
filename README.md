@@ -8,11 +8,11 @@
 
 ## DESCRIPTION
 
-   This package is a self-contained version of one mode of the M_args(3f)
-   module in the GPF (General Purpose Fortran) package that has been
-   extracted for those just interested in a library to crack the command
-   line. In the GPF package this library is intertwined with several other
-   large modules.
+   M_CLI(3f) is a Fortran module that will crack the command line when
+   given a NAMELIST and a prototype string that looks very much like an
+   invocation of the program. Using the NAMELIST group has the benefit
+   that there is no requirement to convert the strings to their required
+   types or to duplicate the type declarations.
 
 ## DOWNLOAD
    ```bash
@@ -22,6 +22,7 @@
        make
    ```
    This will compile the M_CLI module and build all the example programs.
+
 ## SUPPORTS FPM (registered at the [fpm(1) registry](https://github.com/fortran-lang/fpm-registry) )
 
    Alternatively, download the github repository and build it with 
@@ -39,7 +40,7 @@
         [dependencies]
         M_CLI        = { git = "https://github.com/urbanjost/M_CLI.git" }
 
-## EXAMPLE
+## FUNCTIONAL SPECIFICATION
 
 **This is how the interface works --**
    
@@ -50,6 +51,20 @@
    
 Now all the values in the NAMELIST should be updated using values from the
 command line and ready to use.
+
+## DOCUMENTATION
+There are several styles possible for defining the NAMELIST group as well as
+options on whether to do the parsing in the main program or in a contained procedure.
+These demo programs provide templates for the most common usage:
+   
+- [demo1](PROGRAMS/demo1/demo1.f90) full usage 
+- [demo2](PROGRAMS/demo2/demo2.f90) shows putting everything including **help** and **version** information into a contained procedure.
+- [demo3](PROGRAMS/demo3/demo3.f90) example of **basic** use 
+- [demo4](PROGRAMS/demo4/demo4.f90) using  **COMPLEX** values!
+- [demo5](PROGRAMS/demo5/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
+- [demo6](PROGRAMS/demo6/demo6.f90) a more complex example showing how to create a command with subcommands
+
+### manpages
    
 - [M_CLI](https://urbanjost.github.io/M_CLI/M_CLI.3m_cli.html) An overview of the M_CLI module
 
@@ -61,6 +76,8 @@ command line and ready to use.
 - [print_dictionary](https://urbanjost.github.io/M_CLI/print_dictionary.3m_cli.html) print the dictionary
   of command line keywords and values (typically not directly by a user, as automatically called when
   --usage option is supplied).
+
+## EXAMPLE PROGRAM
    
 This short program defines a command that can be called like
    
@@ -105,25 +122,18 @@ This short program defines a command that can be called like
    
    end program show
 ```
+
+## FEEDBACK
    
-There are several styles possible for defining the NAMELIST group as well as
-options on whether to do the parsing in the main program or in a contained procedure..
-   
-- [demo1](PROGRAMS/demo1/demo1.f90) full usage 
-- [demo2](PROGRAMS/demo2/demo2.f90) shows putting everything including **help** and **version** information into a contained procedure.
-- [demo3](PROGRAMS/demo3/demo3.f90) example of **basic** use 
-- [demo4](PROGRAMS/demo4/demo4.f90) using  **COMPLEX** values!
-- [demo5](PROGRAMS/demo5/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
-- [demo6](PROGRAMS/demo6/demo6.f90) a more complex example showing how to create a command with subcommands
-   
-Please provide feedback on the
-[wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__
-section or star the repository if you use the module (or let me know
-why not and let others know what you did use!).
+   Please provide feedback on the
+   [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__
+   section or star the repository if you use the module (or let me know
+   why not and let others know what you did use!).
+
+-------
 
 ## Other things to do with [NAMELIST](https://urbanjost.github.io/M_CLI/index.html)
 
    click on the link for some unusual things to do with NAMELIST,
    Capture and Replay unit testing, exposing variables for interactive
    editing ...
-
