@@ -51,9 +51,16 @@
 Now all the values in the NAMELIST should be updated using values from the
 command line and ready to use.
    
-- [commandline](md/commandline.md) parses the command line options
+- [M_CLI](https://urbanjost.github.io/M_CLI.3m_cli.html) An overview of the M_CLI module
+- [commandline](https://urbanjost.github.io/commandline.3m_cli.html) parses the command line options
    
-- [check_commandline](md/check_commandline.md) convenience
+- [check_commandline](https://urbanjost.github.io/check_commandline.3m_cli.html) convenience
+  routine for checking status of READ of NAMELIST group
+- [print_dictionary](https://urbanjost.github.io/print_dictionary.3m_cli.html) print the dictionary
+  of command line keywords and values (typically not directly by a user, as automatically called when
+  --usage option is supplied).
+
+- [print_](https://urbanjost.github.io/check_commandline.3m_cli.html) convenience
   routine for checking status of READ of NAMELIST group
    
 This short program defines a command that can be called like
@@ -103,12 +110,12 @@ This short program defines a command that can be called like
 There are several styles possible for defining the NAMELIST group as well as
 options on whether to do the parsing in the main program or in a contained procedure..
    
-- [demo1](PROGRAMS/demo1.f90) full usage 
-- [demo2](PROGRAMS/demo2.f90) shows putting everything including **help** and **version** information into a contained procedure.
-- [demo3](PROGRAMS/demo3.f90) example of **basic** use 
-- [demo4](PROGRAMS/demo4.f90) using  **COMPLEX** values!
-- [demo5](PROGRAMS/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
-- [demo6](PROGRAMS/demo6.f90) a more complex example showing how to create a command with subcommands
+- [demo1](PROGRAMS/demo1/demo1.f90) full usage 
+- [demo2](PROGRAMS/demo2/demo2.f90) shows putting everything including **help** and **version** information into a contained procedure.
+- [demo3](PROGRAMS/demo3/demo3.f90) example of **basic** use 
+- [demo4](PROGRAMS/demo4/demo4.f90) using  **COMPLEX** values!
+- [demo5](PROGRAMS/demo5/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
+- [demo6](PROGRAMS/demo6/demo6.f90) a more complex example showing how to create a command with subcommands
    
 Please provide feedback on the
 [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__
