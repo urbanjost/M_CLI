@@ -3,7 +3,7 @@ program basic
 !! OS shells typically process quoted strings and remove one level of quoting
 !! This parser knows if a value is supposed to be a string because the 
 !! prototype definition requires a string be supplied with double quotes when
-!! defined. So it the string the program gets does not have its first character
+!! defined. So it the string the program gets does not have it's first character
 !! as a double-quote the entire string is quoted. But if not, it leaves the
 !! string as-is and assumes it is suitable for use as NAMELIST input. so to
 !! pass an array of string values you need to enter something like:
@@ -26,23 +26,32 @@ character(len=:),allocatable :: readme ! stores updated namelist
 character(len=256)           :: message
 integer                      :: ios
 character(len=10)            :: x, y, z, arr(3)
-character(len=:),allocatable :: allo
+character(len=:),allocatable :: allo(:)
 namelist /args/ x, y, z, arr, allo
-integer                      :: maxlen, leni, i
 
+integer :: maxlen, leni, i
    ! find length of longest argument and allocate a CHARACTER variable
-   ! to be big enough to hold that so it will not be truncated
+   ! to be big enough to hold that so it will not be truncated, assuming
+   ! worse case is it all internal double-quotes
    maxlen=0
    do i=1,command_argument_count()
       call get_command_argument(i,length=leni)
       maxlen=max(maxlen,leni)
    enddo
-   leni=max(leni,len("Allocated")) ! longest of my default value and longest argument on command line
-   allocate(character(len=leni) :: allo)
-   !! initialize arr(3) to blanks using NAMELIST repeat format
-   readme=commandline('-x "A" -y "B" -z "C" -arr 3*" " -allo "Allocated"',noquote=.true.)
+   ! assume every other character could be a value
+   allocate(character(len=leni*2+2) :: allo((leni+1)/2))
+   write(*,*)leni*2+2,(leni+1)/2,len(allo),size(allo)
+
+   allo=char(0)
+   readme=commandline('-x "A" -y "B" -z "C" -allo "AAAAAA" -arr "one","two","three"')
    read(readme,nml=args,iostat=ios,iomsg=message)
    call check_commandline(ios,message)
-   allo=trim(allo)
+   do i=1,size(allo)
+      if(allo(i).eq.char(0))then
+         allo=allo(:i-1)
+         exit
+      endif
+   enddo
+   write(*,*)size(allo),len(allo)
    write(*,'(*("[",g0,"]":))')x,y,z,arr,allo
 end program basic

@@ -201,6 +201,7 @@ logical,allocatable            :: present_in(:)
 logical                        :: keyword_single=.true.
 character(len=:),allocatable   :: passed_in
 character(len=:),allocatable   :: G_namelist_name
+logical                        :: G_noquote
 
 logical                        :: debug=.false.
 logical                        :: return_all
@@ -417,30 +418,31 @@ end subroutine check_commandline
 ! 
 ! SYNOPSIS
 ! 
-!    function commandline(definition,name) result(string)
+!    function commandline(definition,name,noquote) result(string)
 ! 
 !     character(len=*),intent(in),optional  :: definition
 !     character(len=*),optional :: name
+!     logical,optional :: noquote
 !     character(len=:),allocatable :: string
 ! DESCRIPTION
 ! 
 !     To use the routine first define a NAMELIST group called ARGS.
 ! 
-!     This routine leverages NAMELIST groups to do the conversion from strings
-!     to numeric values required by other command line parsers.
+!     This routine leverages NAMELIST groups to do the conversion from
+!     strings to numeric values required by other command line parsers.
 ! 
-!     The example program shows how simple it is to use. Add a
-!     variable to the NAMELIST and the prototype and it automatically is available as
-!     a value in the program.
+!     The example program shows how simple it is to use. Add a variable
+!     to the NAMELIST and the prototype and it automatically is available
+!     as a value in the program.
 ! 
-!     There is no need to convert from strings to numeric
-!     values in the source code. Even arrays and user-defined types can be
-!     used, complex values can be input ... just define the variable in the prototype and
-!     add it to the NAMELIST definition.
+!     There is no need to convert from strings to numeric values in the
+!     source code. Even arrays and user-defined types can be used, complex
+!     values can be input ... just define the variable in the prototype
+!     and add it to the NAMELIST definition.
 ! 
-!     Note that since all the arguments are defined in a NAMELIST group
-!     that config files can easily be used for the same options.
-!     Just create a NAMELIST input file and read it.
+!     Note that since all the arguments are defined in a NAMELIST group that
+!     config files can easily be used for the same options.  Just create
+!     a NAMELIST input file and read it.
 ! 
 !     NAMELIST syntax can vary between different programming environments.
 !     Currently, this routine has only been tested using gfortran 7.0.4;
@@ -519,6 +521,14 @@ end subroutine check_commandline
 !                   routine is called. The same is true for --help and --version
 !                   if the optional help_text and version_text options are
 !                   provided.
+!    NOQUOTE        If .TRUE., then a comma is implicitly assumed a value seperator
+!                   in unquoted strings on the command line, so that an array of strings
+!                   not containing commas in the values can
+!                   be specified as A,B,C instead of '"A","B","C"'. Note that this means if
+!                   a non-array string value is specified that contains a comma, the scalar
+!                   value would now need quoted, as in '"yesterday, today or tomorrow"'.
+!                   So if you are not using string arrays this should be left off.
+! 
 ! RETURNS
 ! 
 !     STRING   The output is a NAMELIST string than can be read to update
@@ -566,15 +576,21 @@ end subroutine check_commandline
 ! LICENSE
 !     Public Domain
 !===================================================================================================================================
-function commandline(definition,name) result (readme)
+function commandline(definition,name,noquote) result (readme)
 
-character(len=*),parameter::ident_2="@(#)M_CLI::commandline(3f): return all command arguments as a NAMELIST(3f) string to read"
+! ident_1="@(#)M_CLI::commandline(3f): return all command arguments as a NAMELIST(3f) string to read"
 
 character(len=*),intent(in)          :: definition
 character(len=*),intent(in),optional :: name
 character(len=:),allocatable         :: hold               ! stores command line argument
 character(len=:),allocatable         :: readme             ! stores command line argument
 integer                              :: ibig
+logical,optional                     :: noquote
+   if(present(noquote))then
+      G_noquote=noquote
+   else
+      G_noquote=.false.
+   endif
 
    passed_in=''
    if(present(name))then
@@ -651,7 +667,7 @@ end function commandline
 subroutine prototype_to_dictionary(string)
 implicit none
 
-character(len=*),parameter::ident_4="@(#)M_CLI::prototype_to_dictionary(3f): parse user command and store tokens into dictionary"
+! ident_2="@(#)M_CLI::prototype_to_dictionary(3f): parse user command and store tokens into dictionary"
 
 character(len=*),intent(in)       :: string ! string is character input string of options and values
 
@@ -991,8 +1007,7 @@ end function get
 subroutine prototype_and_cmd_args_to_nlist(prototype,nml)
 implicit none
 
-character(len=*),parameter::ident_5="&
-&@(#)M_CLI::prototype_and_cmd_args_to_nlist: create dictionary from prototype (if not null) and update from command line arguments"
+! ident_3="@(#)M_CLI::prototype_and_cmd_args_to_nlist: create dictionary from prototype (if not null) and update from command line arguments"
 
 character(len=*),intent(in)              :: prototype
 character(len=:),intent(out),allocatable :: nml
@@ -1055,6 +1070,7 @@ character(len=:),allocatable :: current_argument_padded
 character(len=:),allocatable :: dummy
 character(len=:),allocatable :: oldvalue
 logical                      :: nomore
+integer                      :: ilast
    if(present(check))then
       check_local=check
    else
@@ -1124,10 +1140,20 @@ logical                      :: nomore
          if(debug)then
             write(stderr,*)'POINTER=',pointer,' KEYWORD=',keywords(pointer),' VALUE=',current_argument,' LENGTH=',ilength
          endif
-         oldvalue=get(keywords(pointer))//' '
-         if(oldvalue(1:1).eq.'"')then
+         oldvalue=get(keywords(pointer))//' ' ! make at least one character long
+         ilast=len_trim(oldvalue)
+         !!if(oldvalue(1:1).eq.'"')then  ! look at last so can use NAMELIST repeat format r*"string"
+         if(oldvalue(ilast:ilast).eq.'"')then
             if(current_argument(1:1).ne.'"')then
-               current_argument=quote(current_argument(:ilength))
+
+               if(index(current_argument(:ilength),',').ne.0.and.G_noquote)then
+                  current_argument=current_argument//repeat(' ',ilength*2) ! worse case is line is all ","
+                  call substitute(current_argument,',','","')
+                  current_argument='"'//trim(current_argument)//'"'
+                  ilength=len_trim(current_argument)
+               else
+                  current_argument=quote(current_argument(:ilength))
+               endif
             endif
          endif
          if(upper(oldvalue).eq.'F'.or.upper(oldvalue).eq.'T')then  ! assume boolean parameter
@@ -1370,8 +1396,7 @@ end function longest_command_argument
 !===================================================================================================================================
 subroutine locate_c(list,value,place,ier,errmsg)
 
-character(len=*),parameter::ident_5="&
-&@(#)M_list::locate_c(3f): find PLACE in sorted character array where VALUE can be found or should be placed"
+! ident_4="@(#)M_list::locate_c(3f): find PLACE in sorted character array where VALUE can be found or should be placed"
 
 character(len=*),intent(in)             :: value
 integer,intent(out)                     :: place
@@ -1446,8 +1471,7 @@ end subroutine locate_c
 !===================================================================================================================================
 subroutine locate_d(list,value,place,ier,errmsg)
 
-character(len=*),parameter::ident_6="&
-&@(#)M_list::locate_d(3f): find PLACE in sorted doubleprecision array where VALUE can be found or should be placed"
+! ident_5="@(#)M_list::locate_d(3f): find PLACE in sorted doubleprecision array where VALUE can be found or should be placed"
 
 ! Assuming an array sorted in descending order
 !
@@ -1528,8 +1552,7 @@ end subroutine locate_d
 !===================================================================================================================================
 subroutine locate_r(list,value,place,ier,errmsg)
 
-character(len=*),parameter::ident_7="&
-&@(#)M_list::locate_r(3f): find PLACE in sorted real array where VALUE can be found or should be placed"
+! ident_6="@(#)M_list::locate_r(3f): find PLACE in sorted real array where VALUE can be found or should be placed"
 
 ! Assuming an array sorted in descending order
 !
@@ -1610,8 +1633,7 @@ end subroutine locate_r
 !===================================================================================================================================
 subroutine locate_i(list,value,place,ier,errmsg)
 
-character(len=*),parameter::ident_8="&
-&@(#)M_list::locate_i(3f): find PLACE in sorted integer array where VALUE can be found or should be placed"
+! ident_7="@(#)M_list::locate_i(3f): find PLACE in sorted integer array where VALUE can be found or should be placed"
 
 ! Assuming an array sorted in descending order
 !
@@ -1694,7 +1716,7 @@ end subroutine locate_i
 !===================================================================================================================================
 subroutine remove_c(list,place)
 
-character(len=*),parameter::ident_9="@(#)M_list::remove_c(3fp): remove string from allocatable string array at specified position"
+! ident_8="@(#)M_list::remove_c(3fp): remove string from allocatable string array at specified position"
 
 character(len=:),allocatable :: list(:)
 integer,intent(in)           :: place
@@ -1716,8 +1738,7 @@ end subroutine remove_c
 !===================================================================================================================================
 subroutine remove_d(list,place)
 
-character(len=*),parameter::ident_10="&
-&@(#)M_list::remove_d(3fp): remove doubleprecision value from allocatable array at specified position"
+! ident_9="@(#)M_list::remove_d(3fp): remove doubleprecision value from allocatable array at specified position"
 
 doubleprecision,allocatable  :: list(:)
 integer,intent(in)           :: place
@@ -1739,7 +1760,7 @@ end subroutine remove_d
 !===================================================================================================================================
 subroutine remove_r(list,place)
 
-character(len=*),parameter::ident_11="@(#)M_list::remove_r(3fp): remove value from allocatable array at specified position"
+! ident_10="@(#)M_list::remove_r(3fp): remove value from allocatable array at specified position"
 
 real,allocatable    :: list(:)
 integer,intent(in)  :: place
@@ -1761,7 +1782,7 @@ end subroutine remove_r
 !===================================================================================================================================
 subroutine remove_l(list,place)
 
-character(len=*),parameter::ident_12="@(#)M_list::remove_l(3fp): remove value from allocatable array at specified position"
+! ident_11="@(#)M_list::remove_l(3fp): remove value from allocatable array at specified position"
 
 logical,allocatable    :: list(:)
 integer,intent(in)     :: place
@@ -1784,7 +1805,8 @@ end subroutine remove_l
 !===================================================================================================================================
 subroutine remove_i(list,place)
 
-character(len=*),parameter::ident_13="@(#)M_list::remove_i(3fp): remove value from allocatable array at specified position"
+! ident_12="@(#)M_list::remove_i(3fp): remove value from allocatable array at specified position"
+
 integer,allocatable    :: list(:)
 integer,intent(in)     :: place
 integer                :: end
@@ -1808,7 +1830,7 @@ end subroutine remove_i
 !===================================================================================================================================
 subroutine replace_c(list,value,place)
 
-character(len=*),parameter::ident_14="@(#)M_list::replace_c(3fp): replace string in allocatable string array at specified position"
+! ident_13="@(#)M_list::replace_c(3fp): replace string in allocatable string array at specified position"
 
 character(len=*),intent(in)  :: value
 character(len=:),allocatable :: list(:)
@@ -1838,8 +1860,7 @@ end subroutine replace_c
 !===================================================================================================================================
 subroutine replace_d(list,value,place)
 
-character(len=*),parameter::ident_15="&
-&@(#)M_list::replace_d(3fp): place doubleprecision value into allocatable array at specified position"
+! ident_14="@(#)M_list::replace_d(3fp): place doubleprecision value into allocatable array at specified position"
 
 doubleprecision,intent(in)   :: value
 doubleprecision,allocatable  :: list(:)
@@ -1862,7 +1883,7 @@ end subroutine replace_d
 !===================================================================================================================================
 subroutine replace_r(list,value,place)
 
-character(len=*),parameter::ident_16="@(#)M_list::replace_r(3fp): place value into allocatable array at specified position"
+! ident_15="@(#)M_list::replace_r(3fp): place value into allocatable array at specified position"
 
 real,intent(in)       :: value
 real,allocatable      :: list(:)
@@ -1885,7 +1906,7 @@ end subroutine replace_r
 !===================================================================================================================================
 subroutine replace_l(list,value,place)
 
-character(len=*),parameter::ident_17="@(#)M_list::replace_l(3fp): place value into allocatable array at specified position"
+! ident_16="@(#)M_list::replace_l(3fp): place value into allocatable array at specified position"
 
 logical,allocatable   :: list(:)
 logical,intent(in)    :: value
@@ -1908,7 +1929,7 @@ end subroutine replace_l
 !===================================================================================================================================
 subroutine replace_i(list,value,place)
 
-character(len=*),parameter::ident_18="@(#)M_list::replace_i(3fp): place value into allocatable array at specified position"
+! ident_17="@(#)M_list::replace_i(3fp): place value into allocatable array at specified position"
 
 integer,intent(in)    :: value
 integer,allocatable   :: list(:)
@@ -1933,7 +1954,7 @@ end subroutine replace_i
 !===================================================================================================================================
 subroutine insert_c(list,value,place)
 
-character(len=*),parameter::ident_19="@(#)M_list::insert_c(3fp): place string into allocatable string array at specified position"
+! ident_18="@(#)M_list::insert_c(3fp): place string into allocatable string array at specified position"
 
 character(len=*),intent(in)  :: value
 character(len=:),allocatable :: list(:)
@@ -1970,7 +1991,7 @@ end subroutine insert_c
 !===================================================================================================================================
 subroutine insert_r(list,value,place)
 
-character(len=*),parameter::ident_20="@(#)M_list::insert_r(3fp): place real value into allocatable array at specified position"
+! ident_19="@(#)M_list::insert_r(3fp): place real value into allocatable array at specified position"
 
 real,intent(in)       :: value
 real,allocatable      :: list(:)
@@ -2000,8 +2021,7 @@ end subroutine insert_r
 !===================================================================================================================================
 subroutine insert_d(list,value,place)
 
-character(len=*),parameter::ident_21="&
-&@(#)M_list::insert_d(3fp): place doubleprecision value into allocatable array at specified position"
+! ident_20="@(#)M_list::insert_d(3fp): place doubleprecision value into allocatable array at specified position"
 
 doubleprecision,intent(in)       :: value
 doubleprecision,allocatable      :: list(:)
@@ -2028,7 +2048,7 @@ end subroutine insert_d
 !===================================================================================================================================
 subroutine insert_l(list,value,place)
 
-character(len=*),parameter::ident_22="@(#)M_list::insert_l(3fp): place value into allocatable array at specified position"
+! ident_21="@(#)M_list::insert_l(3fp): place value into allocatable array at specified position"
 
 logical,allocatable   :: list(:)
 logical,intent(in)    :: value
@@ -2056,7 +2076,7 @@ end subroutine insert_l
 !===================================================================================================================================
 subroutine insert_i(list,value,place)
 
-character(len=*),parameter::ident_23="@(#)M_list::insert_i(3fp): place value into allocatable array at specified position"
+! ident_22="@(#)M_list::insert_i(3fp): place value into allocatable array at specified position"
 
 integer,allocatable   :: list(:)
 integer,intent(in)    :: value
@@ -2086,7 +2106,7 @@ end subroutine insert_i
 !===================================================================================================================================
 subroutine dict_delete(self,key)
 
-character(len=*),parameter::ident_24="@(#)M_list::dict_delete(3f): remove string from sorted allocatable string array if present"
+! ident_23="@(#)M_list::dict_delete(3f): remove string from sorted allocatable string array if present"
 
 class(dictionary),intent(inout) :: self
 character(len=*),intent(in)     :: key
@@ -2105,7 +2125,7 @@ end subroutine dict_delete
 !===================================================================================================================================
 function dict_get(self,key) result(value)
 
-character(len=*),parameter::ident_25="@(#)M_list::dict_get(3f): get value of key-value pair in dictionary, given key"
+! ident_24="@(#)M_list::dict_get(3f): get value of key-value pair in dictionary, given key"
 
 class(dictionary)               :: self
 character(len=*),intent(in)     :: key
@@ -2123,7 +2143,7 @@ end function dict_get
 !===================================================================================================================================
 subroutine dict_add(self,key,value)
 
-character(len=*),parameter::ident_26="@(#)M_list::dict_add(3f): place key-value pair into dictionary, adding the key if required"
+! ident_25="@(#)M_list::dict_add(3f): place key-value pair into dictionary, adding the key if required"
 
 class(dictionary),intent(inout) :: self
 character(len=*),intent(in)     :: key
@@ -2150,7 +2170,7 @@ end subroutine dict_add
 !===================================================================================================================================
 pure elemental function isupper(ch) result(res)
 
-character(len=*),parameter::ident_68="@(#)M_strings::isupper(3f): returns true if character is an uppercase letter (A-Z)"
+! ident_26="@(#)M_strings::isupper(3f): returns true if character is an uppercase letter (A-Z)"
 
 character,intent(in) :: ch
 logical              :: res
@@ -2166,7 +2186,7 @@ end function isupper
 !===================================================================================================================================
 elemental pure function upper(str,begin,end) result (string)
 
-character(len=*),parameter::ident_21="@(#)M_strings::upper(3f): Changes a string to uppercase"
+! ident_27="@(#)M_strings::upper(3f): Changes a string to uppercase"
 
 character(*), intent(In)      :: str                 ! inpout string to convert to all uppercase
 integer, intent(in), optional :: begin,end
@@ -2198,7 +2218,7 @@ end function upper
 !===================================================================================================================================
 elemental pure function lower(str,begin,end) result (string)
 
-character(len=*),parameter::ident_22="@(#)M_strings::lower(3f): Changes a string to lowercase over specified range"
+! ident_28="@(#)M_strings::lower(3f): Changes a string to lowercase over specified range"
 
 character(*), intent(In)     :: str
 character(len(str))          :: string
@@ -2259,7 +2279,7 @@ end function quote
 !===================================================================================================================================
 function replace_str(targetline,old,new,ierr,cmd,range) result (newline)
 
-character(len=*),parameter::ident_10="@(#)M_strings::replace(3f): Globally replace one substring for another in string"
+! ident_29="@(#)M_strings::replace(3f): Globally replace one substring for another in string"
 
 !-----------------------------------------------------------------------------------------------------------------------------------
 ! parameters
@@ -2419,7 +2439,7 @@ end subroutine crack_cmd
 FUNCTION strtok(source_string,itoken,token_start,token_end,delimiters) result(strtok_status)
 ! JSU- 20151030
 
-character(len=*),parameter::ident_13="@(#)M_strings::strtok(3f): Tokenize a string"
+! ident_30="@(#)M_strings::strtok(3f): Tokenize a string"
 
 character(len=*),intent(in)  :: source_string    ! Source string to tokenize.
 character(len=*),intent(in)  :: delimiters       ! list of separator characters. May change between calls
@@ -2472,6 +2492,193 @@ end function strtok
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
+! NAME
+!    substitute(3f) - [M_strings:EDITING] subroutine globally substitutes one substring for another in string
+!    (LICENSE:PD)
+! 
+! SYNOPSIS
+!    subroutine substitute(targetline,old,new,ierr,start,end)
+! 
+!     character(len=*)              :: targetline
+!     character(len=*),intent(in)   :: old
+!     character(len=*),intent(in)   :: new
+!     integer,intent(out),optional  :: ierr
+!     integer,intent(in),optional   :: start
+!     integer,intent(in),optional   :: end
+! DESCRIPTION
+!    Globally substitute one substring for another in string.
+! 
+! OPTIONS
+!     TARGETLINE  input line to be changed. Must be long enough to
+!                 hold altered output.
+!     OLD         substring to find and replace
+!     NEW         replacement for OLD substring
+!     IERR        error code. If IER = -1 bad directive, >= 0 then
+!                 count of changes made.
+!     START       sets the left margin to be scanned for OLD in
+!                 TARGETLINE.
+!     END         sets the right margin to be scanned for OLD in
+!                 TARGETLINE.
+! 
+! EXAMPLES
+!   Sample Program:
+! 
+!       program demo_substitute
+!       use M_strings, only : substitute
+!       implicit none
+!       ! must be long enough to hold changed line
+!       character(len=80) :: targetline
+! 
+!       targetline='this is the input string'
+!       write(*,*)'ORIGINAL    : '//trim(targetline)
+! 
+!       ! changes the input to 'THis is THe input string'
+!       call substitute(targetline,'th','TH')
+!       write(*,*)'th => TH    : '//trim(targetline)
+! 
+!       ! a null old substring means "at beginning of line"
+!       ! changes the input to 'BEFORE:this is the input string'
+!       call substitute(targetline,'','BEFORE:')
+!       write(*,*)'"" => BEFORE: '//trim(targetline)
+! 
+!       ! a null new string deletes occurrences of the old substring
+!       ! changes the input to 'ths s the nput strng'
+!       call substitute(targetline,'i','')
+!       write(*,*)'i => ""     : '//trim(targetline)
+! 
+!       end program demo_substitute
+! 
+!   Expected output
+! 
+!        ORIGINAL    : this is the input string
+!        th => TH    : THis is THe input string
+!        "" => BEFORE: BEFORE:THis is THe input string
+!        i => ""     : BEFORE:THs s THe nput strng
+! AUTHOR
+!    John S. Urban
+! LICENSE
+!    Public Domain
+subroutine substitute(targetline,old,new,ierr,start,end)
+
+! ident_31="@(#)M_strings::substitute(3f): Globally substitute one substring for another in string"
+
+!-----------------------------------------------------------------------------------------------------------------------------------
+character(len=*)               :: targetline         ! input line to be changed
+character(len=*),intent(in)    :: old                ! old substring to replace
+character(len=*),intent(in)    :: new                ! new substring
+integer,intent(out),optional   :: ierr               ! error code. if ierr = -1 bad directive, >=0 then ierr changes made
+integer,intent(in),optional    :: start              ! start sets the left margin
+integer,intent(in),optional    :: end                ! end sets the right margin
+!-----------------------------------------------------------------------------------------------------------------------------------
+character(len=len(targetline)) :: dum1               ! scratch string buffers
+integer                        :: ml, mr, ier1
+integer                        :: maxlengthout       ! MAXIMUM LENGTH ALLOWED FOR NEW STRING
+integer                        :: original_input_length
+integer                        :: len_old, len_new
+integer                        :: ladd
+integer                        :: ir
+integer                        :: ind
+integer                        :: il
+integer                        :: id
+integer                        :: ic
+integer                        :: ichar
+!-----------------------------------------------------------------------------------------------------------------------------------
+   if (present(start)) then                            ! optional starting column
+      ml=start
+   else
+      ml=1
+   endif
+   if (present(end)) then                              ! optional ending column
+      mr=end
+   else
+      mr=len(targetline)
+   endif
+!-----------------------------------------------------------------------------------------------------------------------------------
+   ier1=0                                              ! initialize error flag/change count
+   maxlengthout=len(targetline)                        ! max length of output string
+   original_input_length=len_trim(targetline)          ! get non-blank length of input line
+   dum1(:)=' '                                         ! initialize string to build output in
+   id=mr-ml                                            ! check for window option !-! change to optional parameter(s)
+!-----------------------------------------------------------------------------------------------------------------------------------
+   len_old=len(old)                                    ! length of old substring to be replaced
+   len_new=len(new)                                    ! length of new substring to replace old substring
+   if(id.le.0)then                                     ! no window so change entire input string
+      il=1                                             ! il is left margin of window to change
+      ir=maxlengthout                                  ! ir is right margin of window to change
+      dum1(:)=' '                                      ! begin with a blank line
+   else                                                ! if window is set
+      il=ml                                            ! use left margin
+      ir=min0(mr,maxlengthout)                         ! use right margin or rightmost
+      dum1=targetline(:il-1)                           ! begin with what's below margin
+   endif                                               ! end of window settings
+!-----------------------------------------------------------------------------------------------------------------------------------
+   if(len_old.eq.0)then                                ! c//new/ means insert new at beginning of line (or left margin)
+      ichar=len_new + original_input_length
+      if(ichar.gt.maxlengthout)then
+         write(*,'(a)')'*substitute* new line will be too long'
+         ier1=-1
+         if (present(ierr))ierr=ier1
+         return
+      endif
+      if(len_new.gt.0)then
+         dum1(il:)=new(:len_new)//targetline(il:original_input_length)
+      else
+         dum1(il:)=targetline(il:original_input_length)
+      endif
+      targetline(1:maxlengthout)=dum1(:maxlengthout)
+      ier1=1                                           ! made one change. actually, c/// should maybe return 0
+      if(present(ierr))ierr=ier1
+      return
+   endif
+!-----------------------------------------------------------------------------------------------------------------------------------
+   ichar=il                                            ! place to put characters into output string
+   ic=il                                               ! place looking at in input string
+   loop: do
+      ind=index(targetline(ic:),old(:len_old))+ic-1    ! try to find start of old string in remaining part of input in change window
+      if(ind.eq.ic-1.or.ind.gt.ir)then                 ! did not find old string or found old string past edit window
+         exit loop                                     ! no more changes left to make
+      endif
+      ier1=ier1+1                                      ! found an old string to change, so increment count of changes
+      if(ind.gt.ic)then                                ! if found old string past at current position in input string copy unchanged
+         ladd=ind-ic                                   ! find length of character range to copy as-is from input to output
+         if(ichar-1+ladd.gt.maxlengthout)then
+            ier1=-1
+            exit loop
+         endif
+         dum1(ichar:)=targetline(ic:ind-1)
+         ichar=ichar+ladd
+      endif
+      if(ichar-1+len_new.gt.maxlengthout)then
+         ier1=-2
+         exit loop
+      endif
+      if(len_new.ne.0)then
+         dum1(ichar:)=new(:len_new)
+         ichar=ichar+len_new
+      endif
+      ic=ind+len_old
+   enddo loop
+!-----------------------------------------------------------------------------------------------------------------------------------
+   select case (ier1)
+   case (:-1)
+      write(*,'(a)')'*substitute* new line will be too long'
+   case (0)                                                ! there were no changes made to the window
+   case default
+      ladd=original_input_length-ic
+      if(ichar+ladd.gt.maxlengthout)then
+         write(*,'(a)')'*substitute* new line will be too long'
+         ier1=-1
+         if(present(ierr))ierr=ier1
+         return
+      endif
+      if(ic.lt.len(targetline))then
+         dum1(ichar:)=targetline(ic:max(ic,original_input_length))
+      endif
+      targetline=dum1(:maxlengthout)
+   end select
+   if(present(ierr))ierr=ier1
+!-----------------------------------------------------------------------------------------------------------------------------------
+end subroutine substitute
 end module M_CLI
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
