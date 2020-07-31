@@ -12,11 +12,14 @@
 ! 
 ! DESCRIPTION
 !    Allow for command line parsing much like standard Unix command line
-!    parsing using a simple prototype. This is based on the prototype
-!    method of the M_ARGS(3fm) module specifically designed to concentrate
-!    on expanding just this syntax method using NAMELIST.
+!    parsing using a simple prototype that looks just like a call to the
+!    program and NAMELIST.
 ! 
 ! EXAMPLE
+!   This is an extensive example that even adds a procedure that lets you
+!   interactively edit the NAMELIST values. See the demo programs for more
+!   basic usage.
+! 
 !   Sample program
 ! 
 !    program demo_M_CLI
@@ -37,6 +40,7 @@
 !    character(len=*),parameter :: cmd=&
 !       ' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" -l F -L F '
 ! 
+!       !! PARSING SECTION : SHOULD NOT HAVE TO CHANGE
 !       call set() !! set text values for help
 !       readme=commandline(cmd)
 !       read(readme,nml=args,iostat=ios,iomsg=message)
@@ -46,7 +50,9 @@
 !          if(status.eq.'stop')exit
 !          call dosomething() ! use the NAMELIST values
 !       enddo
-!       !! ALL DONE CRACKING THE COMMAND LINE USE THE VALUES IN YOUR PROGRAM.
+!       !! END PARSING SECTION
+! 
+!       !! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
 ! 
 !       !! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
 !       !! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
@@ -660,6 +666,7 @@ integer,dimension(2)              :: ipnt
 integer                           :: islen   ! number of characters in input string
 integer                           :: ipoint
 integer                           :: itype
+integer,parameter                 :: TYPE_KEYWORD=1, TYPE_VALUE=2
 integer                           :: ifwd
 integer                           :: ibegin
 integer                           :: iend
@@ -675,7 +682,7 @@ integer                           :: iend
    ipoint=0            ! ipoint is the current character pointer for (dummy)
    ipnt(2)=2           ! pointer to position in parameter name
    ipnt(1)=1           ! pointer to position in parameter value
-   itype=1             ! itype=1 for value, itype=2 for variable
+   itype=TYPE_KEYWORD
 
    delmt="off"
    prev=" "
@@ -723,7 +730,7 @@ integer                           :: iend
                endif
             endif
          endif
-         itype=2                               ! change to filling a variable name
+         itype=TYPE_VALUE                      ! change to filling a variable name
          value=""                              ! clear value for this variable
          keyword=""                            ! clear variable name
          ipnt(1)=1                             ! restart variable value
@@ -731,35 +738,35 @@ integer                           :: iend
 
       else       ! currnt is not one of the special characters
          ! the space after a keyword before the value
-         if(currnt == " ".and.itype  ==  2)then
+         if(currnt == " ".and.itype  ==  TYPE_VALUE)then
             ! switch from building a keyword string to building a value string
-            itype=1
+            itype=TYPE_KEYWORD
             ! beginning of a delimited parameter value
-         elseif(currnt  ==  """".and.itype  ==  1)then
-            ! second of a double quote, put quote in
-            if(prev  ==  """")then
-               if(itype.eq.1)then
-                  value=value//currnt
-               else
-                  keyword=keyword//currnt
-               endif
-               ipnt(itype)=ipnt(itype)+1
-               delmt="on"
-            elseif(delmt  ==  "on")then     ! first quote of a delimited string
-               delmt="off"
-            else
-               delmt="on"
-            endif
-            if(prev /= """")then  ! leave quotes where found them
-               if(itype.eq.1)then
-                  value=value//currnt
-               else
-                  keyword=keyword//currnt
-               endif
-               ipnt(itype)=ipnt(itype)+1
-            endif
+         !-elseif(currnt  ==  """".and.itype  ==  TYPE_KEYWORD)then
+         !-   ! second of a double quote, put quote in
+         !-   if(prev  ==  """")then
+         !-      if(itype.eq.TYPE_KEYWORD)then
+         !-         value=value//currnt
+         !-      else
+         !-         keyword=keyword//currnt
+         !-      endif
+         !-      ipnt(itype)=ipnt(itype)+1
+         !-      delmt="on"
+         !-   elseif(delmt  ==  "on")then     ! first quote of a delimited string
+         !-      delmt="off"
+         !-   else
+         !-      delmt="on"
+         !-   endif
+         !-   if(prev /= """")then  ! leave quotes where found them
+         !-      if(itype.eq.TYPE_KEYWORD)then
+         !-         value=value//currnt
+         !-      else
+         !-         keyword=keyword//currnt
+         !-      endif
+         !-      ipnt(itype)=ipnt(itype)+1
+         !-   endif
          else     ! add character to current parameter name or parameter value
-            if(itype.eq.1)then
+            if(itype.eq.TYPE_KEYWORD)then
                value=value//currnt
             else
                keyword=keyword//currnt
@@ -950,12 +957,14 @@ end function get
 !     namelist /args/ l,h,v,p,c,x,y,z,a_,b_,c_,l_,h_,v_
 ! 
 !        debug=.true.
+!        !
 !        ! give command template with default values
 !        ! all values except logicals get a value.
 !        ! strings must be delimited with double quotes
-!        ! A string has to have at least one character as for -A
-!        ! lists of numbers should be comma-delimited. No spaces are allowed in lists of numbers
+!        ! A string has to have at least one character as show for '-A " "'
+!        ! lists of numbers should be comma-delimited. No spaces are required to be allowed in lists of numbers
 !        ! the values follow the rules for NAMELIST input, so  -p 2*0 would define two values.
+!        !
 !        call prototype_and_cmd_args_to_nlist('&
 !        & -l -v -h -LVH -x 0 -y 0.0 -z 0.0d0 -p 0,0 &
 !        & -A " " -B "Value B" -C 10,20,30 -c (-123,-456)',readme)
@@ -1117,7 +1126,9 @@ logical                      :: nomore
          endif
          oldvalue=get(keywords(pointer))//' '
          if(oldvalue(1:1).eq.'"')then
-            current_argument=quote(current_argument(:ilength))
+            if(current_argument(1:1).ne.'"')then
+               current_argument=quote(current_argument(:ilength))
+            endif
          endif
          if(upper(oldvalue).eq.'F'.or.upper(oldvalue).eq.'T')then  ! assume boolean parameter
             if(current_argument.ne.' ')then

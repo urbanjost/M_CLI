@@ -63,17 +63,18 @@ These demo programs provide templates for the most common usage:
 - [demo4](PROGRAMS/demo4/demo4.f90) using  **COMPLEX** values!
 - [demo5](PROGRAMS/demo5/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
 - [demo6](PROGRAMS/demo6/demo6.f90) a more complex example showing how to create a command with subcommands
+- [demo7](PROGRAMS/demo7/demo7.f90) problems with CHARACTER arrays and quotes
 
 ### manpages
    
-- [M_CLI](https://urbanjost.github.io/M_CLI/M_CLI.3m_cli.html) An overview of the M_CLI module
+- [M_CLI](https://urbanjost.github.io/M_CLI/M_CLI.3m_cli.html)  -- An overview of the M_CLI module
 
-- [commandline](https://urbanjost.github.io/M_CLI/commandline.3m_cli.html) parses the command line options
+- [commandline](https://urbanjost.github.io/M_CLI/commandline.3m_cli.html)  -- parses the command line options
    
-- [check_commandline](https://urbanjost.github.io/M_CLI/check_commandline.3m_cli.html) convenience
+- [check_commandline](https://urbanjost.github.io/M_CLI/check_commandline.3m_cli.html)  -- convenience
   routine for checking status of READ of NAMELIST group
 
-- [print_dictionary](https://urbanjost.github.io/M_CLI/print_dictionary.3m_cli.html) print the dictionary
+- [print_dictionary](https://urbanjost.github.io/M_CLI/print_dictionary.3m_cli.html)  -- print the dictionary
   of command line keywords and values (typically not directly by a user, as automatically called when
   --usage option is supplied).
 

@@ -16,6 +16,7 @@
           character(len=*),parameter :: cmd=&
              ' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" -l F -L F '
 
+             !! PARSING SECTION : SHOULD NOT HAVE TO CHANGE
              call set() !! set text values for help
              readme=commandline(cmd)
              read(readme,nml=args,iostat=ios,iomsg=message)
@@ -25,7 +26,9 @@
                 if(status.eq.'stop')exit
                 call dosomething() ! use the NAMELIST values
              enddo
-             !! ALL DONE CRACKING THE COMMAND LINE USE THE VALUES IN YOUR PROGRAM.
+             !! END PARSING SECTION
+
+             !! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
 
              !! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
              !! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
