@@ -10,6 +10,11 @@ program basic
 !!
 !!    ./demo7 -arr '"ONE","TWO","THREE"'
 !!
+!! unless the NOQUOTE=.TRUE. is used, in which case a list of words with no
+!! spaces or commas can simply be
+!!
+!!    ./demo7 -arr ONE,TWO,THREE
+!!
 !! for single values if you pass in the double-quotes make sure you follow the
 !! NAMELIST rules. For example, both of these should set X to A"B 
 !!
