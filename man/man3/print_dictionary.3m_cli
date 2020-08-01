@@ -93,26 +93,17 @@ Sample output
 .fam C
        $ ./print_dictionary -A
        UNKNOWN SHORT KEYWORD: -A
+       [Keyword]      [Present] [Value]
+       z                   F        [3]
+       y                   F        [2]
+       x                   F        [1]
+       help                F        [F]
+       h                   F        [F]
+
+       STOP 2
+
 .fam T
 .fi
-.SS       KEYWORD             PRESENT  VALUE
-.TP
-.B z
-F        [3]
-.TP
-.B y
-F        [2]
-.TP
-.B x
-F        [1]
-.TP
-.B help
-F        [F]
-.TP
-.B h
-F        [F]
-.PP
-STOP 2
 .SH AUTHOR
 John S. Urban, 2019
 .SH LICENSE

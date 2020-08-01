@@ -1310,7 +1310,7 @@ end subroutine dictionary_to_namelist
 ! 
 !        $ ./print_dictionary -A
 !        UNKNOWN SHORT KEYWORD: -A
-!        KEYWORD             PRESENT  VALUE
+!        [Keyword]      [Present] [Value]
 !        z                   F        [3]
 !        y                   F        [2]
 !        x                   F        [1]
@@ -1335,7 +1335,7 @@ integer          :: i
    endif
    if(allocated(keywords))then
       if(size(keywords).gt.0)then
-         write(stderr,'(*(a,t21,a,t30,a))')'KEYWORD','PRESENT','VALUE'
+         write(stderr,'(*(a,t21,a,t30,a))')'[Keyword]','[Present]','[Value]'
          write(stderr,'(*(a,t21,l1,t30,"[",a,"]",/))')(trim(keywords(i)),present_in(i),values(i)(:counts(i)),i=1,size(keywords))
       endif
    endif
