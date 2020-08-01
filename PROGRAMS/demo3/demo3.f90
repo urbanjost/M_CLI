@@ -10,5 +10,5 @@ namelist /args/ x,y,z
    readme=commandline('-x 1 -y 10 -z 100')
    read(readme,nml=args,iostat=ios,iomsg=message)
    call check_commandline(ios,message)
-   write(*,*)x,y,z, x+y+z
+   write(*,'(*(g0,1x))')x,y,z, x+y+z
 end program basic
