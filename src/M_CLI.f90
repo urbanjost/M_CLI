@@ -23,7 +23,7 @@
 !   Sample program
 ! 
 !    program demo_M_CLI
-!    !! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
+!    !-! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
 !    use M_CLI,  only : commandline, check_commandline, unnamed
 !    implicit none
 !    integer                      :: i
@@ -40,8 +40,8 @@
 !    character(len=*),parameter :: cmd=&
 !       ' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" -l F -L F '
 ! 
-!       !! PARSING SECTION : SHOULD NOT HAVE TO CHANGE
-!       call set() !! set text values for help
+!       !-! PARSING SECTION : SHOULD NOT HAVE TO CHANGE
+!       call set() !-! set text values for help
 !       readme=commandline(cmd)
 !       read(readme,nml=args,iostat=ios,iomsg=message)
 !       call check_commandline(ios,message,help_text,version_text)
@@ -50,12 +50,12 @@
 !          if(status.eq.'stop')exit
 !          call dosomething() ! use the NAMELIST values
 !       enddo
-!       !! END PARSING SECTION
+!       !-! END PARSING SECTION
 ! 
-!       !! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
+!       !-! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
 ! 
-!       !! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
-!       !! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
+!       !-! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
+!       !-! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
 !       if(size(unnamed).gt.0)then
 !          write(*,'(a)')'files:'
 !          write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
@@ -104,9 +104,9 @@
 !           case('show')
 !             write(*,*)'SO FAR'
 !             write(*,nml=args)
-!             !! something where you could restrict nml output to just listed names would be nice
-!             !!write(*,nml=args)['A','H']
-!             !!write(*,nml=*NML)args['A','H']
+!             !-! something where you could restrict nml output to just listed names would be nice
+!             !-!write(*,nml=args)['A','H']
+!             !-!write(*,nml=*NML)args['A','H']
 !           case('help')
 !           write(*,'(a)')[character(len=80) :: &
 !           ' You are in interactive mode where you can display and change your values using', &
@@ -360,7 +360,7 @@ contains
 !     end program demo_check_commandline
 !===================================================================================================================================
 subroutine check_commandline(ios,message,help_text,version_text)
-use, intrinsic :: iso_fortran_env, only : compiler_version, compiler_options
+!-!use, intrinsic :: iso_fortran_env, only : compiler_version, compiler_options
 integer                                          :: ios
 character(len=*)                                 :: message ! use for I/O error messages
 character(len=:),allocatable,intent(in),optional :: help_text(:)
@@ -407,11 +407,11 @@ integer                                          :: iback
       endif
    elseif(get('version').eq.'T')then
          WRITE(*,'(a)')'*check_commandline* no version text'
-         write(*,'(4a)') &
-            'This file was compiled by ', &
-            compiler_version(),           &
-            ' using the options ',        &
-            compiler_options()
+         !-!write(*,'(4a)') &
+         !-!   'This file was compiled by ', &
+         !-!   compiler_version(),           &
+         !-!   ' using the options ',        &
+         !-!   compiler_options()
          stop
    endif
 end subroutine check_commandline
@@ -765,28 +765,28 @@ integer                           :: iend
             itype=TYPE_KEYWORD
             ! beginning of a delimited parameter value
          !-elseif(currnt  ==  """".and.itype  ==  TYPE_KEYWORD)then
-         !-   ! second of a double quote, put quote in
-         !-   if(prev  ==  """")then
-         !-      if(itype.eq.TYPE_KEYWORD)then
-         !-         value=value//currnt
-         !-      else
-         !-         keyword=keyword//currnt
-         !-      endif
-         !-      ipnt(itype)=ipnt(itype)+1
-         !-      delmt="on"
-         !-   elseif(delmt  ==  "on")then     ! first quote of a delimited string
-         !-      delmt="off"
-         !-   else
-         !-      delmt="on"
-         !-   endif
-         !-   if(prev /= """")then  ! leave quotes where found them
-         !-      if(itype.eq.TYPE_KEYWORD)then
-         !-         value=value//currnt
-         !-      else
-         !-         keyword=keyword//currnt
-         !-      endif
-         !-      ipnt(itype)=ipnt(itype)+1
-         !-   endif
+         !-!   ! second of a double quote, put quote in
+         !-!   if(prev  ==  """")then
+         !-!      if(itype.eq.TYPE_KEYWORD)then
+         !-!         value=value//currnt
+         !-!      else
+         !-!         keyword=keyword//currnt
+         !-!      endif
+         !-!      ipnt(itype)=ipnt(itype)+1
+         !-!      delmt="on"
+         !-!   elseif(delmt  ==  "on")then     ! first quote of a delimited string
+         !-!      delmt="off"
+         !-!   else
+         !-!      delmt="on"
+         !-!   endif
+         !-!   if(prev /= """")then  ! leave quotes where found them
+         !-!      if(itype.eq.TYPE_KEYWORD)then
+         !-!         value=value//currnt
+         !-!      else
+         !-!         keyword=keyword//currnt
+         !-!      endif
+         !-!      ipnt(itype)=ipnt(itype)+1
+         !-!   endif
          else     ! add character to current parameter name or parameter value
             if(itype.eq.TYPE_KEYWORD)then
                value=value//currnt
@@ -1148,7 +1148,7 @@ integer                      :: ilast
          endif
          oldvalue=get(keywords(pointer))//' ' ! make at least one character long
          ilast=len_trim(oldvalue)
-         !!if(oldvalue(1:1).eq.'"')then  ! look at last so can use NAMELIST repeat format r*"string"
+         !-!if(oldvalue(1:1).eq.'"')then  ! look at last so can use NAMELIST repeat format r*"string"
          if(oldvalue(ilast:ilast).eq.'"')then
             if(current_argument(1:1).ne.'"')then
 

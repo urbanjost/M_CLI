@@ -79,8 +79,8 @@ integer            :: ios
         write(*,*)'SO FAR'
         write(*,nml=args)
         !! something where you could restrict nml output to just listed names would be nice
-        !!write(*,nml=args)['A','H']
-        !!write(*,nml=*NML)args['A','H']
+        !!write(*,nml=args,delim='quote')['A','H']
+        !!write(*,nml=*NML,delim='quote')args['A','H']
        case('help')
         write(*,'(a)')[character(len=80) :: &
         ' You are in interactive mode where you can display and change your values using', &

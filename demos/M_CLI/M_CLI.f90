@@ -1,5 +1,5 @@
           program demo_M_CLI
-          !! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
+          !-! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
           use M_CLI,  only : commandline, check_commandline, unnamed
           implicit none
           integer                      :: i
@@ -16,8 +16,8 @@
           character(len=*),parameter :: cmd=&
              ' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" -l F -L F '
 
-             !! PARSING SECTION : SHOULD NOT HAVE TO CHANGE
-             call set() !! set text values for help
+             !-! PARSING SECTION : SHOULD NOT HAVE TO CHANGE
+             call set() !-! set text values for help
              readme=commandline(cmd)
              read(readme,nml=args,iostat=ios,iomsg=message)
              call check_commandline(ios,message,help_text,version_text)
@@ -26,12 +26,12 @@
                 if(status.eq.'stop')exit
                 call dosomething() ! use the NAMELIST values
              enddo
-             !! END PARSING SECTION
+             !-! END PARSING SECTION
 
-             !! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
+             !-! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
 
-             !! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
-             !! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
+             !-! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
+             !-! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
              if(size(unnamed).gt.0)then
                 write(*,'(a)')'files:'
                 write(*,'(i6.6,3a)')(i,'[',unnamed(i),']',i=1,size(unnamed))
@@ -80,9 +80,9 @@
                  case('show')
                    write(*,*)'SO FAR'
                    write(*,nml=args)
-                   !! something where you could restrict nml output to just listed names would be nice
-                   !!write(*,nml=args)['A','H']
-                   !!write(*,nml=*NML)args['A','H']
+                   !-! something where you could restrict nml output to just listed names would be nice
+                   !-!write(*,nml=args)['A','H']
+                   !-!write(*,nml=*NML)args['A','H']
                  case('help')
                  write(*,'(a)')[character(len=80) :: &
                  ' You are in interactive mode where you can display and change your values using', &
