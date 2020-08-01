@@ -1,0 +1,9 @@
+'mainpage.txt
+/**
+     @mainpage M_CLI Fortran Library
+
+     @section Introduction
+      command line parsing using NAMELIST groups
+
+     @image html html/images/swirl.gif
+*/'

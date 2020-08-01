@@ -360,6 +360,7 @@ contains
 !     end program demo_check_commandline
 !===================================================================================================================================
 subroutine check_commandline(ios,message,help_text,version_text)
+use, intrinsic :: iso_fortran_env, only : compiler_version, compiler_options
 integer                                          :: ios
 character(len=*)                                 :: message ! use for I/O error messages
 character(len=:),allocatable,intent(in),optional :: help_text(:)
@@ -406,6 +407,11 @@ integer                                          :: iback
       endif
    elseif(get('version').eq.'T')then
          WRITE(*,'(a)')'*check_commandline* no version text'
+         write(*,'(4a)') &
+            'This file was compiled by ', &
+            compiler_version(),           &
+            ' using the options ',        &
+            compiler_options()
          stop
    endif
 end subroutine check_commandline

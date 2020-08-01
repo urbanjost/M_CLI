@@ -1,0 +1,161 @@
+\hypertarget{M__CLI_8f90}{}\section{/home/urbanjs/venus/\+V600/github/\+M\+\_\+\+C\+L\+I/src/\+M\+\_\+\+C\+LI.f90 File Reference}
+\label{M__CLI_8f90}\index{/home/urbanjs/venus/\+V600/github/\+M\+\_\+\+C\+L\+I/src/\+M\+\_\+\+C\+L\+I.\+f90@{/home/urbanjs/venus/\+V600/github/\+M\+\_\+\+C\+L\+I/src/\+M\+\_\+\+C\+L\+I.\+f90}}
+\subsection*{Data Types}
+\begin{DoxyCompactItemize}
+\item 
+type \mbox{\hyperlink{structm__cli_1_1option}{m\+\_\+cli\+::option}}
+\item 
+type \mbox{\hyperlink{structm__cli_1_1dictionary}{m\+\_\+cli\+::dictionary}}
+\item 
+interface \mbox{\hyperlink{interfacem__cli_1_1locate}{m\+\_\+cli\+::locate}}
+\item 
+interface \mbox{\hyperlink{interfacem__cli_1_1insert}{m\+\_\+cli\+::insert}}
+\item 
+interface \mbox{\hyperlink{interfacem__cli_1_1replace}{m\+\_\+cli\+::replace}}
+\item 
+interface \mbox{\hyperlink{interfacem__cli_1_1remove}{m\+\_\+cli\+::remove}}
+\end{DoxyCompactItemize}
+\subsection*{Modules}
+\begin{DoxyCompactItemize}
+\item 
+module \mbox{\hyperlink{namespacem__cli}{m\+\_\+cli}}
+\end{DoxyCompactItemize}
+\subsection*{Functions/\+Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+subroutine, public \mbox{\hyperlink{namespacem__cli_a62056f0c153eb63cb0b11a21edb028cd}{m\+\_\+cli\+::check\+\_\+commandline}} (ios, message, help\+\_\+text, version\+\_\+text)
+\item 
+character(len=\+:) function, allocatable, public \mbox{\hyperlink{namespacem__cli_a4f639b0c4bf16930fc1c5858ed4196a3}{m\+\_\+cli\+::commandline}} (definition, name, noquote)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a8c62537a2d224364c9cb30005be819e9}{m\+\_\+cli\+::prototype\+\_\+to\+\_\+dictionary}} (string)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a9b7676d796e5cb878ecd9294b8a689cb}{m\+\_\+cli\+::update}} (key, val)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a3c1b30406fc692841826be979726bb1b}{m\+\_\+cli\+::wipe\+\_\+dictionary}} ()
+\item 
+character(len=\+:) function, allocatable, private \mbox{\hyperlink{namespacem__cli_a45783c194a1484042f63c58b180ca8df}{m\+\_\+cli\+::get}} (key)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_ac77d70573b34ade2079cc4004a6acba5}{m\+\_\+cli\+::prototype\+\_\+and\+\_\+cmd\+\_\+args\+\_\+to\+\_\+nlist}} (prototype, nml)
+\item 
+subroutine \mbox{\hyperlink{namespacem__cli_a89a63254465b02048f09541e51974764}{m\+\_\+cli\+::cmd\+\_\+args\+\_\+to\+\_\+dictionary}} (check)
+\item 
+subroutine \mbox{\hyperlink{M__CLI_8f90_aa26f90016621d1ee43d3b5b66316532b}{ifnull}} ()
+\item 
+subroutine \mbox{\hyperlink{namespacem__cli_a7e5041efcad56387232475a3ae728634}{m\+\_\+cli\+::dictionary\+\_\+to\+\_\+namelist}} (nml)
+\item 
+subroutine, public \mbox{\hyperlink{namespacem__cli_a5b6abaf1d5aec5e918be0759df29c849}{m\+\_\+cli\+::print\+\_\+dictionary}} (header, stop)
+\item 
+integer function, private \mbox{\hyperlink{namespacem__cli_aaf5504d3b48696a9d22fa5773c5a7d15}{m\+\_\+cli\+::longest\+\_\+command\+\_\+argument}} ()
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_ade3d1e36f0fc6a47b5469dcd8ade5312}{m\+\_\+cli\+::locate\+\_\+c}} (list, value, place, ier, errmsg)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a4187c24a2abf5cc630232965637493e8}{m\+\_\+cli\+::locate\+\_\+d}} (list, value, place, ier, errmsg)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_ac44389e115b536069f324bffea7d2469}{m\+\_\+cli\+::locate\+\_\+r}} (list, value, place, ier, errmsg)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a36665ab0ea5080c14c8c9e52ed07d397}{m\+\_\+cli\+::locate\+\_\+i}} (list, value, place, ier, errmsg)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a05f549b10f50798d68003b8fd2a2d86a}{m\+\_\+cli\+::remove\+\_\+c}} (list, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_abf22cbc2af66482f33b7bb1a210d9d99}{m\+\_\+cli\+::remove\+\_\+d}} (list, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a4f47701695b95c88fa4927c04996ce0f}{m\+\_\+cli\+::remove\+\_\+r}} (list, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a9c86f0f52ce71f14e774fd21f0686cf6}{m\+\_\+cli\+::remove\+\_\+l}} (list, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_afa08d3d87184a6dd68a124231e536c93}{m\+\_\+cli\+::remove\+\_\+i}} (list, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a785aa0016768b6dc2e27c29d5342c329}{m\+\_\+cli\+::replace\+\_\+c}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_aa9b7d672cc9fb0bc79fd09a2870614f5}{m\+\_\+cli\+::replace\+\_\+d}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_ab3b33abc8a6da174d3f27c2f2203038c}{m\+\_\+cli\+::replace\+\_\+r}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a89ed5c3b944f91d8135173206fbc7e07}{m\+\_\+cli\+::replace\+\_\+l}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_ac609c48bb1f904235b8cbf8bea61473f}{m\+\_\+cli\+::replace\+\_\+i}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a9baf1cf0e20942fbde8c025ead5a30db}{m\+\_\+cli\+::insert\+\_\+c}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a4bfb90e14824f94017b1d4fcb39f0701}{m\+\_\+cli\+::insert\+\_\+r}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a030e31579a7968aea68d80db1e36ebfd}{m\+\_\+cli\+::insert\+\_\+d}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a0c1b22c46470afbb4ee5c67180335578}{m\+\_\+cli\+::insert\+\_\+l}} (list, value, place)
+\item 
+subroutine, private \mbox{\hyperlink{namespacem__cli_a841685591ef1f1827fc1fe32a7f546f1}{m\+\_\+cli\+::insert\+\_\+i}} (list, value, place)
+\item 
+subroutine \mbox{\hyperlink{namespacem__cli_aff32e44070983c7fb4eb0a3b1dea7a6d}{m\+\_\+cli\+::dict\+\_\+delete}} (self, key)
+\item 
+character(len=\+:) function, allocatable \mbox{\hyperlink{namespacem__cli_ac4a889309ffc333af6bf8e11f1fc4869}{m\+\_\+cli\+::dict\+\_\+get}} (self, key)
+\item 
+subroutine \mbox{\hyperlink{namespacem__cli_a1be098e2b920e8d50ed14be03a3133db}{m\+\_\+cli\+::dict\+\_\+add}} (self, key, value)
+\item 
+pure elemental logical function \mbox{\hyperlink{namespacem__cli_a4c126288dc18289b2095a0882f10ca77}{m\+\_\+cli\+::isupper}} (ch)
+\item 
+elemental pure character(len(str)) function \mbox{\hyperlink{namespacem__cli_aef6f54c9cb37251dfd664c0845186a40}{m\+\_\+cli\+::upper}} (str, begin, end)
+\item 
+elemental pure character(len(str)) function \mbox{\hyperlink{namespacem__cli_a685574282a09c3f57e0c18654a3a642c}{m\+\_\+cli\+::lower}} (str, begin, end)
+\item 
+character(len=\+:) function, allocatable \mbox{\hyperlink{namespacem__cli_ac82fec2a5441020701fe3c64af3d9948}{m\+\_\+cli\+::quote}} (str, mode)
+\item 
+character(len=\+:) function, allocatable \mbox{\hyperlink{namespacem__cli_a40e02b1c9fc580ddd410bb24017fab8c}{m\+\_\+cli\+::replace\+\_\+str}} (targetline, old, new, ierr, cmd, range)
+\item 
+subroutine \mbox{\hyperlink{namespacem__cli_a8d5d1954aac6494e07fb11f12f635c85}{m\+\_\+cli\+::crack\+\_\+cmd}} (cmd, old, new, ierr)
+\item 
+logical function \mbox{\hyperlink{namespacem__cli_a0015c38f9fa45a58ba6ae89f2ddb54f1}{m\+\_\+cli\+::strtok}} (source\+\_\+string, itoken, token\+\_\+start, token\+\_\+end, delimiters)
+\item 
+subroutine \mbox{\hyperlink{namespacem__cli_a3b66fe9cee0e084068051636afb2957d}{m\+\_\+cli\+::substitute}} (targetline, old, new, ierr, start, end)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+character(len=\+:), dimension(\+:), allocatable, public \mbox{\hyperlink{namespacem__cli_a7fd43837c254f34109d9f523c66c873a}{m\+\_\+cli\+::unnamed}}
+\item 
+character(len=\+:), dimension(\+:), allocatable \mbox{\hyperlink{namespacem__cli_a1eb7801692b3d6e25f16885fdf027f42}{m\+\_\+cli\+::keywords}}
+\item 
+character(len=\+:), dimension(\+:), allocatable \mbox{\hyperlink{namespacem__cli_aaec25aa63c2964c1125b9f14f27bf44a}{m\+\_\+cli\+::values}}
+\item 
+integer, dimension(\+:), allocatable \mbox{\hyperlink{namespacem__cli_ac6af3775222feedc5aff5874ce63897a}{m\+\_\+cli\+::counts}}
+\item 
+logical, dimension(\+:), allocatable \mbox{\hyperlink{namespacem__cli_ad08e57d14b3543d476d00e6bfda58fa5}{m\+\_\+cli\+::present\+\_\+in}}
+\item 
+logical \mbox{\hyperlink{namespacem__cli_a179ac9786afe3fe8474d97ac1a4f1d4c}{m\+\_\+cli\+::keyword\+\_\+single}} =.true.
+\item 
+character(len=\+:), allocatable \mbox{\hyperlink{namespacem__cli_aedc9f3e906ef523605292fd8cf8b00c0}{m\+\_\+cli\+::passed\+\_\+in}}
+\item 
+character(len=\+:), allocatable \mbox{\hyperlink{namespacem__cli_acd2598fd229b4b584315292251217c31}{m\+\_\+cli\+::g\+\_\+namelist\+\_\+name}}
+\item 
+logical \mbox{\hyperlink{namespacem__cli_a456bb87244997f19111533666a96b9eb}{m\+\_\+cli\+::g\+\_\+noquote}}
+\item 
+logical, public \mbox{\hyperlink{namespacem__cli_a83b45c240c1c7309a38c358ebcde28ec}{m\+\_\+cli\+::debug}} =.false.
+\item 
+logical \mbox{\hyperlink{namespacem__cli_a0320cf9d95b01ffbbd8f5a2e0d01ff26}{m\+\_\+cli\+::return\+\_\+all}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function/\+Subroutine Documentation}
+\mbox{\Hypertarget{M__CLI_8f90_aa26f90016621d1ee43d3b5b66316532b}\label{M__CLI_8f90_aa26f90016621d1ee43d3b5b66316532b}} 
+\index{M\+\_\+\+C\+L\+I.\+f90@{M\+\_\+\+C\+L\+I.\+f90}!ifnull@{ifnull}}
+\index{ifnull@{ifnull}!M\+\_\+\+C\+L\+I.\+f90@{M\+\_\+\+C\+L\+I.\+f90}}
+\subsubsection{\texorpdfstring{ifnull()}{ifnull()}}
+{\footnotesize\ttfamily subroutine cmd\+\_\+args\+\_\+to\+\_\+dictionary\+::ifnull (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+References m\+\_\+cli\+::get(), m\+\_\+cli\+::update(), and m\+\_\+cli\+::upper().
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=240pt]{M__CLI_8f90_aa26f90016621d1ee43d3b5b66316532b_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{M__CLI_8f90_aa26f90016621d1ee43d3b5b66316532b_icgraph}
+\end{center}
+\end{figure}

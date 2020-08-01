@@ -38,3 +38,27 @@ clean:
 	$(F90) $(F90FLAGS) -c $<
 .F90.o:
 	$(F90) $(F90FLAGS) -c $<
+.PHONY: help
+help:
+	: make    '-- build M_CLI module'
+	: run     '-- run manpage demo programs'
+	: man     '-- show all manpages as text'
+	: clean   '-- clean directory of object files and executables'
+	: doxygen '-- run doxygen(1) if you have it'
+	: help    '-- display this text'
+
+.PHONY: run
+run: $(PROG)
+	# run everything
+	echo $? |xargs -n 1|xargs -iXX time XX
+
+.PHONY: doxygen
+doxygen: 
+	doxygen dox.in
+
+.PHONY: man
+man:
+	@mandb ../man 1>&2
+	@env MANPATH=../man MANWIDTH=256 man -k .|col -b
+	@env MANPATH=../man MANWIDTH=80  man --regex '.*'|col -b
+

@@ -69,7 +69,8 @@ integer            :: ios
    write(*,'(a)')'args>> "." to run, "stop" to end, "show" to show keywords, "read","write","sh"'
    do
       write(*,'(a)',advance='no')'args>>'
-      read(*,'(a)')line
+      read(*,'(a)',iostat=ios)line
+      if(is_iostat_end(ios))stop 1
       if(line(1:1).eq.'!')cycle
       select case(line)
        case('.')
