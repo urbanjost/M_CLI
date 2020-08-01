@@ -88,6 +88,12 @@ This short program defines a command that can be called like
    
 ```bash
    ./show -x 10 -y -20 --point 10,20,30 --title 'plot of stuff' *.in
+   ./show -x 10 -y -20 --point 10,20,30 --title 'plot of stuff' *.in
+   ./show -z 300
+   ./show *.in
+   ./show --usage
+   ./show --help
+   ./show --version
 ```
 
 ```fortran
@@ -131,7 +137,8 @@ This short program defines a command that can be called like
 ## FEEDBACK
    
    Please provide feedback on the
-   [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the __issues__
+   [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the
+   [__issues__](https://github.com/urbanjost/M_CLI/issues)
    section or star the repository if you use the module (or let me know
    why not and let others know what you did use!).
 
