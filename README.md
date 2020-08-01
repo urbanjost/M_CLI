@@ -78,6 +78,10 @@ These demo programs provide templates for the most common usage:
   of command line keywords and values (typically not directly by a user, as automatically called when
   --usage option is supplied).
 
+### doxygen
+
+- [doxygen(1) output](https://urbanjost.github.io/M_CLI/doxygen_out/html/index.html).
+
 ## EXAMPLE PROGRAM
    
 This short program defines a command that can be called like
