@@ -63,7 +63,7 @@ subroutine printit(testit)
 logical testit
    write(*,'(*(g0,1x))',advance='no')merge('PASSED:','FAILED:',testit)
    write(*,nml=args)
-   write(*,'(a)')repeat('=',132)
+   write(*,'(/,a)')repeat('=',132)
 end subroutine printit
 
 subroutine readcli()

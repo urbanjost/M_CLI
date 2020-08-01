@@ -1019,7 +1019,6 @@ character(len=*),intent(in)              :: prototype
 character(len=:),intent(out),allocatable :: nml
 character(len=:),allocatable :: nml1
 character(len=:),allocatable :: nml2
-integer                      :: i
 integer                      :: ibig
    if(debug)then
       write(stderr,*)'*prototype_and_cmd_args_to_nlist* DEBUG: prototype=',trim(prototype)
