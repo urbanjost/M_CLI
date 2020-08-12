@@ -78,6 +78,8 @@ These demo programs provide templates for the most common usage:
   of command line keywords and values (typically not directly by a user, as automatically called when
   --usage option is supplied).
 
+- [specified](https://urbanjost.github.io/M_CLI/specified.3m_cli.html)  -- detect if a keyword was specified on the command line
+
 - [BOOK_M_CLI](https://urbanjost.github.io/M_CLI/BOOK_M_CLI.html) -- All manpages consolidated using JavaScript
 
 ### doxygen

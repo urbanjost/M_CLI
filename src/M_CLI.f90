@@ -175,6 +175,7 @@ private
 public  :: commandline
 public  :: check_commandline
 public  :: print_dictionary
+public  :: specified
 public debug
 character(len=:),allocatable,public :: unnamed(:)
 
@@ -1394,6 +1395,78 @@ integer :: ilongest
       endif
    enddo GET_LONGEST
 end function longest_command_argument
+!===================================================================================================================================
+!()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
+!===================================================================================================================================
+! NAME
+!    specified(3f) - [ARGUMENTS:M_CLI] return true if keyword was present on command line
+!    (LICENSE:PD)
+! 
+! SYNOPSIS
+!    elemental impure function specified(name)
+! 
+!     character(len=*),intent(in) :: name
+!     logical :: specified
+! 
+! DESCRIPTION
+! 
+!    specified(3f) returns .true. if the specified keyword was present on
+!    the command line.
+! 
+! OPTIONS
+! 
+!    NAME   name of commandline argument to query the presence of
+! 
+! RETURNS
+!    SPECIFIED  returns .TRUE. if specified NAME was present on the command
+!               line when the program was invoked.
+! 
+! EXAMPLE
+! Sample program:
+! 
+!     program demo_specified
+!     use M_CLI,  only : commandline, check_commandline, specified
+!     implicit none
+!     character(len=255)           :: message ! use for I/O error messages
+!     character(len=:),allocatable :: readme  ! stores updated namelist
+!     integer                      :: ios
+!     real                         :: x, y, z; namelist /args/ x, y, z
+!     character(len=*),parameter :: cmd='-x 1 -y 2 -z 3'
+!        ! initialize namelist from string and then update from command line
+!        readme=commandline(cmd)
+!        read(readme,nml=args,iostat=ios,iomsg=message)
+!        call check_commandline(ios,message)
+!        write(*,*)specified(['x','y','z'])
+!        ! ANY(3f) and ALL(3f) ARE USEFUL IF YOU WANT TO KNOW IF GROUPS OF PARAMETERS WERE SPECIFIED
+!        write(*,*)'ANY:',any(specified(['x','y','z']))
+!        write(*,*)'ALL:',all(specified(['x','y','z']))
+!        ! FOR MUTUALLY EXCLUSIVE
+!        if (all(specified(['x','y'])))then
+!            write(*,*)'You specified both names -x and -y'
+!        endif
+!        ! FOR REQUIRED PARAMETER
+!        if (.not.all(specified(['x','y','z'])))then
+!          write(*,*)'You must specify all three of -x,-y or -z'
+!        endif
+!        ! all done cracking the command line. Use the values in your program.
+!        write(*,nml=args)
+!     end program demo_specified
+! AUTHOR
+!      John S. Urban, 2019
+! LICENSE
+!      Public Domain
+!===================================================================================================================================
+elemental impure function specified(key)
+character(len=*),intent(in) :: key
+logical                     :: specified
+integer                     :: place
+   call locate(keywords,key,place)                   ! find where string is or should be
+   if(place.lt.1)then
+      specified=.false.
+   else
+      specified=present_in(place)
+   endif
+end function specified
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================

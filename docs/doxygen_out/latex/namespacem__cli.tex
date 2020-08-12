@@ -40,6 +40,8 @@ subroutine, public \mbox{\hyperlink{namespacem__cli_a5b6abaf1d5aec5e918be0759df2
 \item 
 integer function, private \mbox{\hyperlink{namespacem__cli_aaf5504d3b48696a9d22fa5773c5a7d15}{longest\+\_\+command\+\_\+argument}} ()
 \item 
+elemental impure logical function, public \mbox{\hyperlink{namespacem__cli_a3822e3acc1d6ae296f9f27a83cc1ca23}{specified}} (key)
+\item 
 subroutine, private \mbox{\hyperlink{namespacem__cli_ade3d1e36f0fc6a47b5469dcd8ade5312}{locate\+\_\+c}} (list, value, place, ier, errmsg)
 \item 
 subroutine, private \mbox{\hyperlink{namespacem__cli_a4187c24a2abf5cc630232965637493e8}{locate\+\_\+d}} (list, value, place, ier, errmsg)
@@ -744,13 +746,24 @@ Here is the caller graph for this function\+:\nopagebreak
 \includegraphics[width=350pt]{namespacem__cli_a40e02b1c9fc580ddd410bb24017fab8c_icgraph}
 \end{center}
 \end{figure}
+\mbox{\Hypertarget{namespacem__cli_a3822e3acc1d6ae296f9f27a83cc1ca23}\label{namespacem__cli_a3822e3acc1d6ae296f9f27a83cc1ca23}} 
+\index{m\+\_\+cli@{m\+\_\+cli}!specified@{specified}}
+\index{specified@{specified}!m\+\_\+cli@{m\+\_\+cli}}
+\subsubsection{\texorpdfstring{specified()}{specified()}}
+{\footnotesize\ttfamily elemental impure logical function, public m\+\_\+cli\+::specified (\begin{DoxyParamCaption}\item[{character(len=$\ast$), intent(in)}]{key }\end{DoxyParamCaption})}
+
+
+
+References keywords, and present\+\_\+in.
+
 \mbox{\Hypertarget{namespacem__cli_a0015c38f9fa45a58ba6ae89f2ddb54f1}\label{namespacem__cli_a0015c38f9fa45a58ba6ae89f2ddb54f1}} 
 \index{m\+\_\+cli@{m\+\_\+cli}!strtok@{strtok}}
 \index{strtok@{strtok}!m\+\_\+cli@{m\+\_\+cli}}
 \subsubsection{\texorpdfstring{strtok()}{strtok()}}
 {\footnotesize\ttfamily logical function m\+\_\+cli\+::strtok (\begin{DoxyParamCaption}\item[{character(len=$\ast$), intent(in)}]{source\+\_\+string,  }\item[{integer, intent(inout)}]{itoken,  }\item[{integer, intent(out)}]{token\+\_\+start,  }\item[{integer, intent(inout)}]{token\+\_\+end,  }\item[{character(len=$\ast$), intent(in)}]{delimiters }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -763,7 +776,8 @@ Here is the caller graph for this function\+:\nopagebreak
 \subsubsection{\texorpdfstring{substitute()}{substitute()}}
 {\footnotesize\ttfamily subroutine m\+\_\+cli\+::substitute (\begin{DoxyParamCaption}\item[{character(len=$\ast$)}]{targetline,  }\item[{character(len=$\ast$), intent(in)}]{old,  }\item[{character(len=$\ast$), intent(in)}]{new,  }\item[{integer, intent(out), optional}]{ierr,  }\item[{integer, intent(in), optional}]{start,  }\item[{integer, intent(in), optional}]{end }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -780,7 +794,8 @@ Here is the caller graph for this function\+:\nopagebreak
 
 References counts, debug, keywords, present\+\_\+in, and values.
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -793,7 +808,8 @@ Here is the caller graph for this function\+:\nopagebreak
 \subsubsection{\texorpdfstring{upper()}{upper()}}
 {\footnotesize\ttfamily elemental pure character(len(str)) function m\+\_\+cli\+::upper (\begin{DoxyParamCaption}\item[{character($\ast$), intent(in)}]{str,  }\item[{integer, intent(in), optional}]{begin,  }\item[{integer, intent(in), optional}]{end }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -810,7 +826,8 @@ Here is the caller graph for this function\+:\nopagebreak
 
 References counts, keywords, present\+\_\+in, and values.
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
