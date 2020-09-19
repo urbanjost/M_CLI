@@ -1,5 +1,6 @@
 program basic
 !! QUICK PROTOTYPE: JUST THE BARE ESSENTIALS
+!-!use, intrinsic :: iso_fortran_env, only : compiler_version, compiler_options
 use M_CLI,  only : commandline, check_commandline
 implicit none
 
@@ -13,6 +14,11 @@ character(len=4096)          :: cmd
 logical                      :: nq=.false.
 integer                      :: e
 
+!-!   write(*,'(4a)') &
+!-!      'This file was compiled by ', &
+!-!      compiler_version(),           &
+!-!      ' using the options ',        &
+!-!      compiler_options()
    command=repeat(' ',4096)
    call get_command(command)
    command=trim(command)//' '

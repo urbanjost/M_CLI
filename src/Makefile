@@ -9,6 +9,7 @@ PROGFILES = \
  ../PROGRAMS/demo5/demo5.f90 \
  ../PROGRAMS/demo6/demo6.f90 \
  ../PROGRAMS/demo7/demo7.f90 \
+ ../PROGRAMS/demo9/segments.f90 \
  ../test/main.f90 \
 $(NULL)
 CPROGFILES = 
