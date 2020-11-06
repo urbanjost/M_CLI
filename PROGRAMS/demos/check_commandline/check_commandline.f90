@@ -18,7 +18,9 @@
            !write(*,*)'README=',readme
            read(readme,nml=args,iostat=ios,iomsg=message)
            version_text=[character(len=80) :: "version 1.0","author: me"]
-           help_text=[character(len=80) :: "wish I put instructions","here","I suppose?"]
+           help_text=[character(len=80) ::      &
+            & "wish I put instructions","here", &
+            & "I suppose?"]
            call check_commandline(ios,message,help_text,version_text)
 
            ! all done cracking the command line

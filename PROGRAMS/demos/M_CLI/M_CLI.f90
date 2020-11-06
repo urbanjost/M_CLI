@@ -1,5 +1,5 @@
           program demo_M_CLI
-          !-! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
+          !-! FULL EXAMPLE ADDING HELP AND VERSION TEXT AND INTERACTIVE EXAMPLE
           use M_CLI,  only : commandline, check_commandline, unnamed
           implicit none
           integer                      :: i
@@ -28,7 +28,8 @@
              enddo
              !-! END PARSING SECTION
 
-             !-! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
+             !-! ALL DONE CRACKING THE COMMAND LINE.
+             !-! USE THE VALUES IN YOUR PROGRAM!
 
              !-! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
              !-! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
@@ -69,7 +70,8 @@
           integer            :: lun
           integer            :: ios
              status=''
-             write(*,'(a)')'args>> "." to run, "stop" to end, "show" to show keywords, "read","write","sh"'
+             write(*,'(a)')'args>> "." to run, "stop" to end,&
+             & "show" to show keywords, "read","write","sh"'
              do
                 write(*,'(a)',advance='no')'args>>'
                 read(*,'(a)')line
@@ -80,20 +82,22 @@
                  case('show')
                    write(*,*)'SO FAR'
                    write(*,nml=args)
-                   !-! something where you could restrict nml output to just listed names would be nice
+                   !-! something where you could restrict nml output to just
+                   !-! listed names would be nice
                    !-!write(*,nml=args)['A','H']
                    !-!write(*,nml=*NML)args['A','H']
                  case('help')
                  write(*,'(a)')[character(len=80) :: &
-                 ' You are in interactive mode where you can display and change your values using', &
+                 ' You are in interactive mode where you can display and change&
+                 & your values using', &
                  ' NAMELIST syntax:', &
-                 '   KEYWORD=VALUE(S) -- change a variable value', &
-                 '   show             -- show current values', &
-                 '   stop             -- stop program', &
-                 '   .                -- return to program and run', &
-                 '   write FILENAME   -- write NAMELIST group to specified file',&
-                 '   read  FILENAME   -- read NAMELIST input file', &
-                 '   sh               -- start shell process', &
+                 '  KEYWORD=VALUE(S) - change a variable value', &
+                 '  show             - show current values', &
+                 '  stop             - stop program', &
+                 '  .                - return to program and run', &
+                 '  write FILENAME   - write NAMELIST group to specified file',&
+                 '  read  FILENAME   - read NAMELIST input file', &
+                 '  sh               - start shell process', &
                  '', &
                 '' ]
                  case('stop')

@@ -23,7 +23,6 @@ executable = [ { name="demo1", source-dir="PROGRAMS/demo1", main="demo1.f90" },
                { name="demo_M_CLI",             source-dir="PROGRAMS/demos/M_CLI",             main="M_CLI.f90" },
                { name="demo_print_dictionary",  source-dir="PROGRAMS/demos/print_dictionary",  main="print_dictionary.f90" } ]
 
-
 [library]
 source-dir="src"
 

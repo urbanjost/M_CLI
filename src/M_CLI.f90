@@ -3,7 +3,8 @@
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
 ! NAME
-!    M_CLI(3fm) - [ARGUMENTS::M_CLI] command line argument parsing using a prototype command and NAMELIST
+!    M_CLI(3fm) - [ARGUMENTS::M_CLI] command line argument parsing using
+!    a prototype command and NAMELIST
 !    (LICENSE:PD)
 ! SYNOPSIS
 ! 
@@ -23,7 +24,7 @@
 !   Sample program
 ! 
 !    program demo_M_CLI
-!    !-! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
+!    !-! FULL EXAMPLE ADDING HELP AND VERSION TEXT AND INTERACTIVE EXAMPLE
 !    use M_CLI,  only : commandline, check_commandline, unnamed
 !    implicit none
 !    integer                      :: i
@@ -52,7 +53,8 @@
 !       enddo
 !       !-! END PARSING SECTION
 ! 
-!       !-! ALL DONE CRACKING THE COMMAND LINE. USE THE VALUES IN YOUR PROGRAM!
+!       !-! ALL DONE CRACKING THE COMMAND LINE.
+!       !-! USE THE VALUES IN YOUR PROGRAM!
 ! 
 !       !-! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
 !       !-! ACCUMULATED IN THE CHARACTER ARRAY "UNNAMED"
@@ -93,7 +95,8 @@
 !    integer            :: lun
 !    integer            :: ios
 !       status=''
-!       write(*,'(a)')'args>> "." to run, "stop" to end, "show" to show keywords, "read","write","sh"'
+!       write(*,'(a)')'args>> "." to run, "stop" to end,&
+!       & "show" to show keywords, "read","write","sh"'
 !       do
 !          write(*,'(a)',advance='no')'args>>'
 !          read(*,'(a)')line
@@ -104,20 +107,22 @@
 !           case('show')
 !             write(*,*)'SO FAR'
 !             write(*,nml=args)
-!             !-! something where you could restrict nml output to just listed names would be nice
+!             !-! something where you could restrict nml output to just
+!             !-! listed names would be nice
 !             !-!write(*,nml=args)['A','H']
 !             !-!write(*,nml=*NML)args['A','H']
 !           case('help')
 !           write(*,'(a)')[character(len=80) :: &
-!           ' You are in interactive mode where you can display and change your values using', &
+!           ' You are in interactive mode where you can display and change&
+!           & your values using', &
 !           ' NAMELIST syntax:', &
-!           '   KEYWORD=VALUE(S) -- change a variable value', &
-!           '   show             -- show current values', &
-!           '   stop             -- stop program', &
-!           '   .                -- return to program and run', &
-!           '   write FILENAME   -- write NAMELIST group to specified file',&
-!           '   read  FILENAME   -- read NAMELIST input file', &
-!           '   sh               -- start shell process', &
+!           '  KEYWORD=VALUE(S) - change a variable value', &
+!           '  show             - show current values', &
+!           '  stop             - stop program', &
+!           '  .                - return to program and run', &
+!           '  write FILENAME   - write NAMELIST group to specified file',&
+!           '  read  FILENAME   - read NAMELIST input file', &
+!           '  sh               - start shell process', &
 !           '', &
 !          '' ]
 !           case('stop')
@@ -346,7 +351,9 @@ contains
 !     !write(*,*)'README=',readme
 !     read(readme,nml=args,iostat=ios,iomsg=message)
 !     version_text=[character(len=80) :: "version 1.0","author: me"]
-!     help_text=[character(len=80) :: "wish I put instructions","here","I suppose?"]
+!     help_text=[character(len=80) ::      &
+!      & "wish I put instructions","here", &
+!      & "I suppose?"]
 !     call check_commandline(ios,message,help_text,version_text)
 ! 
 !     ! all done cracking the command line
@@ -461,8 +468,8 @@ end subroutine check_commandline
 !           use M_CLI,  only : unnamed, commandline, check_commandline
 !           implicit none
 !           integer                      :: i
-!           character(len=255)           :: message ! for I/O error messages
-!           character(len=:),allocatable :: readme  ! stores updated namelist
+!           character(len=255)           :: message ! for I/O error
+!           character(len=:),allocatable :: readme  ! updated namelist
 !           integer                      :: ios
 ! 
 !        ! declare a namelist
@@ -476,7 +483,7 @@ end subroutine check_commandline
 !        !  o All parameters must be listed with a default value.
 !        !  o logicals should be specified with a value of F or T.
 !        !  o string values  must be double-quoted.
-!        !  o lists must be comma-delimited. No spaces are allowed in lists.
+!        !  o lists must be comma-delimited. No spaces allowed in lists.
 !        !  o all long names must be lowercase. An uppercase short name
 !        !    -A maps to variable A_
 !        !  o if variables are equivalenced only one should be used on
@@ -487,7 +494,8 @@ end subroutine check_commandline
 !           & --title "my title" &
 !           & -l F -L F'
 !           ! reading in a NAMELIST definition defining the entire NAMELIST
-!           ! now get the values from the command prototype and command line as NAMELIST input
+!           ! now get the values from the command prototype and
+!           ! command line as NAMELIST input
 !           readme=commandline(cmd)
 !           read(readme,nml=args,iostat=ios,iomsg=message)
 !           call check_commandline(ios,message)
@@ -1424,35 +1432,39 @@ end function longest_command_argument
 ! EXAMPLE
 ! Sample program:
 ! 
-!     program demo_specified
-!     use M_CLI,  only : commandline, check_commandline, specified
-!     implicit none
-!     character(len=255)           :: message ! use for I/O error messages
-!     character(len=:),allocatable :: readme  ! stores updated namelist
-!     integer                      :: ios
-!     real                         :: x, y, z; namelist /args/ x, y, z
-!     character(len=*),parameter :: cmd='-x 1 -y 2 -z 3'
-!        ! initialize namelist from string and then update from command line
-!        readme=commandline(cmd)
-!        read(readme,nml=args,iostat=ios,iomsg=message)
-!        call check_commandline(ios,message)
-!        write(*,*)specified(['x','y','z'])
-!        ! ANY(3f) and ALL(3f) ARE USEFUL IF YOU WANT TO KNOW IF GROUPS OF PARAMETERS WERE SPECIFIED
-!        write(*,*)'ANY:',any(specified(['x','y','z']))
-!        write(*,*)'ALL:',all(specified(['x','y','z']))
-!        ! FOR MUTUALLY EXCLUSIVE
-!        if (all(specified(['x','y'])))then
-!            write(*,*)'You specified both names -x and -y'
-!        endif
-!        ! FOR REQUIRED PARAMETER
-!        if (.not.all(specified(['x','y','z'])))then
-!          write(*,*)'You must specify all three of -x,-y or -z'
-!        endif
-!        ! all done cracking the command line. Use the values in your program.
-!        write(*,nml=args)
-!     end program demo_specified
+!    program demo_specified
+!    use M_CLI,  only : commandline, check_commandline, specified
+!    implicit none
+!    character(len=255)           :: message ! use for I/O error messages
+!    character(len=:),allocatable :: readme  ! stores updated namelist
+!    integer                      :: ios
+!    real                         :: x, y, z; namelist /args/ x, y, z
+!    character(len=*),parameter :: cmd='-x 1 -y 2 -z 3'
+!       ! initialize namelist from string and then update from command line
+!       readme=commandline(cmd)
+!       read(readme,nml=args,iostat=ios,iomsg=message)
+!       call check_commandline(ios,message)
+!       write(*,*)specified(['x','y','z'])
+!       ! ANY(3f) and ALL(3f) ARE USEFUL IF YOU WANT TO KNOW IF GROUPS
+!       ! OF PARAMETERS WERE SPECIFIED
+!       write(*,*)'ANY:',any(specified(['x','y','z']))
+!       write(*,*)'ALL:',all(specified(['x','y','z']))
+!       ! FOR MUTUALLY EXCLUSIVE
+!       if (all(specified(['x','y'])))then
+!           write(*,*)'You specified both names -x and -y'
+!       endif
+!       ! FOR REQUIRED PARAMETER
+!       if (.not.all(specified(['x','y','z'])))then
+!         write(*,*)'You must specify all three of -x,-y or -z'
+!       endif
+!       ! all done cracking the command line. Use the values in
+!       ! your program.
+!       write(*,nml=args)
+!    end program demo_specified
+! 
 ! AUTHOR
 !      John S. Urban, 2019
+! 
 ! LICENSE
 !      Public Domain
 !===================================================================================================================================

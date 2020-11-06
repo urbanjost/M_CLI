@@ -2,8 +2,8 @@
                  use M_CLI,  only : unnamed, commandline, check_commandline
                  implicit none
                  integer                      :: i
-                 character(len=255)           :: message ! for I/O error messages
-                 character(len=:),allocatable :: readme  ! stores updated namelist
+                 character(len=255)           :: message ! for I/O error
+                 character(len=:),allocatable :: readme  ! updated namelist
                  integer                      :: ios
 
               ! declare a namelist
@@ -17,7 +17,7 @@
               !  o All parameters must be listed with a default value.
               !  o logicals should be specified with a value of F or T.
               !  o string values  must be double-quoted.
-              !  o lists must be comma-delimited. No spaces are allowed in lists.
+              !  o lists must be comma-delimited. No spaces allowed in lists.
               !  o all long names must be lowercase. An uppercase short name
               !    -A maps to variable A_
               !  o if variables are equivalenced only one should be used on
@@ -28,7 +28,8 @@
                  & --title "my title" &
                  & -l F -L F'
                  ! reading in a NAMELIST definition defining the entire NAMELIST
-                 ! now get the values from the command prototype and command line as NAMELIST input
+                 ! now get the values from the command prototype and
+                 ! command line as NAMELIST input
                  readme=commandline(cmd)
                  read(readme,nml=args,iostat=ios,iomsg=message)
                  call check_commandline(ios,message)

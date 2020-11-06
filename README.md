@@ -37,8 +37,10 @@
    
    or just list it as a dependency in your fpm.toml project file.
    
+```toml
         [dependencies]
         M_CLI        = { git = "https://github.com/urbanjost/M_CLI.git" }
+```
 
 ## FUNCTIONAL SPECIFICATION
 
