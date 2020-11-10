@@ -2,7 +2,8 @@ program testit
 integer :: red,green,blue ; namelist/nml_color/red,green,blue
 real :: width,height,depth; namelist/nml_size/width,height,depth
 namelist/nml_all/ red,green,blue,width,height,depth
-character(len=*),parameter :: file(*)=[character(len=80) :: &
+character(len=:),allocatable :: file(:)
+   file=[character(len=80) :: &
    & ' The values specifying the color of the model',       &
    & '&NML_COLOR',                                          &
    & ' RED=255,',                                           &
