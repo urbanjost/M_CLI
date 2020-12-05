@@ -18,8 +18,19 @@
    ```bash
        git clone https://github.com/urbanjost/M_CLI.git
        cd M_CLI/src
-       # change Makefile if not using gfortran(1)
-       make
+       # change Makefile if not using one of the listed compilers
+     
+       # for gfortran
+       make clean
+       make F90=gfortran gfortran
+     
+       # for ifort
+       make clean
+       make F90=ifort ifort
+
+       # for nvfortran
+       make clean
+       make F90=nvfortran nvfortran
    ```
    This will compile the M_CLI module and build all the example programs.
 
