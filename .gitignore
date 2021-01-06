@@ -1,3 +1,5 @@
 build/*
 FODDER/
 src/source
+man/
+docs/doxygen_out/

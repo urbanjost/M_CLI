@@ -1,6 +1,0 @@
-<map id="m_cli::replace_str" name="m_cli::replace_str">
-<area shape="rect" id="node2" href="$namespacem__cli.html#ac82fec2a5441020701fe3c64af3d9948" title="m_cli::quote" alt="" coords="191,13,293,39"/>
-<area shape="rect" id="node3" href="$namespacem__cli.html#a89a63254465b02048f09541e51974764" title="m_cli::cmd_args_to\l_dictionary" alt="" coords="341,5,489,47"/>
-<area shape="rect" id="node4" href="$namespacem__cli.html#ac77d70573b34ade2079cc4004a6acba5" title="m_cli::prototype_and\l_cmd_args_to_nlist" alt="" coords="537,5,696,47"/>
-<area shape="rect" id="node5" href="$namespacem__cli.html#a4f639b0c4bf16930fc1c5858ed4196a3" title="m_cli::commandline" alt="" coords="744,13,899,39"/>
-</map>

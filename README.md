@@ -42,7 +42,6 @@
    ```bash
         git clone https://github.com/urbanjost/M_CLI.git
         cd M_CLI
-        fpm build
         fpm test
    ```
    
@@ -70,13 +69,13 @@ There are several styles possible for defining the NAMELIST group as well as
 options on whether to do the parsing in the main program or in a contained procedure.
 These demo programs provide templates for the most common usage:
    
-- [demo1](PROGRAMS/demo1/demo1.f90) full usage 
-- [demo2](PROGRAMS/demo2/demo2.f90) shows putting everything including **help** and **version** information into a contained procedure.
-- [demo3](PROGRAMS/demo3/demo3.f90) example of **basic** use 
-- [demo4](PROGRAMS/demo4/demo4.f90) using  **COMPLEX** values!
-- [demo5](PROGRAMS/demo5/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
-- [demo6](PROGRAMS/demo6/demo6.f90) a more complex example showing how to create a command with subcommands
-- [demo7](PROGRAMS/demo7/demo7.f90) problems with CHARACTER arrays and quotes
+- [demo1](example/demo1.f90) full usage 
+- [demo2](example/demo2.f90) shows putting everything including **help** and **version** information into a contained procedure.
+- [demo3](example/demo3.f90) example of **basic** use 
+- [demo4](example/demo4.f90) using  **COMPLEX** values!
+- [demo5](example/demo5.f90) demo2 with added example code for **interactively editing the NAMELIST group**
+- [demo6](example/demo6.f90) a more complex example showing how to create a command with subcommands
+- [demo7](example/demo7.f90) problems with CHARACTER arrays and quotes
 
 ### manpages
    
