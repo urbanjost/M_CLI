@@ -544,7 +544,7 @@ end subroutine check_commandline
 !!                   routine is called. The same is true for --help and --version
 !!                   if the optional help_text and version_text options are
 !!                   provided.
-!!    NOQUOTE        If .TRUE., then a comma is implicitly assumed a value seperator
+!!    NOQUOTE        If .TRUE., then a comma is implicitly assumed a value separator
 !!                   in unquoted strings on the command line, so that an array of strings
 !!                   not containing commas in the values can
 !!                   be specified as A,B,C instead of '"A","B","C"'. Note that this means if
