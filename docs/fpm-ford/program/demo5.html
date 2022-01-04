@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+   <meta name="description" content="command line parsing">
+    
+    <meta name="author" content="John S. Urban" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>demo5 &ndash; M_CLI</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    
+    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">M_CLI </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+        
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          
+              
+            <li><a href="../lists/files.html">Source Files</a></li>
+        
+        
+        
+            <li><a href="../lists/modules.html">Modules</a></li>
+        
+            
+                                
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+        
+               
+        
+            <li><a href="../lists/programs.html">Programs</a></li>
+        
+            </ul>
+            </li>
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/files.html">Source Files</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
+
+                             
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/programs.html">Programs</a></li>
+
+          </ul>
+        
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+    
+  
+  <div class="row">
+    <h1>demo5
+    <small>Program</small>
+    
+    </h1>
+    
+<div class="row">
+  <div class="col-lg-12">
+<div class="well well-sm">
+  <ul class="list-inline" style="margin-bottom:0px;display:inline">
+     
+     
+     
+     
+    
+    
+     <li><i class="fa fa-list-ol"></i>
+       <a data-toggle="tooltip"
+    data-placement="bottom" data-html="true"
+    title="17.6% of total for programs.">96 statements</a>
+     </li> 
+     
+     
+     
+    <li><i class="fa fa-code"></i><a href="../src/demo5.f90"> Source File</a></li>
+     
+     
+  </ul>
+  <ol class="breadcrumb in-well text-right">
+  
+    
+     <li><a href='../sourcefile/demo5.f90.html'>demo5.f90</a></li>
+    
+  
+     <li class="active">demo5</li>
+  </ol>
+</div>
+</div>
+</div>
+<script>
+  $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+    
+<div id="sidebar">
+  
+<h3>Contents</h3>
+ 
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#vars-0">Variables</a></h3></div>
+  <div id="vars-0" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-cmd~5">cmd</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-help_text~5">help_text</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-i~7">i</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-ios~12">ios</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-l~3">l</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-l_~3">l_</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-message~10">message</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-point~3">point</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-readme~10">readme</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-status~4">status</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-title~3">title</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-version_text~5">version_text</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-x~7">x</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-y~7">y</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-z~7">z</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#subs-0">Subroutines</a></h3></div>
+  <div class="list-group">
+    <div id="subs-0" class="panel-collapse collapse">
+      
+      <a class="list-group-item" href="../program/demo5.html#proc-dosomething~2">dosomething</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#proc-readargs~2">readargs</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#proc-set~2">set</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  <div class="list-group">
+    <a class="list-group-item" href="../program/demo5.html#src">demo5</a>
+  </div>
+</div>
+
+
+
+</div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    
+  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+  <h3 class="panel-title">Uses</h3>
+      </div>
+      <ul class="list-group">
+      
+      <li class="list-group-item">
+  <ul class="list-inline">
+    
+    <li><a href='../module/m_cli.html'>M_CLI</a></li>
+    
+  </ul>
+      </li>
+      
+      
+      
+      </ul>
+    </div>
+    
+
+    <p>FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE
+ set text values for help
+ ALL DONE CRACKING THE COMMAND LINE USE THE VALUES IN YOUR PROGRAM.</p>
+<p>THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE
+ ACCUMULATED IN THE CHARACTER ARRAY &ldquo;UNNAMED&rdquo;</p>
+    
+    <br>
+
+     <section class="visible-xs visible-sm hidden-md">
+       
+<h3>Contents</h3>
+ 
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#vars-1">Variables</a></h3></div>
+  <div id="vars-1" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-cmd~5">cmd</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-help_text~5">help_text</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-i~7">i</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-ios~12">ios</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-l~3">l</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-l_~3">l_</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-message~10">message</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-point~3">point</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-readme~10">readme</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-status~4">status</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-title~3">title</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-version_text~5">version_text</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-x~7">x</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-y~7">y</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#variable-z~7">z</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#subs-1">Subroutines</a></h3></div>
+  <div class="list-group">
+    <div id="subs-1" class="panel-collapse collapse">
+      
+      <a class="list-group-item" href="../program/demo5.html#proc-dosomething~2">dosomething</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#proc-readargs~2">readargs</a>
+      
+      <a class="list-group-item" href="../program/demo5.html#proc-set~2">set</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  <div class="list-group">
+    <a class="list-group-item" href="../program/demo5.html#src">demo5</a>
+  </div>
+</div>
+
+
+
+     </section>
+     <br class="visible-xs visible-sm hidden-md">
+
+     
+
+    
+    <section>
+    <h2>Variables</h2>
+    
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+
+<th>Attributes</th><th></th><th>Name</th><th></th><th>Initial</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-cmd~5"></span>character(len=*),</td>
+  
+  
+  <td>parameter</td><td>::</td>
+  <td><strong>cmd</strong></td><td> =</td><td>' -x 1 -y 2 -z 3 --point -1,-2,-3 --title "my title" -l F -L F '</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-help_text~5"></span>character(len=:),</td>
+  
+  
+  <td>allocatable</td><td>::</td>
+  <td><strong>help_text</strong>(:)</td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-i~7"></span>integer</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>i</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-ios~12"></span>integer</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>ios</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-l~3"></span>logical</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>l</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-l_~3"></span>logical</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>l_</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-message~10"></span>character(len=255)</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>message</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-point~3"></span>real</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>point</strong>(3)</td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-readme~10"></span>character(len=:),</td>
+  
+  
+  <td>allocatable</td><td>::</td>
+  <td><strong>readme</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-status~4"></span>character(len=:),</td>
+  
+  
+  <td>allocatable</td><td>::</td>
+  <td><strong>status</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-title~3"></span>character(len=80)</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>title</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-version_text~5"></span>character(len=:),</td>
+  
+  
+  <td>allocatable</td><td>::</td>
+  <td><strong>version_text</strong>(:)</td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-x~7"></span>real</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>x</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-y~7"></span>real</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>y</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-z~7"></span>real</td>
+  
+  
+  <td></td><td>::</td>
+  <td><strong>z</strong></td><td></td><td></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+    </section>
+    <br>
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+
+    
+    <section>
+    <h2>Subroutines</h2>
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-dosomething~2"></span><h3>
+subroutine <a href='../proc/dosomething~2.html'>dosomething</a>()
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-readargs~2"></span><h3>
+subroutine <a href='../proc/readargs~2.html'>readargs</a>(status)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+
+
+
+
+
+
+
+<p>something where you could restrict nml output to just listed names would be nice
+write(<em>,nml=args,delim=&rsquo;quote&rsquo;)[&lsquo;A&rsquo;,&rsquo;H&rsquo;]
+write(</em>,nml=*NML,delim=&rsquo;quote&rsquo;)args[&lsquo;A&rsquo;,&rsquo;H&rsquo;]</p>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=:),</td>
+  <td>intent(out),</td>
+  <td></td>
+  
+  <td>allocatable</td><td>::</td>
+  <td><strong>status</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-set~2"></span><h3>
+subroutine <a href='../proc/set~2.html'>set</a>()
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+  </div>
+  </div>
+
+    
+    </section>    
+    
+    
+    
+    <section>
+    <h2 id="src">Source Code</h2>
+    <div class="highlight"><pre><span></span><span class="k">program </span><span class="n">demo5</span>
+<span class="c">!! FULL EXAMPLE ADDING HELP AND VERSION DISPLAY AND INTERACTIVE EXAMPLE</span>
+<span class="k">use </span><span class="n">M_CLI</span><span class="p">,</span>  <span class="k">only</span> <span class="p">:</span> <span class="n">commandline</span><span class="p">,</span> <span class="n">check_commandline</span><span class="p">,</span> <span class="n">unnamed</span>
+<span class="k">implicit none</span>
+<span class="kt">integer</span>                      <span class="kd">::</span> <span class="n">i</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span> <span class="kd">::</span> <span class="n">status</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>           <span class="kd">::</span> <span class="n">message</span> <span class="c">! use for I/O error messages</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span> <span class="kd">::</span> <span class="n">readme</span>  <span class="c">! stores updated namelist</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span> <span class="kd">::</span> <span class="n">help_text</span><span class="p">(:),</span> <span class="n">version_text</span><span class="p">(:)</span>
+<span class="kt">integer</span>                      <span class="kd">::</span> <span class="n">ios</span>
+
+<span class="kt">real</span>               <span class="kd">::</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>  <span class="p">;</span> <span class="k">namelist</span> <span class="o">/</span><span class="n">args</span><span class="o">/</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+<span class="kt">real</span>               <span class="kd">::</span> <span class="n">point</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="p">;</span> <span class="k">namelist</span> <span class="o">/</span><span class="n">args</span><span class="o">/</span> <span class="n">point</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>  <span class="kd">::</span> <span class="n">title</span>    <span class="p">;</span> <span class="k">namelist</span> <span class="o">/</span><span class="n">args</span><span class="o">/</span> <span class="n">title</span>
+<span class="kt">logical</span>            <span class="kd">::</span> <span class="n">l</span><span class="p">,</span> <span class="n">l_</span>    <span class="p">;</span> <span class="k">namelist</span> <span class="o">/</span><span class="n">args</span><span class="o">/</span> <span class="n">l</span><span class="p">,</span> <span class="n">l_</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">parameter</span> <span class="kd">::</span> <span class="n">cmd</span><span class="o">=</span><span class="p">&amp;</span>
+   <span class="s1">&#39; -x 1 -y 2 -z 3 --point -1,-2,-3 --title &quot;my title&quot; -l F -L F &#39;</span>
+
+   <span class="k">call </span><span class="n">set</span><span class="p">()</span> <span class="c">!! set text values for help</span>
+   <span class="n">readme</span><span class="o">=</span><span class="n">commandline</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+   <span class="k">read</span><span class="p">(</span><span class="n">readme</span><span class="p">,</span><span class="n">nml</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">,</span><span class="n">iomsg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+   <span class="k">call </span><span class="n">check_commandline</span><span class="p">(</span><span class="n">ios</span><span class="p">,</span><span class="n">message</span><span class="p">,</span><span class="n">help_text</span><span class="p">,</span><span class="n">version_text</span><span class="p">)</span>
+   <span class="k">do</span>
+<span class="k">      call </span><span class="n">readargs</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="c">! interactively change NAMELIST group</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="s1">&#39;stop&#39;</span><span class="p">)</span><span class="k">exit</span>
+<span class="k">      call </span><span class="n">dosomething</span><span class="p">()</span> <span class="c">! use the NAMELIST values</span>
+   <span class="k">enddo</span>
+   <span class="c">!! ALL DONE CRACKING THE COMMAND LINE USE THE VALUES IN YOUR PROGRAM.</span>
+
+   <span class="c">!! THE OPTIONAL UNNAMED VALUES ON THE COMMAND LINE ARE</span>
+   <span class="c">!! ACCUMULATED IN THE CHARACTER ARRAY &quot;UNNAMED&quot;</span>
+   <span class="k">if</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">unnamed</span><span class="p">).</span><span class="n">gt</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">then</span>
+<span class="k">      write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="s1">&#39;files:&#39;</span>
+      <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(i6.6,3a)&#39;</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span><span class="s1">&#39;[&#39;</span><span class="p">,</span><span class="n">unnamed</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="s1">&#39;]&#39;</span><span class="p">,</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="p">(</span><span class="n">unnamed</span><span class="p">))</span>
+   <span class="k">endif</span>
+
+<span class="k">contains</span>
+<span class="k">subroutine </span><span class="n">set</span><span class="p">()</span>
+   <span class="n">help_text</span><span class="o">=</span><span class="p">[</span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span> <span class="kd">::</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;NAME                                                    &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;   myprocedure(1) - make all things possible            &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;SYNOPSIS                                                &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;   function myprocedure(stuff)                          &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;   class(*) :: stuff                                    &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;DESCRIPTION                                             &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;   myprocedure(1) makes all things possible given STUFF &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;OPTIONS                                                 &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;   STUFF  things to do things to                        &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;RETURNS                                                 &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;   MYPROCEDURE  the answers you want                    &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;EXAMPLE                                                 &#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;&#39;</span> <span class="p">]</span>
+
+   <span class="n">version_text</span><span class="o">=</span><span class="p">[</span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span> <span class="kd">::</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;@(#)PROGRAM:     demo5            &gt;&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;@(#)DESCRIPTION: My demo program  &gt;&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;@(#)VERSION:     1.0 20200115     &gt;&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;@(#)AUTHOR:      me, myself, and I&gt;&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;@(#)LICENSE:     Public Domain    &gt;&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;&#39;</span> <span class="p">]</span>
+<span class="k">end subroutine </span><span class="n">set</span>
+<span class="k">subroutine </span><span class="n">readargs</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="k">allocatable</span> <span class="kd">::</span> <span class="n">status</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span> <span class="kd">::</span> <span class="n">line</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span> <span class="kd">::</span> <span class="n">answer</span>
+<span class="kt">integer</span>            <span class="kd">::</span> <span class="n">lun</span>
+<span class="kt">integer</span>            <span class="kd">::</span> <span class="n">ios</span>
+   <span class="n">status</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+   <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="s1">&#39;args&gt;&gt; &quot;.&quot; to run, &quot;stop&quot; to end, &quot;show&quot; to show keywords, &quot;read&quot;,&quot;write&quot;,&quot;sh&quot;&#39;</span>
+   <span class="k">do</span>
+<span class="k">      write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="s1">&#39;args&gt;&gt;&#39;</span>
+      <span class="k">read</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">)</span><span class="n">line</span>
+      <span class="k">if</span><span class="p">(</span><span class="nb">is_iostat_end</span><span class="p">(</span><span class="n">ios</span><span class="p">))</span><span class="k">stop </span><span class="mi">1</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">line</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">).</span><span class="n">eq</span><span class="p">.</span><span class="s1">&#39;!&#39;</span><span class="p">)</span><span class="k">cycle</span>
+<span class="k">      select case</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+       <span class="k">case</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">exit</span>
+<span class="k">       case</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">)</span>
+        <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="s1">&#39;SO FAR&#39;</span>
+        <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">nml</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="c">!! something where you could restrict nml output to just listed names would be nice</span>
+        <span class="c">!!write(*,nml=args,delim=&#39;quote&#39;)[&#39;A&#39;,&#39;H&#39;]</span>
+        <span class="c">!!write(*,nml=*NML,delim=&#39;quote&#39;)args[&#39;A&#39;,&#39;H&#39;]</span>
+       <span class="k">case</span><span class="p">(</span><span class="s1">&#39;help&#39;</span><span class="p">)</span>
+        <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)[</span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span> <span class="kd">::</span> <span class="p">&amp;</span>
+        <span class="s1">&#39; You are in interactive mode where you can display and change your values using&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39; NAMELIST syntax:&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;   KEYWORD=VALUE(S) -- change a variable value&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;   show             -- show current values&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;   stop             -- stop program&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;   .                -- return to program and run&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;   write FILENAME   -- write NAMELIST group to specified file&#39;</span><span class="p">,&amp;</span>
+        <span class="s1">&#39;   read  FILENAME   -- read NAMELIST input file&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;   sh               -- start shell process&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;&#39;</span> <span class="p">]</span>
+       <span class="k">case</span><span class="p">(</span><span class="s1">&#39;stop&#39;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">=</span><span class="s1">&#39;stop&#39;</span>
+        <span class="k">exit</span>
+<span class="k">       case</span><span class="p">(</span><span class="s1">&#39;sh&#39;</span><span class="p">)</span>
+        <span class="k">call </span><span class="nb">execute_command_line</span><span class="p">(</span><span class="s1">&#39;bash&#39;</span><span class="p">)</span>
+       <span class="k">case</span><span class="p">(</span><span class="s1">&#39;read&#39;</span><span class="p">)</span>
+        <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="s1">&#39;filename:&#39;</span>
+        <span class="k">read</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">)</span><span class="n">answer</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ios</span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">exit</span>
+<span class="k">        open</span><span class="p">(</span><span class="k">file</span><span class="o">=</span><span class="n">answer</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">,</span><span class="n">newunit</span><span class="o">=</span><span class="n">lun</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ios</span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">exit</span>
+<span class="k">        read</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">)</span>
+        <span class="k">close</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">lun</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">)</span>
+       <span class="k">case</span><span class="p">(</span><span class="s1">&#39;write&#39;</span><span class="p">)</span>
+        <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="s1">&#39;filename:&#39;</span>
+        <span class="k">read</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">)</span><span class="n">answer</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ios</span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">exit</span>
+<span class="k">        open</span><span class="p">(</span><span class="k">file</span><span class="o">=</span><span class="n">answer</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">,</span><span class="n">newunit</span><span class="o">=</span><span class="n">lun</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ios</span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">exit</span>
+<span class="k">        write</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">)</span>
+        <span class="k">close</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">lun</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">)</span>
+       <span class="k">case </span><span class="n">default</span>
+        <span class="n">UPDATE</span><span class="p">:</span> <span class="k">block</span>
+<span class="k">           </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span> <span class="kd">::</span> <span class="n">intmp</span>
+           <span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>  <span class="kd">::</span> <span class="n">message</span>
+           <span class="kt">integer</span> <span class="kd">::</span> <span class="n">ios</span>
+           <span class="n">intmp</span><span class="o">=</span><span class="s1">&#39;&amp;ARGS &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;/&#39;</span>
+           <span class="k">read</span><span class="p">(</span><span class="n">intmp</span><span class="p">,</span><span class="n">nml</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">,</span><span class="n">iomsg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+           <span class="k">if</span><span class="p">(</span><span class="n">ios</span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">then</span>
+<span class="k">              write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="s1">&#39;ERROR:&#39;</span><span class="p">,</span><span class="nb">trim</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+           <span class="k">endif</span>
+<span class="k">        endblock </span><span class="n">UPDATE</span>
+     <span class="k">end select</span>
+<span class="k">  enddo</span>
+<span class="k">end subroutine </span><span class="n">readargs</span>
+   <span class="k">subroutine </span><span class="n">dosomething</span><span class="p">()</span>
+      <span class="c">! placeholder</span>
+      <span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="s1">&#39;USE ALL THOSE VALUES&#39;</span>
+   <span class="k">end subroutine </span><span class="n">dosomething</span>
+
+   <span class="k">end program </span><span class="n">demo5</span>
+</pre></div>
+
+    </section>
+    
+    
+    </div>
+  </div>
+
+  
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-4"><p>&copy; 2022 
+                                          </p></div>
+        <div class="col-xs-6 col-md-4 col-md-push-4">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/cmacmackin/ford">FORD</a>
+             on 2022-01-03 21:48  
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> M_CLI was developed by John S. Urban</p></div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+    
+  </body>
+</html>
