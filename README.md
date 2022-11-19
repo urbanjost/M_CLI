@@ -65,7 +65,7 @@
 Now all the values in the NAMELIST should be updated using values from the
 command line and ready to use.
 
-## DOCUMENTATION
+## DOCUMENTATION   ![docs](docs/images/docs.gif)
 There are several styles possible for defining the NAMELIST group as well as
 options on whether to do the parsing in the main program or in a contained procedure.
 These demo programs provide templates for the most common usage:
@@ -78,7 +78,7 @@ These demo programs provide templates for the most common usage:
 - [demo6](example/demo6.f90) a more complex example showing how to create a command with subcommands
 - [demo7](example/demo7.f90) problems with CHARACTER arrays and quotes
 
-### manpages
+### man-pages
    
 - [M_CLI](https://urbanjost.github.io/M_CLI/M_CLI.3m_cli.html)  -- An overview of the M_CLI module
 
@@ -93,7 +93,7 @@ These demo programs provide templates for the most common usage:
 
 - [specified](https://urbanjost.github.io/M_CLI/specified.3m_cli.html)  -- detect if a keyword was specified on the command line
 
-- [BOOK_M_CLI](https://urbanjost.github.io/M_CLI/BOOK_M_CLI.html) -- All manpages consolidated using JavaScript
+- [BOOK_M_CLI](https://urbanjost.github.io/M_CLI/BOOK_M_CLI.html) -- All man-pages consolidated using JavaScript
 
 ### doxygen
 
