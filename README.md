@@ -2,11 +2,11 @@
 
 ![parse](docs/images/parse.png)
 
-## NAME
+## Name
 
 ### M_CLI - parse Unix-like command line arguments from Fortran
 
-## DESCRIPTION
+## Description
 
    M_CLI(3f) is a Fortran module that will crack the command line when
    given a NAMELIST and a prototype string that looks very much like an
@@ -14,7 +14,7 @@
    that there is no requirement to convert the strings to their required
    types or to duplicate the type declarations.
 
-## DOWNLOAD
+## Download
    ```bash
        git clone https://github.com/urbanjost/M_CLI.git
        cd M_CLI/src
@@ -34,7 +34,7 @@
    ```
    This will compile the M_CLI module and build all the example programs.
 
-## SUPPORTS FPM ![fpm](docs/images/fpm_logo.gif)
+## Supports FPM ![fpm](docs/images/fpm_logo.gif)
 (registered at the [fpm(1) registry](https://github.com/fortran-lang/fpm-registry) )
 
    Alternatively, download the github repository and build it with 
@@ -53,7 +53,7 @@
         M_CLI        = { git = "https://github.com/urbanjost/M_CLI.git" }
 ```
 
-## FUNCTIONAL SPECIFICATION
+## Functional Specification
 
 **This is how the interface works --**
    
@@ -65,7 +65,7 @@
 Now all the values in the NAMELIST should be updated using values from the
 command line and ready to use.
 
-## DOCUMENTATION   ![docs](docs/images/docs.gif)
+## Documentation   ![docs](docs/images/docs.gif)
 There are several styles possible for defining the NAMELIST group as well as
 options on whether to do the parsing in the main program or in a contained procedure.
 These demo programs provide templates for the most common usage:
@@ -99,7 +99,7 @@ These demo programs provide templates for the most common usage:
 
 - [doxygen(1) output](https://urbanjost.github.io/M_CLI/doxygen_out/html/index.html).
 
-## EXAMPLE PROGRAM
+## Example Program
    
 This short program defines a command that can be called like
    
@@ -151,7 +151,7 @@ This short program defines a command that can be called like
    end program show
 ```
 
-## FEEDBACK
+## Feedback
    
    Please provide feedback on the
    [wiki](https://github.com/urbanjost/M_CLI/wiki) or in the

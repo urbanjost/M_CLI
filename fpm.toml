@@ -1,4 +1,4 @@
-# TOML file for fpm as described at https://github.com/fortran-lang/fpm/blob/master/manifest-reference.md
+# TOML file for fpm as described at https://fpm.fortran-lang.org/en/spec/manifest.html
 name = "M_CLI"
 version = "0.1.0"
 license = "Public Domain"
@@ -9,6 +9,12 @@ description = "Unix-style commandline parsing using a prototype command and NAME
 categories = ["Command Line"]
 keywords = ["fortran", "arguments", "command line", "parsing"]
 homepage = "https://github.com/urbanjost/M_CLI.git"
+
+[build]
+#auto-executables = true
+#auto-examples = false
+#auto-tests = false
+#NO#module-naming = true          # Use default naming convention
 
 # unit test program
 test = [ { name="runTests", source-dir="test", main="main.f90" } ]
@@ -22,4 +28,4 @@ executable = [ { name="demo1", source-dir="example", main="demo1.f90" },
                { name="demo6", source-dir="example", main="demo6.f90" },
                { name="demo7", source-dir="example", main="demo7.f90" },
                { name="demo9", source-dir="example", main="segments.f90" },
-	       ]
+               ]
