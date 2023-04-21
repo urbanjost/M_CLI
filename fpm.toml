@@ -10,7 +10,7 @@ categories = ["Command Line"]
 keywords = ["fortran", "arguments", "command line", "parsing"]
 homepage = "https://github.com/urbanjost/M_CLI.git"
 
-[build]
+#[build]
 #auto-executables = true
 #auto-examples = false
 #auto-tests = false
