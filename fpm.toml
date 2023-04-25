@@ -10,12 +10,6 @@ categories = ["Command Line"]
 keywords = ["fortran", "arguments", "command line", "parsing"]
 homepage = "https://github.com/urbanjost/M_CLI.git"
 
-#[build]
-#auto-executables = true
-#auto-examples = false
-#auto-tests = false
-#NO#module-naming = true          # Use default naming convention
-
 # unit test program
 test = [ { name="runTests", source-dir="test", main="main.f90" } ]
 
@@ -29,3 +23,11 @@ executable = [ { name="demo1", source-dir="example", main="demo1.f90" },
                { name="demo7", source-dir="example", main="demo7.f90" },
                { name="demo9", source-dir="example", main="segments.f90" },
                ]
+
+[build]
+auto-executables = true
+auto-examples = false
+auto-tests = false
+#if version >= 0.8.0
+#module-naming = true          # Use default naming convention
+#endif
