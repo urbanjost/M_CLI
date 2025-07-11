@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="command line parsing">
+    <meta name="author" content="John S. Urban" >
+    <link rel="icon" href="./favicon.png">
+
+    <title> M_CLI </title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="./css/fontawesome.min.css" rel="stylesheet">
+    <link href="./css/brands.min.css" rel="stylesheet">
+    <link href="./css/regular.min.css" rel="stylesheet">
+    <link href="./css/solid.min.css" rel="stylesheet">
+    <link href="./css/v4-font-face.min.css" rel="stylesheet">
+    <link href="./css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="./css/local.css" rel="stylesheet">
+    <link href="./css/pygments.css" rel="stylesheet">
+    <script src="./js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="./index.html">M_CLI </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="./lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/namelists.html">Namelists</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/programs.html">Programs</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="./search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <!-- Main component for a primary marketing message or call to action -->
+    <div class="p-5 mb-4 bg-light border rounded-3" id="jumbotron">
+      <p>command line parsing</p>
+        <p> Find us on&hellip;</p>
+      <p>
+        <a class="btn btn-lg btn-primary" href="https://github.com/urbanjost/M_CLI" role="button">GitHub</a>
+        
+        
+        
+        
+      </p>
+    </div>
+
+      <div class="row" id='text'>
+        <div class=col-md-8>
+          <h1>M_CLI</h1>
+          <h1 id="m_clif90-and-associated-files">M_CLI.f90 and associated files</h1>
+<p><img alt="parse" src="docs/images/parse.png"></p>
+<h2 id="name">Name</h2>
+<h3 id="m_cli-parse-unix-like-command-line-arguments-from-fortran">M_CLI - parse Unix-like command line arguments from Fortran</h3>
+<h2 id="description">Description</h2>
+<p>M_CLI(3f) is a Fortran module that will crack the command line when
+   given a NAMELIST and a prototype string that looks very much like an
+   invocation of the program. Using the NAMELIST group has the benefit
+   that there is no requirement to convert the strings to their required
+   types or to duplicate the type declarations.</p>
+<h2 id="download">Download</h2>
+<p>```bash
+       git clone https://github.com/urbanjost/M_CLI.git
+       cd M_CLI/src
+       # change Makefile if not using one of the listed compilers</p>
+<div class="codehilite"><pre><span></span><code>   # <span class="k">for</span> <span class="nv">gfortran</span>
+   <span class="nv">make</span> <span class="nv">clean</span>
+   <span class="nv">make</span> <span class="nv">F90</span><span class="o">=</span><span class="nv">gfortran</span> <span class="nv">gfortran</span>
+
+   # <span class="k">for</span> <span class="nv">ifort</span>
+   <span class="nv">make</span> <span class="nv">clean</span>
+   <span class="nv">make</span> <span class="nv">F90</span><span class="o">=</span><span class="nv">ifort</span> <span class="nv">ifort</span>
+
+   # <span class="k">for</span> <span class="nv">nvfortran</span>
+   <span class="nv">make</span> <span class="nv">clean</span>
+   <span class="nv">make</span> <span class="nv">F90</span><span class="o">=</span><span class="nv">nvfortran</span> <span class="nv">nvfortran</span>
+</code></pre></div>
+
+<p>```
+   This will compile the M_CLI module and build all the example programs.</p>
+<h2 id="supports-fpm">Supports FPM <img alt="fpm" src="docs/images/fpm_logo.gif"></h2>
+<p>(registered at the <a href="https://github.com/fortran-lang/fpm-registry">fpm(1) registry</a> )</p>
+<p>Alternatively, download the github repository and build it with 
+   fpm ( as described at <a href="https://github.com/fortran-lang/fpm">Fortran Package Manager</a> )</p>
+<p><code>bash
+        git clone https://github.com/urbanjost/M_CLI.git
+        cd M_CLI
+        fpm test</code></p>
+<p>or just list it as a dependency in your fpm.toml project file.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">        </span><span class="k">[dependencies]</span><span class="w"></span>
+<span class="w">        </span><span class="n">M_CLI</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/urbanjost/M_CLI.git&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+</code></pre></div>
+
+<h2 id="functional-specification">Functional Specification</h2>
+<p><strong>This is how the interface works &ndash;</strong></p>
+<ul>
+<li>Basically you define a NAMELIST group called ARGS that has the names of all your command line arguments.</li>
+<li>Next, pass in a string that looks like the command you would use to execute the program with all values specified.</li>
+<li>you read the output as the NAMELIST group ARGS with a fixed block of code (that could be in an INCLUDE file)</li>
+<li>Now call a routine to handle errors and help-related text</li>
+</ul>
+<p>Now all the values in the NAMELIST should be updated using values from the
+command line and ready to use.</p>
+<h2 id="documentation">Documentation   <img alt="docs" src="docs/images/docs.gif"></h2>
+<p>There are several styles possible for defining the NAMELIST group as well as
+options on whether to do the parsing in the main program or in a contained procedure.
+These demo programs provide templates for the most common usage:</p>
+<ul>
+<li><a href="example/demo1.f90">demo1</a> full usage </li>
+<li><a href="example/demo2.f90">demo2</a> shows putting everything including <strong>help</strong> and <strong>version</strong> information into a contained procedure.</li>
+<li><a href="example/demo3.f90">demo3</a> example of <strong>basic</strong> use </li>
+<li><a href="example/demo4.f90">demo4</a> using  <strong>COMPLEX</strong> values!</li>
+<li><a href="example/demo5.f90">demo5</a> demo2 with added example code for <strong>interactively editing the NAMELIST group</strong></li>
+<li><a href="example/demo6.f90">demo6</a> a more complex example showing how to create a command with subcommands</li>
+<li><a href="example/demo7.f90">demo7</a> problems with CHARACTER arrays and quotes</li>
+</ul>
+<h3 id="man-pages">man-pages</h3>
+<ul>
+<li>
+<p><a href="https://urbanjost.github.io/M_CLI/M_CLI.3m_cli.html">M_CLI</a>  &ndash; An overview of the M_CLI module</p>
+</li>
+<li>
+<p><a href="https://urbanjost.github.io/M_CLI/commandline.3m_cli.html">commandline</a>  &ndash; parses the command line options</p>
+</li>
+<li>
+<p><a href="https://urbanjost.github.io/M_CLI/check_commandline.3m_cli.html">check_commandline</a>  &ndash; convenience
+  routine for checking status of READ of NAMELIST group</p>
+</li>
+<li>
+<p><a href="https://urbanjost.github.io/M_CLI/print_dictionary.3m_cli.html">print_dictionary</a>  &ndash; print the dictionary
+  of command line keywords and values (typically not directly by a user, as automatically called when
+  &ndash;usage option is supplied).</p>
+</li>
+<li>
+<p><a href="https://urbanjost.github.io/M_CLI/specified.3m_cli.html">specified</a>  &ndash; detect if a keyword was specified on the command line</p>
+</li>
+<li>
+<p><a href="https://urbanjost.github.io/M_CLI/BOOK_M_CLI.html">BOOK_M_CLI</a> &ndash; All man-pages consolidated using JavaScript</p>
+</li>
+</ul>
+<h3 id="doxygen">doxygen</h3>
+<ul>
+<li><a href="https://urbanjost.github.io/M_CLI/doxygen_out/html/index.html">doxygen(1) output</a>.</li>
+</ul>
+<h2 id="example-program">Example Program</h2>
+<p>This short program defines a command that can be called like</p>
+<div class="codehilite"><pre><span></span><code>   ./show -x <span class="m">10</span> -y -20 --point <span class="m">10</span>,20,30 --title <span class="s1">&#39;plot of stuff&#39;</span> *.in
+   ./show -x <span class="m">10</span> -y -20 --point <span class="m">10</span>,20,30 --title <span class="s1">&#39;plot of stuff&#39;</span> *.in
+   ./show -z <span class="m">300</span>
+   ./show *.in
+   ./show --usage
+   ./show --help
+   ./show --version
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="k">program </span><span class="n">show</span><span class="w"></span>
+<span class="w">   </span><span class="k">use </span><span class="n">M_CLI</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">commandline</span><span class="p">,</span><span class="w"> </span><span class="n">check_commandline</span><span class="p">,</span><span class="w"> </span><span class="n">files</span><span class="o">=&gt;</span><span class="n">unnamed</span><span class="w"></span>
+<span class="w">   </span><span class="k">implicit none</span>
+<span class="k">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">!! DEFINE NAMELIST</span>
+<span class="w">   </span><span class="kt">real</span><span class="w">               </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="w">             </span><span class="p">;</span><span class="w"> </span><span class="k">namelist</span><span class="w"> </span><span class="o">/</span><span class="n">args</span><span class="o">/</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="w"></span>
+<span class="w">   </span><span class="kt">real</span><span class="w">               </span><span class="kd">::</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w">            </span><span class="p">;</span><span class="w"> </span><span class="k">namelist</span><span class="w"> </span><span class="o">/</span><span class="n">args</span><span class="o">/</span><span class="w"> </span><span class="n">point</span><span class="w"></span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">title</span><span class="w">               </span><span class="p">;</span><span class="w"> </span><span class="k">namelist</span><span class="w"> </span><span class="o">/</span><span class="n">args</span><span class="o">/</span><span class="w"> </span><span class="n">title</span><span class="w"></span>
+<span class="w">   </span><span class="kt">logical</span><span class="w">            </span><span class="kd">::</span><span class="w"> </span><span class="n">l</span><span class="w">                   </span><span class="p">;</span><span class="w"> </span><span class="k">namelist</span><span class="w"> </span><span class="o">/</span><span class="n">args</span><span class="o">/</span><span class="w"> </span><span class="n">l</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">!! DEFINE COMMAND</span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cmd</span><span class="o">=</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s1">&#39;-x 1 -y 2.0 -z 3.5e0 --point -1,-2,-3 --title &quot;my title&quot; -l F &#39;</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">!! THIS BLOCK DOES THE COMMAND LINE PARSING AND SHOULD NOT HAVE TO CHANGE</span>
+<span class="w">      </span><span class="n">COMMANDLIN</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">block</span>
+<span class="k">         </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span><span class="w">           </span><span class="kd">::</span><span class="w"> </span><span class="n">message</span><span class="w"></span>
+<span class="w">         </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">readme</span><span class="w"></span>
+<span class="w">         </span><span class="kt">integer</span><span class="w">                      </span><span class="kd">::</span><span class="w"> </span><span class="n">ios</span><span class="w"></span>
+<span class="w">         </span><span class="n">readme</span><span class="o">=</span><span class="n">commandline</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">read</span><span class="p">(</span><span class="n">readme</span><span class="p">,</span><span class="n">nml</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">,</span><span class="n">iomsg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="c">!! UPDATE NAMELIST VARIABLES</span>
+<span class="w">         </span><span class="k">call </span><span class="n">check_commandline</span><span class="p">(</span><span class="n">ios</span><span class="p">,</span><span class="n">message</span><span class="p">)</span><span class="w">     </span><span class="c">!! HANDLE ERRORS FROM NAMELIST READ AND --usage</span>
+<span class="w">      </span><span class="k">endblock </span><span class="n">COMMANDLIN</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">!! USE THE VALUES IN YOUR PROGRAM.</span>
+<span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">nml</span><span class="o">=</span><span class="n">args</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">!! OPTIONAL UNNAMED VALUES FROM COMMAND LINE</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">files</span><span class="p">).</span><span class="n">gt</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">then</span>
+<span class="k">         write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="s1">&#39;files:&#39;</span><span class="w"></span>
+<span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(i6.6,3a)&#39;</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span><span class="s1">&#39;[&#39;</span><span class="p">,</span><span class="n">files</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="s1">&#39;]&#39;</span><span class="p">,</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="p">(</span><span class="n">files</span><span class="p">))</span><span class="w"></span>
+<span class="w">      </span><span class="k">endif</span>
+
+<span class="k">   end program </span><span class="n">show</span><span class="w"></span>
+</code></pre></div>
+
+<h2 id="feedback">Feedback</h2>
+<p>Please provide feedback on the
+   <a href="https://github.com/urbanjost/M_CLI/wiki">wiki</a> or in the
+   <a href="https://github.com/urbanjost/M_CLI/issues"><strong>issues</strong></a>
+   section or star the repository if you use the module (or let me know
+   why not and let others know what you did use!).</p>
+<hr>
+<h2 id="other-things-to-do-with-namelist">Other things to do with <a href="https://urbanjost.github.io/M_CLI/index.html">NAMELIST</a></h2>
+<p>click on the link for some unusual things to do with NAMELIST,
+   Capture and Replay unit testing, exposing variables for interactive
+   editing &hellip;</p>
+<hr>
+        </div>
+          <div class="col-md-4">
+            <div class="card card-body bg-light">
+              <h2 class="card-title">Developer Info</h2>
+              <h4 class="card-text">John S. Urban</h4>
+              <p class="card-text"></p>
+                <div class="text-center"><div class="btn-group" role="group">
+                    
+                    <a class="btn btn-lg btn-primary" href="https://github.com/urbanjost/M_CLI"><i class="fa fa-github fa-lg"></i></a>
+                    
+                    
+                    
+                    
+                    
+                    
+                </div></div>
+            </div>
+          </div>
+      </div>
+        <div class="row">
+          <hr>
+          <div class="col-xs-6 col-sm-4">
+            <div>
+              <h3>Source Files</h3>
+              <ul><li><a href='sourcefile/demo1.f90.html'>demo1.f90</a></li><li><a href='sourcefile/demo2.f90.html'>demo2.f90</a></li><li><a href='sourcefile/demo3.f90.html'>demo3.f90</a></li><li><a href='sourcefile/demo4.f90.html'>demo4.f90</a></li><li><a href='sourcefile/demo5.f90.html'>demo5.f90</a></li><li><a href='sourcefile/demo6.f90.html'>demo6.f90</a></li><li><a href='sourcefile/demo7.f90.html'>demo7.f90</a></li><li><a href='sourcefile/demo_check_commandline.f90.html'>demo_check_commandline.f90</a></li><li><a href='sourcefile/demo_commandline.f90.html'>demo_commandline.f90</a></li><li><a href='sourcefile/demo_m_cli.f90.html'>demo_M_CLI.f90</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/files.html"><em>All source files&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4">
+            <div>
+              <h3>Modules</h3>
+              <ul><li><a href='module/m_cli.html'>M_CLI</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/modules.html"><em>All modules&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4">
+            <div>
+              <h3>Procedures</h3>
+              <ul><li><a href='proc/check_commandline.html'>check_commandline</a></li><li><a href='proc/commandline.html'>commandline</a></li><li><a href='proc/dosomething.html'>dosomething</a></li><li><a href='proc/dosomething~2.html'>dosomething</a></li><li><a href='proc/parse.html'>parse</a></li><li><a href='proc/parse~2.html'>parse</a></li><li><a href='proc/print_dictionary.html'>print_dictionary</a></li><li><a href='proc/printit.html'>printit</a></li><li><a href='proc/readargs.html'>readargs</a></li><li><a href='proc/readargs~2.html'>readargs</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              M_CLI
+ was developed by John S. Urban<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-07-11 01:48 +0000             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

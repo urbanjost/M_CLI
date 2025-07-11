@@ -1,0 +1,604 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="command line parsing">
+    <meta name="author" content="John S. Urban" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>demo_commandline &ndash; M_CLI</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">M_CLI </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/namelists.html">Namelists</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/programs.html">Programs</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>demo_commandline      <small>Program</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 4.0% of total for programs.">22 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/demo_commandline.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/demo_commandline.f90.html'>demo_commandline.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">demo_commandline</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-cmd~10">cmd</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-i~18">i</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-ios~14">ios</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-l~5">l</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-l_~5">l_</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-message~16">message</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-p">p</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-point~4">point</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-readme~12">readme</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-title~5">title</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-x~11">x</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-y~11">y</a>
+            <a class="list-group-item" href="../program/demo_commandline.html#variable-z~11">z</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#namelists-0"
+         aria-expanded="false" aria-controls="namelists-0">
+         <h4 class="card-header bg-primary text-white">Namelists</h4>
+      </a>
+      <div id="namelists-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../program/demo_commandline.html#namelist-args~20">args</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../program/demo_commandline.html#src">demo_commandline</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+        <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/m_cli.html'>M_CLI</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+
+    
+
+
+    <section>
+    <h2>Variables</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cmd~10"></span>
+              character(len=*),
+            </td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>cmd</strong></td>
+<td> =</td>
+                <td>&#39; -x 1 -y 2 -z 3      --point -1,-2,-3    --title &#34;my title&#34;  -l F -L F&#39;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-i~18"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ios~14"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ios</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-l~5"></span>
+              logical
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>l</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-l_~5"></span>
+              logical
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>l_</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-message~16"></span>
+              character(len=255)
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>message</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-p"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p</strong>(3)</td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-point~4"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>point</strong>(3)</td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-readme~12"></span>
+              character(len=:),
+            </td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>readme</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-title~5"></span>
+              character(len=80)
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>title</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~11"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-y~11"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-z~11"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>z</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+    
+    
+    
+
+    
+
+
+    
+      <section>
+        <h2>Namelists</h2>
+            <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="namelist-args~20"></span>
+      <h3>Namelist <a href='../namelist/args~20.html'>args</a></h3>
+    </div>
+    <div class="card-body">
+        
+  <br class="visible-xs visible-sm hidden-md">
+  <section>
+    <h2>Variables</h2>
+    <table class="table table-striped" id="namelist-args~20">
+      <thead><tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr></thead>
+      <tbody>
+              <tr id="variable-x~11">
+      <td><a href="#variable-x~11">x</a></td>
+      <td>real</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+              <tr id="variable-y~11">
+      <td><a href="#variable-y~11">y</a></td>
+      <td>real</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+              <tr id="variable-z~11">
+      <td><a href="#variable-z~11">z</a></td>
+      <td>real</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+              <tr id="variable-point~4">
+      <td><a href="#variable-point~4">point</a></td>
+      <td>real</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+              <tr id="variable-p">
+      <td><a href="#variable-p">p</a></td>
+      <td>real</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+              <tr id="variable-title~5">
+      <td><a href="#variable-title~5">title</a></td>
+      <td>character(len=80)</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+              <tr id="variable-l~5">
+      <td><a href="#variable-l~5">l</a></td>
+      <td>logical</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+              <tr id="variable-l_~5">
+      <td><a href="#variable-l_~5">l_</a></td>
+      <td>logical</td>
+      <td>None</td>
+      <td></td>
+    </tr>
+
+      </tbody>
+    </table>
+  </section>
+
+    </div>
+  </div>
+
+      </section>
+
+    <section>
+    <h2 id="src">Source Code</h2>
+    <div class="hl codehilite"><pre><span></span><span class="w">         </span><span class="k">program </span><span class="n">demo_commandline</span><span class="w"></span>
+<span class="w">            </span><span class="k">use </span><span class="n">M_CLI</span><span class="p">,</span><span class="w">  </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">unnamed</span><span class="p">,</span><span class="w"> </span><span class="n">commandline</span><span class="p">,</span><span class="w"> </span><span class="n">check_commandline</span><span class="w"></span>
+<span class="w">            </span><span class="k">implicit none</span>
+<span class="k">            </span><span class="kt">integer</span><span class="w">                      </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+<span class="w">            </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span><span class="w">           </span><span class="kd">::</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="c">! for I/O error</span>
+<span class="w">            </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">readme</span><span class="w">  </span><span class="c">! updated namelist</span>
+<span class="w">            </span><span class="kt">integer</span><span class="w">                      </span><span class="kd">::</span><span class="w"> </span><span class="n">ios</span><span class="w"></span>
+
+<span class="w">         </span><span class="c">! declare a namelist</span>
+<span class="w">            </span><span class="kt">real</span><span class="w">               </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">title</span><span class="w"></span>
+<span class="w">            </span><span class="kt">logical</span><span class="w">            </span><span class="kd">::</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">l_</span><span class="w"></span>
+<span class="w">            </span><span class="k">equivalence</span><span class="w">       </span><span class="p">(</span><span class="n">point</span><span class="p">,</span><span class="n">p</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">namelist</span><span class="w"> </span><span class="o">/</span><span class="n">args</span><span class="o">/</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">point</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">l_</span><span class="w"></span>
+
+<span class="w">         </span><span class="c">! Define the prototype</span>
+<span class="w">         </span><span class="c">!  o All parameters must be listed with a default value.</span>
+<span class="w">         </span><span class="c">!  o logicals should be specified with a value of F or T.</span>
+<span class="w">         </span><span class="c">!  o string values  must be double-quoted.</span>
+<span class="w">         </span><span class="c">!  o lists must be comma-delimited. No spaces allowed in lists.</span>
+<span class="w">         </span><span class="c">!  o all long names must be lowercase. An uppercase short name</span>
+<span class="w">         </span><span class="c">!    -A maps to variable A_</span>
+<span class="w">         </span><span class="c">!  o if variables are equivalenced only one should be used on</span>
+<span class="w">         </span><span class="c">!    the command line</span>
+<span class="w">            </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">parameter</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">cmd</span><span class="o">=</span><span class="s1">&#39;&amp;</span>
+<span class="s1">            &amp; -x 1 -y 2 -z 3     &amp;</span>
+<span class="s1">            &amp; --point -1,-2,-3   &amp;</span>
+<span class="s1">            &amp; --title &quot;my title&quot; &amp;</span>
+<span class="s1">            &amp; -l F -L F&#39;</span><span class="w"></span>
+<span class="w">            </span><span class="c">! reading in a NAMELIST definition defining the entire NAMELIST</span>
+<span class="w">            </span><span class="c">! now get the values from the command prototype and</span>
+<span class="w">            </span><span class="c">! command line as NAMELIST input</span>
+<span class="w">            </span><span class="n">readme</span><span class="o">=</span><span class="n">commandline</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">read</span><span class="p">(</span><span class="n">readme</span><span class="p">,</span><span class="n">nml</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">ios</span><span class="p">,</span><span class="n">iomsg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">call </span><span class="n">check_commandline</span><span class="p">(</span><span class="n">ios</span><span class="p">,</span><span class="n">message</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="c">! all done cracking the command line</span>
+
+<span class="w">            </span><span class="c">! use the values in your program.</span>
+<span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">nml</span><span class="o">=</span><span class="n">args</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="c">! the optional unnamed values on the command line are</span>
+<span class="w">            </span><span class="c">! accumulated in the character array &quot;UNNAMED&quot;</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">unnamed</span><span class="p">).</span><span class="n">gt</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="k">then</span>
+<span class="k">               write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="s1">&#39;files:&#39;</span><span class="w"></span>
+<span class="w">               </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(i6.6,3a)&#39;</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span><span class="s1">&#39;[&#39;</span><span class="p">,</span><span class="n">unnamed</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="s1">&#39;]&#39;</span><span class="p">,</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="p">(</span><span class="n">unnamed</span><span class="p">))</span><span class="w"></span>
+<span class="w">            </span><span class="k">endif</span>
+<span class="k">         end program </span><span class="n">demo_commandline</span><span class="w"></span>
+</pre></div>
+
+    </section>
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              M_CLI
+ was developed by John S. Urban<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-07-11 01:48 +0000             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>
